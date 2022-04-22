@@ -268,7 +268,7 @@
               Bytes needed to stores the JSON objects and arrays in memory
               <a
                 href="#"
-                data-toggle="popover"
+                v-popover
                 title="Expression"
                 :data-content="expression"
                 onclick="return false"
@@ -283,7 +283,7 @@
               Bytes needed to stores the strings in memory
               <a
                 href="#"
-                data-toggle="popover"
+                v-popover
                 title="Deduplication"
                 :data-content="
                   'Accoding to the configuration, ' + stringsDetails
@@ -875,7 +875,6 @@ export default {
       }
     },
     currentStepIndex(newStep, oldStep) {
-      $(this.$el).find('[data-toggle="popover"]').popover("hide");
       this.saveSettings();
       if (oldStep == 0) this.report("config", "Set configuration");
       if (oldStep == 1) this.report("json", "Set JSON", this.inputJson.length);
@@ -883,9 +882,6 @@ export default {
         this.report("program", "Generate program", this.capacity.recommended);
         this.generateProgram();
       }
-      this.$nextTick(() => {
-        $(this.$el).find('[data-toggle="popover"]').popover();
-      });
     },
   },
   methods: {
