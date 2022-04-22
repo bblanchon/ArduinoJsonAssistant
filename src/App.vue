@@ -579,7 +579,19 @@
 import hljs from "highlight.js/lib/core";
 import cpp from "highlight.js/lib/languages/cpp";
 import "@/assets/highlight.scss";
-hljs.registerLanguage("cpp", cpp);
+hljs.registerLanguage("cpp", (hljs) => {
+  const lang = cpp(hljs);
+  lang.keywords.type.push(
+    "JsonArray",
+    "JsonObject",
+    "JsonVariant",
+    "StaticJsonDocument",
+    "DynamicJsonDocument",
+    "DeserializationError",
+    "DeserializationOption"
+  );
+  return lang;
+});
 
 import cpuInfos from "./assistant/cpus";
 import { buildExpression } from "./assistant/SizeExpression";
