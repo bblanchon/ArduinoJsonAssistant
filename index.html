@@ -1,13 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="https://arduinojson.org/assets/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ArduinoJson Assistant</title>
+
+  <script>
+    (function (i, s, o, r) {
+      i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date()
+    })(window, document, 'script', 'ga');
+    ga('create', 'UA-89940284-2', 'auto');
+    ga('send', 'pageview');
+  </script>
+  <script async src="https://www.google-analytics.com/analytics.js"></script>
+</head>
+
+<body>
+  <div id="assistant-app" data-version="6.X.X" data-url="https://arduinojson.org" class="container"></div>
+  <script src="https://arduinojson.org/node_modules/jquery/dist/jquery.slim.min.js"></script>
+  <script src="https://arduinojson.org/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="/src/main.js"></script>
+</body>
+
 </html>

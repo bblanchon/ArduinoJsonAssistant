@@ -1,4 +1,5 @@
-import { createApp } from 'vue'
-import App from './App.vue'
+import { createApp } from "vue";
+import App from "./App.vue";
 
-createApp(App).mount('#app')
+const el = document.getElementById("assistant-app");
+createApp(App, el.dataset).mount(el);
