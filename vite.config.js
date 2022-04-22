@@ -14,8 +14,9 @@ export default defineConfig({
   build: {
     lib: {
       entry: path.resolve(__dirname, "src/main.js"),
+      formats: ["iife"],
       name: "ArduinoJsonAssistant",
-      fileName: (format) => `arduinojson-assistant.${format}.js`,
+      fileName: (format) => "assistant6.js",
     },
   },
 });

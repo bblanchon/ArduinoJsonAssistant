@@ -519,7 +519,9 @@
           >
             {{ programCopied ? "✓ Copied" : "Copy" }}
           </button>
-          <pre><code class="hljs cpp" v-html="programHtml"></code></pre>
+          <div class="highlight p-3">
+            <pre><code class="hljs" v-html="programHtml"></code></pre>
+          </div>
         </figure>
         <ul class="list-inline">
           <li class="list-inline-item font-weight-bold">See also</li>
@@ -576,6 +578,7 @@
 <script>
 import hljs from "highlight.js/lib/core";
 import cpp from "highlight.js/lib/languages/cpp";
+import "@/assets/highlight.scss";
 hljs.registerLanguage("cpp", cpp);
 
 import cpuInfos from "./assistant/cpus";
@@ -921,7 +924,9 @@ export default {
     async generateProgram() {
       this.programHtml = this.program = generateProgram(this.configuration);
       await sleep(100);
-      this.programHtml = hljs.highlight("cpp", this.program).value;
+      this.programHtml = hljs.highlight(this.program, {
+        language: "cpp",
+      }).value;
     },
     selectCpu(cpu) {
       this.cpu = cpu;
