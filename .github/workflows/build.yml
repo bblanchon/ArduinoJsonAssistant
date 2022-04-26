@@ -19,3 +19,26 @@ jobs:
         with:
           name: arduinojson-assistant
           path: dist/
+
+  deploy:
+    needs: [build]
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: arduinojson-assistant
+          path: dist
+      - uses: leigholiver/commit-with-deploy-key@v1.0.2
+        with:
+          source: dist
+          destination_folder: assets
+          destination_repo: bblanchon/ArduinoJson-web
+          destination_branch: master
+          commit_message: |
+            Update Assistant
+
+            https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+          git_username: GitHub Actions
+          git_email: 41898282+github-actions[bot]@users.noreply.github.com
+          deploy_key: ${{ secrets.DEPLOY_KEY }}
