@@ -103,22 +103,17 @@
           <label for="useDouble" class="col-form-label">
             Store floating point values as
           </label>
-          <select
-            id="useDouble"
-            class="form-control"
-            :value="useDouble"
-            @input="setUseDouble($event.target.value === 'true')"
-          >
-            <option v-if="cpuInfo.useDouble.default" value="true">
+          <select id="useDouble" class="form-control" v-model="useDouble">
+            <option v-if="cpuInfo.useDouble.default" :value="true">
               double (default)
             </option>
-            <option v-else value="true">
+            <option v-else :value="true">
               double (#define ARDUINOJSON_USE_DOUBLE 1)
             </option>
-            <option v-if="cpuInfo.useDouble.default" value="false">
+            <option v-if="cpuInfo.useDouble.default" :value="false">
               float (#define ARDUINOJSON_USE_DOUBLE 0)
             </option>
-            <option v-else value="false">float (default)</option>
+            <option v-else :value="false">float (default)</option>
           </select>
           <small
             v-if="cpuInfo.useDouble.slotSize == cpuInfo.slotSize"
@@ -136,22 +131,17 @@
           <label for="useLongLong" class="col-form-label">
             Store integral values values as
           </label>
-          <select
-            id="useLongLong"
-            class="form-control"
-            :value="useLongLong"
-            @input="setUseLongLong($event.target.value === 'true')"
-          >
-            <option v-if="cpuInfo.useLongLong.default" value="true">
+          <select id="useLongLong" class="form-control" v-model="useLongLong">
+            <option v-if="cpuInfo.useLongLong.default" :value="true">
               long long (default)
             </option>
-            <option v-else value="true">
+            <option v-else :value="true">
               long long (#define ARDUINOJSON_USE_LONG_LONG 1)
             </option>
-            <option v-if="cpuInfo.useLongLong.default" value="false">
+            <option v-if="cpuInfo.useLongLong.default" :value="false">
               long (#define ARDUINOJSON_USE_LONG_LONG 0)
             </option>
-            <option v-else value="false">long (default)</option>
+            <option v-else :value="false">long (default)</option>
           </select>
           <small
             v-if="cpuInfo.useLongLong.slotSize == cpuInfo.slotSize"
@@ -173,8 +163,7 @@
             id="assume-const-values"
             class="form-check-input"
             type="checkbox"
-            :checked="assumeConstValues"
-            @input="setAssumeConstValues($event.target.checked)"
+            v-model="assumeConstValues"
           />
           <label for="assume-const-values" class="form-check-label"
             >Assume values are <code>const char*</code></label
@@ -192,8 +181,7 @@
             id="assume-const-keys"
             class="form-check-input"
             type="checkbox"
-            :checked="assumeConstKeys"
-            @input="setAssumeConstKeys($event.target.checked)"
+            v-model="assumeConstKeys"
           />
           <label for="assume-const-keys" class="form-check-label"
             >Assume keys are <code>const char*</code></label
@@ -208,8 +196,7 @@
             id="deduplicate-values"
             class="form-check-input"
             type="checkbox"
-            :checked="deduplicateValues"
-            @input="setDeduplicateValues($event.target.checked)"
+            v-model="deduplicateValues"
           />
           <label for="deduplicate-values" class="form-check-label">
             Deduplicate values when measuring the capacity
@@ -226,8 +213,7 @@
             id="deduplicate-keys"
             class="form-check-input"
             type="checkbox"
-            :checked="deduplicateKeys"
-            @input="setDeduplicateKeys($event.target.checked)"
+            v-model="deduplicateKeys"
           />
           <label for="deduplicate-keys" class="form-check-label">
             Deduplicate keys when measuring the capacity
@@ -260,7 +246,7 @@
 <script>
 import InfoIcon from "@/components/InfoIcon.vue";
 import { RouterLink } from "vue-router";
-import { mapActions, mapState } from "pinia";
+import { mapActions, mapState, mapWritableState } from "pinia";
 import { measureSize } from "@/assistant/analyzer";
 import { buildExpression } from "@/assistant/SizeExpression";
 import { useStore } from "@/store";
@@ -286,15 +272,16 @@ export default {
       "ignoreKeys",
       "ignoreValues",
       "isSerializing",
-      "stringsDetails",
+      "input",
+      "mode",
+    ]),
+    ...mapWritableState(useStore, [
+      "useDouble",
+      "useLongLong",
       "assumeConstKeys",
       "assumeConstValues",
       "deduplicateKeys",
       "deduplicateValues",
-      "input",
-      "mode",
-      "useDouble",
-      "useLongLong",
     ]),
     capacity() {
       return measureSize(this.input, this.configuration);
@@ -335,16 +322,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(useStore, [
-      "report",
-      "setSettings",
-      "setUseDouble",
-      "setUseLongLong",
-      "setAssumeConstKeys",
-      "setAssumeConstValues",
-      "setDeduplicateKeys",
-      "setDeduplicateValues",
-    ]),
+    ...mapActions(useStore, ["report", "setSettings"]),
     resetTweaks() {
       this.setSettings({
         useLongLong: this.defaults.useLongLong,

@@ -110,24 +110,6 @@ export const useStore = defineStore("assistant", {
         this.inputError = ex.message;
       }
     },
-    setUseDouble(val) {
-      this.useDouble = val;
-    },
-    setUseLongLong(val) {
-      this.useLongLong = val;
-    },
-    setAssumeConstKeys(val) {
-      this.assumeConstKeys = val;
-    },
-    setAssumeConstValues(val) {
-      this.assumeConstValues = val;
-    },
-    setDeduplicateKeys(val) {
-      this.deduplicateKeys = val;
-    },
-    setDeduplicateValues(val) {
-      this.deduplicateValues = val;
-    },
     report({ action, label, value }) {
       ga("set", {
         dimension1: this.mode,
