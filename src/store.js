@@ -1,8 +1,14 @@
-import { createStore } from "vuex";
+import { defineStore } from "pinia";
 import { applyFilter } from "@/assistant/filter";
 import cpuInfos from "@/assistant/cpus";
 
-const store = createStore({
+const defaultInput = {
+  sensor: "gps",
+  time: 1351824120,
+  data: [48.75608, 2.302038],
+};
+
+export const useStore = defineStore("assistant", {
   state() {
     return {
       assumeConstKeys: undefined,
@@ -13,171 +19,184 @@ const store = createStore({
       filter: true,
       filterError: null,
       filterJson: "true",
-      input: null,
+      input: defaultInput,
       inputError: "",
-      inputJson: "{}",
+      inputJson: JSON.stringify(defaultInput, null, 2),
       ioTypeId: "arduinoStream",
       mode: "deserialize",
       useDouble: false,
       useLongLong: false,
     };
   },
-  mutations: {
-    setSettings(state, cfg) {
+  actions: {
+    setSettings(cfg) {
       if (cfg.rootJson) {
-        state.inputJson = cfg.rootJson;
+        this.inputJson = cfg.rootJson;
         try {
-          state.input = JSON.parse(state.inputJson);
-          state.inputError = "";
+          this.input = JSON.parse(this.inputJson);
+          this.inputError = "";
         } catch (ex) {
-          state.input = undefined;
-          state.inputError = ex.message;
+          this.input = undefined;
+          this.inputError = ex.message;
         }
       } else if (cfg.root) {
-        state.input = cfg.root;
-        state.inputJson = JSON.stringify(cfg.root, null, 2);
+        this.input = cfg.root;
+        this.inputJson = JSON.stringify(cfg.root, null, 2);
       }
       if (cfg.filterJson) {
-        state.filterJson = cfg.filterJson;
+        this.filterJson = cfg.filterJson;
       } else if (cfg.filter) {
-        state.filterJson = JSON.stringify(cfg.filter, null, 2);
+        this.filterJson = JSON.stringify(cfg.filter, null, 2);
       }
       if (cfg.mode) {
-        state.mode = cfg.mode;
+        this.mode = cfg.mode;
         const serializing = cfg.mode === "serialize";
-        const deserializing = state.mode.indexOf("deserialize") === 0;
-        state.assumeConstKeys = serializing ? true : undefined;
-        state.assumeConstValues = serializing ? false : undefined;
-        state.deduplicateKeys = deserializing ? true : undefined;
-        state.deduplicateValues = deserializing ? false : undefined;
+        const deserializing = this.mode.indexOf("deserialize") === 0;
+        this.assumeConstKeys = serializing ? true : undefined;
+        this.assumeConstValues = serializing ? false : undefined;
+        this.deduplicateKeys = deserializing ? true : undefined;
+        this.deduplicateValues = deserializing ? false : undefined;
       }
       if (cfg.cpu && cpuInfos[cfg.cpu]) {
-        state.cpu = cfg.cpu;
-        state.useDouble = cpuInfos[cfg.cpu].useDouble?.default;
-        state.useLongLong = cpuInfos[cfg.cpu].useLongLong?.default;
+        this.cpu = cfg.cpu;
+        this.useDouble = cpuInfos[cfg.cpu].useDouble?.default;
+        this.useLongLong = cpuInfos[cfg.cpu].useLongLong?.default;
       }
-      if (cfg.useDouble != undefined) state.useDouble = cfg.useDouble;
-      if (cfg.useLongLong != undefined) state.useLongLong = cfg.useLongLong;
+      if (cfg.useDouble != undefined) this.useDouble = cfg.useDouble;
+      if (cfg.useLongLong != undefined) this.useLongLong = cfg.useLongLong;
       if (cfg.assumeConstKeys != undefined)
-        state.assumeConstKeys = cfg.assumeConstKeys;
+        this.assumeConstKeys = cfg.assumeConstKeys;
       if (cfg.assumeConstValues != undefined)
-        state.assumeConstValues = cfg.assumeConstValues;
+        this.assumeConstValues = cfg.assumeConstValues;
       if (cfg.deduplicateKeys != undefined)
-        state.deduplicateKeys = cfg.deduplicateKeys;
+        this.deduplicateKeys = cfg.deduplicateKeys;
       if (cfg.deduplicateValues != undefined)
-        state.deduplicateValues = cfg.deduplicateValues;
+        this.deduplicateValues = cfg.deduplicateValues;
     },
-    selectCpu(state, cpu) {
-      state.cpu = cpu;
-      state.useDouble = cpuInfos[cpu].useDouble?.default;
-      state.useLongLong = cpuInfos[cpu].useLongLong?.default;
+    selectCpu(cpu) {
+      this.cpu = cpu;
+      this.useDouble = cpuInfos[cpu].useDouble?.default;
+      this.useLongLong = cpuInfos[cpu].useLongLong?.default;
     },
-    selectMode(state, mode) {
-      state.mode = mode;
+    selectMode(mode) {
+      this.mode = mode;
       const serializing = mode === "serialize";
-      const deserializing = state.mode.indexOf("deserialize") === 0;
-      state.assumeConstKeys = serializing ? true : undefined;
-      state.assumeConstValues = serializing ? false : undefined;
-      state.deduplicateKeys = deserializing ? true : undefined;
-      state.deduplicateValues = deserializing ? false : undefined;
+      const deserializing = this.mode.indexOf("deserialize") === 0;
+      this.assumeConstKeys = serializing ? true : undefined;
+      this.assumeConstValues = serializing ? false : undefined;
+      this.deduplicateKeys = deserializing ? true : undefined;
+      this.deduplicateValues = deserializing ? false : undefined;
     },
-    selectIoType(state, ioTypeId) {
-      state.ioTypeId = ioTypeId;
+    selectIoType(ioTypeId) {
+      this.ioTypeId = ioTypeId;
     },
-    setFilterJson(state, val) {
-      state.filterJson = val;
+    setFilterJson(val) {
+      this.filterJson = val;
       try {
-        state.filter = JSON.parse(val);
-        state.filterError = "";
+        this.filter = JSON.parse(val);
+        this.filterError = "";
       } catch (ex) {
-        state.filter = undefined;
-        state.filterError = ex.message;
+        this.filter = undefined;
+        this.filterError = ex.message;
       }
     },
-    setInputJson(state, val) {
-      state.inputJson = val;
+    setInputJson(val) {
+      this.inputJson = val;
       try {
-        state.input = JSON.parse(val);
-        state.inputError = "";
+        this.input = JSON.parse(val);
+        this.inputError = "";
       } catch (ex) {
-        state.input = undefined;
-        state.inputError = ex.message;
+        this.input = undefined;
+        this.inputError = ex.message;
       }
     },
-    setUseDouble(state, val) {
-      state.useDouble = val;
+    setUseDouble(val) {
+      this.useDouble = val;
     },
-    setUseLongLong(state, val) {
-      state.useLongLong = val;
+    setUseLongLong(val) {
+      this.useLongLong = val;
     },
-    setAssumeConstKeys(state, val) {
-      state.assumeConstKeys = val;
+    setAssumeConstKeys(val) {
+      this.assumeConstKeys = val;
     },
-    setAssumeConstValues(state, val) {
-      state.assumeConstValues = val;
+    setAssumeConstValues(val) {
+      this.assumeConstValues = val;
     },
-    setDeduplicateKeys(state, val) {
-      state.deduplicateKeys = val;
+    setDeduplicateKeys(val) {
+      this.deduplicateKeys = val;
     },
-    setDeduplicateValues(state, val) {
-      state.deduplicateValues = val;
+    setDeduplicateValues(val) {
+      this.deduplicateValues = val;
+    },
+    report({ action, label, value }) {
+      ga("set", {
+        dimension1: this.mode,
+        dimension2: this.cpu,
+        dimension3: this.ioTypeId,
+      });
+      ga("send", "event", {
+        eventCategory: "assistant",
+        eventAction: action,
+        eventLabel: label,
+        eventValue: value,
+      });
     },
   },
   getters: {
-    defaults(state, getters) {
+    defaults() {
       return {
-        assumeConstKeys: getters.isSerializing ? true : undefined,
-        assumeConstValues: getters.isSerializing ? false : undefined,
+        assumeConstKeys: this.isSerializing ? true : undefined,
+        assumeConstValues: this.isSerializing ? false : undefined,
         deduplicateKeys: true,
         deduplicateValues: false,
-        useDouble: !!getters.cpuInfo.useDouble?.default,
-        useLongLong: !!getters.cpuInfo.useLongLong?.default,
+        useDouble: !!this.cpuInfo.useDouble?.default,
+        useLongLong: !!this.cpuInfo.useLongLong?.default,
       };
     },
-    cpuInfo(state) {
-      return cpuInfos[state.cpu];
+    cpuInfo() {
+      return cpuInfos[this.cpu];
     },
-    isSerializing(state) {
-      return state.mode === "serialize";
+    isSerializing() {
+      return this.mode === "serialize";
     },
-    isDeserializing(state) {
-      return state.mode.indexOf("deserialize") === 0;
+    isDeserializing() {
+      return this.mode.indexOf("deserialize") === 0;
     },
-    configuration(state, getters) {
+    configuration() {
       return {
-        mode: state.mode,
-        root: state.input,
-        filter: state.filterEnabled ? state.filter : undefined,
-        cpu: getters.cpuInfo,
-        ignoreKeys: getters.ignoreKeys,
-        ignoreValues: getters.ignoreValues,
-        deduplicateKeys: state.deduplicateKeys,
-        deduplicateValues: state.deduplicateValues,
-        useLongLong: state.useLongLong,
-        useDouble: state.useDouble,
-        inputType: state.ioTypeId,
+        mode: this.mode,
+        root: this.input,
+        filter: this.filterEnabled ? this.filter : undefined,
+        cpu: this.cpuInfo,
+        ignoreKeys: this.ignoreKeys,
+        ignoreValues: this.ignoreValues,
+        deduplicateKeys: this.deduplicateKeys,
+        deduplicateValues: this.deduplicateValues,
+        useLongLong: this.useLongLong,
+        useDouble: this.useDouble,
+        inputType: this.ioTypeId,
       };
     },
-    filterEnabled(state) {
-      return state.mode === "deserialize-filter";
+    filterEnabled() {
+      return this.mode === "deserialize-filter";
     },
-    filteredInput(state, getters) {
-      if (!getters.filterEnabled) return state.input;
-      if (state.filterError) return undefined;
-      return applyFilter(state.input, state.filter);
+    filteredInput() {
+      if (!this.filterEnabled) return this.input;
+      if (this.filterError) return undefined;
+      return applyFilter(this.input.filter);
     },
-    ignoreKeys(state, getters) {
-      if (getters.isSerializing) return state.assumeConstKeys;
-      else return !!getters.ioType.ignoreStrings;
+    ignoreKeys() {
+      if (this.isSerializing) return this.assumeConstKeys;
+      else return !!this.ioType.ignoreStrings;
     },
-    ignoreValues(state, getters) {
-      if (getters.isSerializing) return state.assumeConstValues;
-      else return !!getters.ioType.ignoreStrings;
+    ignoreValues() {
+      if (this.isSerializing) return this.assumeConstValues;
+      else return !!this.ioType.ignoreStrings;
     },
-    ioType(state, getters) {
-      return getters.ioTypes[state.ioTypeId];
+    ioType() {
+      return this.ioTypes[this.ioTypeId];
     },
-    ioTypes(state, getters) {
+    ioTypes() {
       return {
         charPtr: {
           label: "char*",
@@ -189,84 +208,28 @@ const store = createStore({
         },
         constCharPtr: {
           label: "const char*",
-          disabled: getters.isSerializing,
+          disabled: this.isSerializing,
         },
         arduinoString: {
           label: "String",
-          disabled: state.cpu[0] == "x",
+          disabled: this.cpu[0] == "x",
         },
         stdString: {
           label: "std::string",
-          disabled: state.cpu == "avr",
+          disabled: this.cpu == "avr",
         },
         arduinoStream: {
           label: "Stream",
-          disabled: state.cpu[0] == "x",
+          disabled: this.cpu[0] == "x",
         },
         stdStream: {
-          label: getters.isSerializing ? "std::ostream" : "std::istream",
-          disabled: state.cpu == "avr",
+          label: this.isSerializing ? "std::ostream" : "std::istream",
+          disabled: this.cpu == "avr",
         },
       };
     },
-    hasErrors(_state, getters) {
-      return getters.filteredInput === undefined;
-    },
-  },
-  actions: {
-    report({ state }, { action, label, value }) {
-      console.log("ga send event", action, label, value);
-      ga("set", {
-        dimension1: state.mode,
-        dimension2: state.cpu,
-        dimension3: state.ioTypeId,
-      });
-      ga("send", "event", {
-        eventCategory: "assistant",
-        eventAction: action,
-        eventLabel: label,
-        eventValue: value,
-      });
+    hasErrors() {
+      return this.filteredInput === undefined;
     },
   },
 });
-
-const defaultConfig = {
-  mode: "deserialize",
-  root: {
-    sensor: "gps",
-    time: 1351824120,
-    data: [48.75608, 2.302038],
-  },
-};
-
-try {
-  store.commit(
-    "setSettings",
-    JSON.parse(localStorage.getItem("assitantConfig"))
-  );
-} catch (e) {
-  console.warn(e);
-  store.commit("setSettings", defaultConfig);
-}
-
-store.subscribe((mutation, state) => {
-  localStorage.setItem(
-    "assitantConfig",
-    JSON.stringify({
-      mode: state.mode,
-      rootJson: state.inputJson,
-      filterJson: state.filterEnabled ? state.filterJson : undefined,
-      cpu: state.cpu,
-      io: state.ioTypeId,
-      useDouble: state.useDouble,
-      useLongLong: state.useLongLong,
-      deduplicateKeys: state.deduplicateKeys,
-      deduplicateValues: state.deduplicateValues,
-      assumeConstKeys: state.assumeConstKeys,
-      assumeConstValues: state.assumeConstValues,
-    })
-  );
-});
-
-export default store;

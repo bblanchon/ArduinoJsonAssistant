@@ -260,9 +260,10 @@
 <script>
 import InfoIcon from "@/components/InfoIcon.vue";
 import { RouterLink } from "vue-router";
-import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
+import { mapActions, mapState } from "pinia";
 import { measureSize } from "@/assistant/analyzer";
 import { buildExpression } from "@/assistant/SizeExpression";
+import { useStore } from "@/store";
 
 export default {
   components: { InfoIcon, RouterLink },
@@ -275,7 +276,7 @@ export default {
     });
   },
   computed: {
-    ...mapGetters([
+    ...mapState(useStore, [
       "configuration",
       "cpuInfo",
       "defaults",
@@ -286,8 +287,6 @@ export default {
       "ignoreValues",
       "isSerializing",
       "stringsDetails",
-    ]),
-    ...mapState([
       "assumeConstKeys",
       "assumeConstValues",
       "deduplicateKeys",
@@ -336,8 +335,8 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["report"]),
-    ...mapMutations([
+    ...mapActions(useStore, [
+      "report",
       "setSettings",
       "setUseDouble",
       "setUseLongLong",

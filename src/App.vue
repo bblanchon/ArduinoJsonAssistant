@@ -28,12 +28,13 @@
 import "@/assets/stepwizard.scss";
 
 import { RouterView, RouterLink } from "vue-router";
-import { mapGetters } from "vuex";
+import { mapState } from "pinia";
+import { useStore } from "@/store";
 
 export default {
   components: { RouterView, RouterLink },
   computed: {
-    ...mapGetters(["hasErrors"]),
+    ...mapState(useStore, ["hasErrors"]),
     steps() {
       return [
         {

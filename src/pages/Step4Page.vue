@@ -99,8 +99,9 @@ hljs.registerLanguage("cpp", (hljs) => {
 
 import { generateParsingProgram } from "@/assistant/parsingProgram";
 import { generateSerializingProgram } from "@/assistant/serializingProgram";
-import { mapGetters, mapState, mapActions } from "vuex";
+import { mapState, mapActions } from "pinia";
 import { RouterLink } from "vue-router";
+import { useStore } from "@/store";
 
 const sleep = (m) => new Promise((r) => setTimeout(r, m));
 
@@ -127,13 +128,14 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
+    ...mapState(useStore, [
       "cpuInfo",
       "isDeserializing",
       "isSerializing",
       "configuration",
+      "useLongLong",
+      "useDouble",
     ]),
-    ...mapState(["useLongLong", "useDouble"]),
   },
   created() {
     this.generateProgram();
@@ -145,7 +147,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions(["report"]),
+    ...mapActions(useStore, ["report"]),
     async copyProgram() {
       await navigator.clipboard.writeText(this.program);
       this.programCopied = true;

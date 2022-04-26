@@ -178,9 +178,10 @@
 
 <script>
 import { RouterLink } from "vue-router";
-import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
+import { mapActions, mapState } from "pinia";
 import { hasJsonInJsonSyndrome, measureNesting } from "@/assistant/analyzer";
 import { needsDouble, needsLongLong } from "@/assistant/analyzer";
+import { useStore } from "@/store";
 
 export default {
   components: { RouterLink },
@@ -198,15 +199,13 @@ export default {
     });
   },
   computed: {
-    ...mapState([
+    ...mapState(useStore, [
       "filter",
       "filterError",
       "filterJson",
       "input",
       "inputError",
       "inputJson",
-    ]),
-    ...mapGetters([
       "cpuInfo",
       "filteredInput",
       "filterEnabled",
@@ -232,8 +231,12 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["report"]),
-    ...mapMutations(["setInputJson", "setFilterJson", "setSettings"]),
+    ...mapActions(useStore, [
+      "report",
+      "setInputJson",
+      "setFilterJson",
+      "setSettings",
+    ]),
     prettifyInput() {
       this.setInputJson(JSON.stringify(this.input, null, 2));
     },

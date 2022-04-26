@@ -88,9 +88,10 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations, mapState, mapActions } from "vuex";
+import { mapState, mapActions } from "pinia";
 import cpuInfos from "@/assistant/cpus";
 import { RouterLink } from "vue-router";
+import { useStore } from "@/store";
 
 export default {
   components: { RouterLink },
@@ -110,14 +111,16 @@ export default {
     this.report({ action: "config", label: "Set configuration" });
   },
   computed: {
-    ...mapGetters([
+    ...mapState(useStore, [
       "isDeserializing",
       "isSerializing",
       "cpuInfo",
       "ioTypes",
       "ioType",
+      "cpu",
+      "mode",
+      "ioTypeId",
     ]),
-    ...mapState(["cpu", "mode", "ioTypeId"]),
     ioTypeInfo() {
       switch (this.ioTypeId) {
         case "charPtr":
@@ -140,9 +143,11 @@ export default {
       }
     },
   },
-  methods: {
-    ...mapMutations(["selectCpu", "selectMode", "selectIoType"]),
-    ...mapActions(["report"]),
-  },
+  methods: mapActions(useStore, [
+    "selectCpu",
+    "selectMode",
+    "selectIoType",
+    "report",
+  ]),
 };
 </script>
