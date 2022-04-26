@@ -6,3 +6,7 @@ export const popover = {
     $(el).popover("hide");
   },
 };
+
+export default function (app) {
+  app.directive("popover", popover);
+}

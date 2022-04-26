@@ -1,6 +1,6 @@
 import { createApp } from "vue";
 import App from "./App.vue";
-import { popover } from "./directives";
+import popover from "./plugins/popover";
 import router from "./router";
 import { createPinia } from "pinia";
 import { persistStore } from "./persistence";
@@ -12,5 +12,5 @@ app.use(createPinia());
 persistStore();
 app.provide("baseUrl", el.dataset.url || "");
 app.provide("version", el.dataset.version);
-app.directive("popover", popover);
+app.use(popover);
 app.mount(el);
