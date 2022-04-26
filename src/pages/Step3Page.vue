@@ -248,7 +248,7 @@ import InfoIcon from "@/components/InfoIcon.vue";
 import { RouterLink } from "vue-router";
 import { mapActions, mapState, mapWritableState } from "pinia";
 import { measureSize } from "@/assistant/analyzer";
-import { buildExpression } from "@/assistant/SizeExpression";
+import { buildExpression } from "@/assistant/expression";
 import { useStore } from "@/store";
 
 export default {
