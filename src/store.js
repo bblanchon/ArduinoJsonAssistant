@@ -125,16 +125,6 @@ export const useStore = defineStore("assistant", {
     },
   },
   getters: {
-    defaults() {
-      return {
-        assumeConstKeys: this.isSerializing ? true : undefined,
-        assumeConstValues: this.isSerializing ? false : undefined,
-        deduplicateKeys: true,
-        deduplicateValues: false,
-        useDouble: !!this.cpuInfo.useDouble?.default,
-        useLongLong: !!this.cpuInfo.useLongLong?.default,
-      };
-    },
     cpuInfo() {
       return cpuInfos[this.cpu];
     },

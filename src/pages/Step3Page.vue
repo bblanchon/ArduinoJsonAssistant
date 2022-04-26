@@ -289,17 +289,21 @@ export default {
     expression() {
       return buildExpression(this.filteredInput);
     },
+    defaults() {
+      return {
+        assumeConstKeys: this.isSerializing ? true : undefined,
+        assumeConstValues: this.isSerializing ? false : undefined,
+        deduplicateKeys: true,
+        deduplicateValues: false,
+        useDouble: !!this.cpuInfo.useDouble?.default,
+        useLongLong: !!this.cpuInfo.useLongLong?.default,
+      };
+    },
     tweakCount() {
-      return (
-        (this.assumeConstKeys != this.defaults.assumeConstKeys) +
-        (this.assumeConstValues != this.defaults.assumeConstValues) +
-        (!this.ignoreKeys &&
-          this.deduplicateKeys != this.defaults.deduplicateKeys) +
-        (!this.ignoreValues &&
-          this.deduplicateValues != this.defaults.deduplicateValues) +
-        (this.useDouble != this.defaults.useDouble) +
-        (this.useLongLong != this.defaults.useLongLong)
-      );
+      return Object.entries(this.defaults).filter(
+        ([key, defaultValue]) =>
+          defaultValue !== undefined && this[key] !== defaultValue
+      ).length;
     },
     stringsDetails() {
       if (this.ignoreKeys && this.ignoreValues)
@@ -324,14 +328,7 @@ export default {
   methods: {
     ...mapActions(useStore, ["report", "setSettings"]),
     resetTweaks() {
-      this.setSettings({
-        useLongLong: this.defaults.useLongLong,
-        useDouble: this.defaults.useDouble,
-        assumeConstKeys: this.defaults.assumeConstKeys,
-        assumeConstValues: this.defaults.assumeConstValues,
-        deduplicateKeys: this.defaults.deduplicateKeys,
-        deduplicateValues: this.defaults.deduplicateValues,
-      });
+      this.setSettings(this.defaults);
     },
   },
 };
