@@ -28,10 +28,13 @@
 }
 
 .stepwizard-btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
   background-color: $secondary;
   width: 30px;
   height: 30px;
-  text-align: center;
   border-radius: 15px;
   color: white;
   border: none;
@@ -41,9 +44,12 @@
     box-shadow: 0 0 8px $secondary;
   }
 
+  &:hover {text-decoration: none;}
+
   &.active {
     background-color: $primary;
     font-weight: bold;
+
 
     &:focus {
       box-shadow: 0 0 8px $primary;
