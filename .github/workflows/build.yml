@@ -29,7 +29,7 @@ jobs:
         with:
           name: arduinojson-assistant
           path: dist
-      - uses: leigholiver/commit-with-deploy-key@v1.0.2
+      - uses: leigholiver/commit-with-deploy-key@v1.0.3
         with:
           source: dist
           destination_folder: assets
