@@ -5,7 +5,7 @@ export function roundCapacity(value) {
   return Math.ceil(value / pow2) * pow2;
 }
 
-export function type(value) {
+export function getValueType(value) {
   return value === null
     ? "null"
     : value instanceof Array
@@ -77,7 +77,7 @@ class SizeAccumulator {
 }
 
 function fillAccumulator(acc, value, filter) {
-  switch (type(value)) {
+  switch (getValueType(value)) {
     case "array":
       if (filter.allowsArray) {
         acc.addArray(value.length);
@@ -121,8 +121,8 @@ export function measureNesting(obj) {
 
 export function canLoop(input) {
   function areSimilar(a, b) {
-    const ta = type(a);
-    const tb = type(b);
+    const ta = getValueType(a);
+    const tb = getValueType(b);
     if (ta === "null" || tb === "null") return true;
     if (ta !== tb) return false;
     if (ta === "object") {
@@ -143,11 +143,12 @@ export function canLoop(input) {
     return true;
   }
 
-  switch (type(input)) {
+  switch (getValueType(input)) {
     case "array":
       if (input.length < 2) return false;
       return input.every(
-        (value) => type(value) === "object" && areSimilar(input[0], value)
+        (value) =>
+          getValueType(value) === "object" && areSimilar(input[0], value)
       );
 
     case "object":
@@ -167,7 +168,7 @@ function hasShortMantissa(value) {
 }
 
 export function getCommonCppTypeFor(values) {
-  switch (type(values[0])) {
+  switch (getValueType(values[0])) {
     case "boolean":
       return "bool";
 
@@ -194,7 +195,7 @@ export function getCommonCppTypeFor(values) {
 }
 
 function needsCppType(cpptype, value, siblings) {
-  switch (type(value)) {
+  switch (getValueType(value)) {
     case "array":
       if (canLoop(value)) return needsCppType(cpptype, value[0], value);
       return value.some((x) => needsCppType(cpptype, x));
@@ -214,7 +215,7 @@ function needsCppType(cpptype, value, siblings) {
 }
 
 export function hasJsonInJsonSyndrome(val) {
-  switch (type(val)) {
+  switch (getValueType(val)) {
     case "string":
       if (val[0] != "[" && val[0] != "{") return false;
       try {

@@ -1,5 +1,5 @@
 import {
-  type,
+  getValueType,
   canLoop,
   getCommonCppTypeFor,
   getCppTypeFor,
@@ -20,7 +20,7 @@ function extractValue(prg, cfg) {
   const parent = cfg.parent;
   const variableName = cfg.name;
 
-  switch (type(value)) {
+  switch (getValueType(value)) {
     case "array":
       prg.addEmptyLine();
       if (canLoop(value)) {
