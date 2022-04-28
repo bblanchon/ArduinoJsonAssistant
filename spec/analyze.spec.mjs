@@ -1,3 +1,5 @@
+import { describe, it, expect } from "vitest";
+
 import {
   measureSize,
   needsLongLong,
@@ -6,8 +8,8 @@ import {
   canLoop,
   getCommonCppTypeFor,
   hasJsonInJsonSyndrome,
-} from "../src/assistant/analyzer.mjs";
-import cpuInfos from "../src/assistant/cpus.mjs";
+} from "@/assistant/analyzer.mjs";
+import cpuInfos from "@/assistant/cpus.mjs";
 
 const sample_object = {
   sensor: "gps",

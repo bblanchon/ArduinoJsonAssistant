@@ -1,9 +1,10 @@
-import cpuInfos from "../src/assistant/cpus.mjs";
-import { ProgramWriter } from "../src/assistant/programWriter.mjs";
+import { describe, it, expect } from "vitest";
+import cpuInfos from "@/assistant/cpus.mjs";
+import { ProgramWriter } from "@/assistant/programWriter.mjs";
 import {
   generateSerializingProgram,
   writeCompositionCode,
-} from "../src/assistant/serializingProgram.mjs";
+} from "@/assistant/serializingProgram.mjs";
 
 describe("writeCompositionCode()", () => {
   function test(root, expectedOutput) {

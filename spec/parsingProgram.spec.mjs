@@ -1,11 +1,12 @@
-import { ProgramWriter } from "../src/assistant/programWriter.mjs";
+import { describe, it, expect } from "vitest";
+import { ProgramWriter } from "@/assistant/programWriter.mjs";
 import {
   generateParsingProgram,
   writeDeserializationCode,
   writeDecompositionCode,
   writeErrorCheckingCode,
-} from "../src/assistant/parsingProgram.mjs";
-import cpuInfos from "../src/assistant/cpus.mjs";
+} from "@/assistant/parsingProgram.mjs";
+import cpuInfos from "@/assistant/cpus.mjs";
 
 describe("writeDeserializationCode()", () => {
   function testDeserializationCode(config, expectedOutput) {

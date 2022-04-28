@@ -1,4 +1,5 @@
-import { applyFilter } from "../src/assistant/filter.mjs";
+import { describe, it, expect } from "vitest";
+import { applyFilter } from "@/assistant/filter.mjs";
 
 describe("applyFilter()", () => {
   const testFilter = (input, filter, expectedOutput) => {

@@ -6,7 +6,7 @@
     "build": "vite build",
     "preview": "vite preview --port 5050",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
-    "test": "jasmine"
+    "test": "vitest"
   },
   "dependencies": {
     "highlight.js": "^11.5.1",
@@ -20,9 +20,9 @@
     "@vue/eslint-config-prettier": "^7.0.0",
     "eslint": "^8.5.0",
     "eslint-plugin-vue": "^8.2.0",
-    "jasmine": "^4.1.0",
     "prettier": "^2.5.1",
     "sass": "^1.50.1",
-    "vite": "^2.9.5"
+    "vite": "^2.9.5",
+    "vitest": "^0.10.0"
   }
 }

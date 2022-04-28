@@ -1,8 +1,9 @@
+import { describe, it, expect } from "vitest";
 import {
   stringifyValue,
   makeVariableName,
   makeItemName,
-} from "../src/assistant/programWriter.mjs";
+} from "@/assistant/programWriter.mjs";
 
 describe("makeVariableName()", function () {
   it("should return valid identifiers unchanged", () => {
