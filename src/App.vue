@@ -1,38 +1,28 @@
 <template>
   <div>
-    <div class="stepwizard">
-      <div
-        v-for="(step, index) in steps"
-        class="stepwizard-step"
+    <nav class="assistant-nav">
+      <StepNumber
+        v-for="step in steps"
         :key="step.number"
-      >
-        <RouterLink
-          :to="{ name: step.route }"
-          class="btn stepwizard-btn"
-          :class="{ disabled: step.disabled }"
-          @click="currentStepIndex = index"
-        >
-          {{ step.number }}
-        </RouterLink>
-        <p>
-          <small>{{ step.label }}</small>
-        </p>
-      </div>
-    </div>
+        :route="{ name: step.route }"
+        :disabled="step.disabled"
+        :label="step.label"
+        :number="step.number"
+      />
+    </nav>
 
     <RouterView />
   </div>
 </template>
 
 <script>
-import "@/assets/stepwizard.scss";
-
-import { RouterView, RouterLink } from "vue-router";
+import { RouterView } from "vue-router";
 import { mapState } from "pinia";
 import { useStore } from "@/store";
+import StepNumber from "@/components/StepNumber.vue";
 
 export default {
-  components: { RouterView, RouterLink },
+  components: { RouterView, StepNumber },
   computed: {
     ...mapState(useStore, ["hasErrors"]),
     steps() {
@@ -64,3 +54,22 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+.assistant-nav {
+  display: flex;
+  justify-content: space-evenly;
+  position: relative;
+
+  &:before {
+    top: 14px;
+    bottom: 0;
+    position: absolute;
+    content: " ";
+    width: 100%;
+    height: 1px;
+    background-color: #ccc;
+    z-index: -1;
+  }
+}
+</style>
