@@ -11,12 +11,14 @@
             Bytes needed to stores the JSON objects and arrays in memory
             <a
               href="#"
-              v-popover
-              title="Expression"
-              :data-content="expression"
-              onclick="return false"
-              ><InfoIcon
-            /></a>
+              v-popover="{
+                title: 'Expression',
+                content: expression,
+              }"
+              @click.prevent
+            >
+              <InfoIcon />
+            </a>
           </td>
         </tr>
         <tr>
@@ -26,10 +28,11 @@
             Bytes needed to stores the strings in memory
             <a
               href="#"
-              v-popover
-              title="Deduplication"
-              :data-content="'Accoding to the configuration, ' + stringsDetails"
-              onclick="return false"
+              v-popover="{
+                title: 'Deduplication',
+                content: 'Accoding to the configuration, ' + stringsDetails,
+              }"
+              @click.prevent
               ><InfoIcon
             /></a>
           </td>

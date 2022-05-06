@@ -1,6 +1,6 @@
 export const popover = {
-  mounted(el) {
-    $(el).popover();
+  mounted(el, { value }) {
+    $(el).popover(value);
   },
   beforeUnmount(el) {
     $(el).popover("hide");
