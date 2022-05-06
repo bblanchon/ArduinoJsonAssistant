@@ -8,18 +8,10 @@
         Examples:
         <a
           href="#"
-          @click.prevent="
-            downloadSettings(
-              `${baseUrl}/v6/assistant/examples/openweathermap.json`
-            )
-          "
+          @click.prevent="downloadSettings('examples/openweathermap.json')"
           >OpenWeatherMap</a
         >,
-        <a
-          href="#"
-          @click.prevent="
-            downloadSettings(`${baseUrl}/v6/assistant/examples/reddit.json`)
-          "
+        <a href="#" @click.prevent="downloadSettings('examples/reddit.json')"
           >Reddit</a
         >
       </p>
