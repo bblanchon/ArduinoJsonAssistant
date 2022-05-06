@@ -1,4 +1,4 @@
-import { JsonFilter } from "./filter.mjs";
+import { JsonFilter } from "./filter.js";
 
 export function roundCapacity(value) {
   const pow2 = Math.pow(2, Math.max(3, Math.ceil(Math.log2(value) - 2)));

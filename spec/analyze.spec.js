@@ -8,8 +8,8 @@ import {
   canLoop,
   getCommonCppTypeFor,
   hasJsonInJsonSyndrome,
-} from "@/assistant/analyzer.mjs";
-import cpuInfos from "@/assistant/cpus.mjs";
+} from "@/assistant/analyzer.js";
+import cpuInfos from "@/assistant/cpus.js";
 
 const sample_object = {
   sensor: "gps",

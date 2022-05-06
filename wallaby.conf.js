@@ -1,6 +1,6 @@
 module.exports = function () {
   return {
-    files: ["src/assistant/*.mjs"],
-    tests: ["spec/*.spec.mjs"],
+    files: ["src/assistant/*.js"],
+    tests: ["spec/*.spec.js"],
   };
 };

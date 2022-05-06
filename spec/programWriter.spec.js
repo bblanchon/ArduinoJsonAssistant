@@ -3,7 +3,7 @@ import {
   stringifyValue,
   makeVariableName,
   makeItemName,
-} from "@/assistant/programWriter.mjs";
+} from "@/assistant/programWriter.js";
 
 describe("makeVariableName()", function () {
   it("should return valid identifiers unchanged", () => {

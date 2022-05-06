@@ -5,15 +5,15 @@ import {
   getCppTypeFor,
   measureSize,
   measureNesting,
-} from "./analyzer.mjs";
+} from "./analyzer.js";
 import {
   ProgramWriter,
   makeItemName,
   makeVariableName,
   stringifyValue,
-} from "./programWriter.mjs";
-import { writeCompositionCode } from "./serializingProgram.mjs";
-import { applyFilter } from "./filter.mjs";
+} from "./programWriter.js";
+import { writeCompositionCode } from "./serializingProgram.js";
+import { applyFilter } from "./filter.js";
 
 function extractValue(prg, cfg) {
   const value = cfg.value;

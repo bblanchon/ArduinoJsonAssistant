@@ -13,6 +13,7 @@ jobs:
           node-version: '14'
           cache: 'npm'
       - run: npm install
+      - run: npm run lint
       - run: npm run test
       - run: npm run build
       - uses: actions/upload-artifact@v3
