@@ -32,7 +32,7 @@ jobs:
       - uses: leigholiver/commit-with-deploy-key@v1.0.3
         with:
           source: dist
-          destination_folder: assets
+          destination_folder: v6/assistant
           destination_repo: bblanchon/ArduinoJson-web
           destination_branch: master
           commit_message: |

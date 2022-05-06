@@ -16,13 +16,13 @@ export default defineConfig({
       entry: path.resolve(__dirname, "src/main.js"),
       formats: ["iife"],
       name: "ArduinoJsonAssistant",
-      fileName: (format) => "assistant6.js",
+      fileName: (format) => "assistant.js",
     },
     rollupOptions: {
       output: {
         // https://github.com/vitejs/vite/issues/4863
         assetFileNames: (assetInfo) => {
-          if (assetInfo.name === "style.css") return "assistant6.css";
+          if (assetInfo.name === "style.css") return "assistant.css";
           return assetInfo.name;
         },
       },
