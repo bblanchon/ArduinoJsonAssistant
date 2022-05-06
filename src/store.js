@@ -155,7 +155,7 @@ export const useStore = defineStore("assistant", {
     filteredInput() {
       if (!this.filterEnabled) return this.input;
       if (this.filterError) return undefined;
-      return applyFilter(this.input.filter);
+      return applyFilter(this.input, this.filter);
     },
     ignoreKeys() {
       if (this.isSerializing) return this.assumeConstKeys;
