@@ -145,6 +145,10 @@ describe("writeCompositionCode()", () => {
         'data_children_0_data["ups"] = true;'
     );
   });
+
+  it("[{ a: 1 }, { a: 2 }]", () => {
+    test([{ a: 1 }, { a: 2 }], 'doc[0]["a"] = 1;\ndoc[1]["a"] = 2;');
+  });
 });
 
 describe("generateSerializingProgram", function () {

@@ -53,6 +53,7 @@ function addArray(prg, cfg) {
   for (let i = 0; i < array.length; i++) {
     const elementName = cfg.name + "_" + i;
     addArrayElement(prg, {
+      key: i,
       array: arrayName,
       name: elementName,
       value: array[i],
@@ -113,6 +114,7 @@ function addArrayElement(prg, cfg) {
   const arrayName = cfg.array;
   const elementName = cfg.name;
   const value = cfg.value;
+  const key = cfg.key;
 
   if (value instanceof Array) {
     addArray(prg, {
@@ -122,6 +124,7 @@ function addArrayElement(prg, cfg) {
     });
   } else if (value instanceof Object) {
     addObject(prg, {
+      key: key,
       parent: arrayName,
       name: elementName,
       value: value,
