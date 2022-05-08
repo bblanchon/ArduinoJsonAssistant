@@ -9,7 +9,7 @@ function addArray(prg, { name, value, parent, key }) {
   const childrenCount = value.length;
 
   if (parent === undefined) {
-    if (childrenCount == 0) prg.addLine(`${name}.to&lt;JsonArray&gt;();`);
+    if (childrenCount == 0) prg.addLine(`${name}.to<JsonArray>();`);
     if (childrenCount == 1)
       return assignVariant(prg, {
         parent: name,
@@ -44,8 +44,7 @@ function addObject(prg, { parent, key, name, value }) {
   let objectName = name;
 
   if (parent === undefined) {
-    if (childrenCount == 0)
-      return prg.addLine(`${name}.to&lt;JsonObject&gt;();`);
+    if (childrenCount == 0) return prg.addLine(`${name}.to<JsonObject>();`);
   } else if (childrenCount == 1) {
     objectName = parent + JSON.stringify([key]);
   } else {

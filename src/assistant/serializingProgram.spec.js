@@ -18,11 +18,11 @@ describe("writeCompositionCode()", () => {
   });
 
   it("[]", () => {
-    test([], "doc.to&lt;JsonArray&gt;();");
+    test([], "doc.to<JsonArray>();");
   });
 
   it("{}", () => {
-    test({}, "doc.to&lt;JsonObject&gt;();");
+    test({}, "doc.to<JsonObject>();");
   });
 
   it("[42]", () => {
