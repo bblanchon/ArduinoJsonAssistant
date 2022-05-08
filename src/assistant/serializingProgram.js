@@ -5,193 +5,103 @@ function stringifyValue(value) {
   return value === null ? "nullptr" : JSON.stringify(value);
 }
 
-function addArray(prg, cfg) {
-  const arrayName = cfg.name;
-  const array = cfg.value;
-  const parentName = cfg.parent;
-  const key = cfg.key;
-  const childrenCount = array.length;
+function addArray(prg, { name, value, parent, key }) {
+  const childrenCount = value.length;
 
-  if (parentName === undefined) {
-    if (childrenCount == 0) prg.addLine(arrayName + ".to&lt;JsonArray&gt;();");
+  if (parent === undefined) {
+    if (childrenCount == 0) prg.addLine(`${name}.to&lt;JsonArray&gt;();`);
     if (childrenCount == 1)
       return assignVariant(prg, {
-        parent: arrayName,
-        name: arrayName + "_0",
+        parent: name,
+        name: name + "_0",
         key: 0,
-        value: array[0],
+        value: value[0],
       });
   } else if (childrenCount == 1) {
     return assignVariant(prg, {
-      parent: parentName + JSON.stringify([key]),
-      name: arrayName + "_0",
+      parent: parent + JSON.stringify([key]),
+      name: name + "_0",
       key: 0,
-      value: array[0],
+      value: value[0],
     });
   } else {
     prg.addEmptyLine();
-    if (typeof key === "string") {
-      prg.addLine(
-        "JsonArray ",
-        arrayName,
-        " = ",
-        parentName,
-        ".createNestedArray(",
-        JSON.stringify(key),
-        ");"
-      );
-    } else {
-      prg.addLine(
-        "JsonArray ",
-        arrayName,
-        " = ",
-        parentName,
-        ".createNestedArray();"
-      );
-    }
+    key = key ? JSON.stringify(key) : "";
+    prg.addLine(`JsonArray ${name} = ${parent}.createNestedArray(${key});`);
   }
-  for (let i = 0; i < array.length; i++) {
-    const elementName = cfg.name + "_" + i;
+  value.forEach((elem, index) => {
     addArrayElement(prg, {
-      key: i,
-      array: arrayName,
-      name: elementName,
-      value: array[i],
+      key: index,
+      array: name,
+      name: name + "_" + index,
+      value: elem,
     });
-  }
+  });
 }
 
-function addObject(prg, cfg) {
-  const parentName = cfg.parent;
-  const key = cfg.key;
-  let objectName = cfg.name;
-  const object = cfg.value;
-  const childrenCount = Object.keys(object).length;
+function addObject(prg, { parent, key, name, value }) {
+  const childrenCount = Object.keys(value).length;
+  let objectName = name;
 
-  if (parentName === undefined) {
+  if (parent === undefined) {
     if (childrenCount == 0)
-      return prg.addLine(objectName + ".to&lt;JsonObject&gt;();");
+      return prg.addLine(`${name}.to&lt;JsonObject&gt;();`);
   } else if (childrenCount == 1) {
-    objectName = parentName + JSON.stringify([key]);
+    objectName = parent + JSON.stringify([key]);
   } else {
     prg.addEmptyLine();
-    if (typeof key === "string") {
-      prg.addLine(
-        "JsonObject ",
-        objectName,
-        " = ",
-        parentName,
-        ".createNestedObject(",
-        JSON.stringify(key),
-        ");"
-      );
-    } else {
-      prg.addLine(
-        "JsonObject ",
-        objectName,
-        " = ",
-        parentName,
-        ".createNestedObject();"
-      );
-    }
+    key = key ? JSON.stringify(key) : "";
+    prg.addLine(`JsonObject ${name} = ${parent}.createNestedObject(${key});`);
   }
 
-  for (const key in object) {
-    const memberName =
-      cfg.name !== "doc"
-        ? cfg.name + "_" + sanitizeName(key)
-        : sanitizeName(key);
+  const memberPrefix = name !== "doc" ? name + "_" : "";
+
+  for (const key in value) {
     addObjectMember(prg, {
       object: objectName,
-      name: memberName,
+      name: memberPrefix + sanitizeName(key),
       key: key,
-      value: object[key],
+      value: value[key],
     });
   }
 }
 
-function addArrayElement(prg, cfg) {
-  const arrayName = cfg.array;
-  const elementName = cfg.name;
-  const value = cfg.value;
-  const key = cfg.key;
-
+function addArrayElement(prg, { array, name, value, key }) {
   if (value instanceof Array) {
-    addArray(prg, {
-      parent: arrayName,
-      name: elementName,
-      value: value,
-    });
+    addArray(prg, { parent: array, name, value });
   } else if (value instanceof Object) {
-    addObject(prg, {
-      key: key,
-      parent: arrayName,
-      name: elementName,
-      value: value,
-    });
+    addObject(prg, { parent: array, key, name, value });
   } else {
-    prg.addLine(arrayName, ".add(", stringifyValue(value), ");");
+    prg.addLine(`${array}.add(${stringifyValue(value)});`);
   }
 }
 
-function addObjectMember(prg, cfg) {
-  const objectName = cfg.object;
-  const key = cfg.key;
-  const value = cfg.value;
-  const memberName = cfg.name;
+function addObjectMember(prg, { key, object, value, name }) {
   if (value instanceof Array)
-    addArray(prg, {
-      parent: objectName,
-      key: key,
-      name: memberName,
-      value: value,
-    });
+    addArray(prg, { parent: object, key, name, value });
   else if (value instanceof Object)
-    addObject(prg, {
-      parent: objectName,
-      key: key,
-      name: memberName,
-      value: value,
-    });
-  else
-    prg.addLine(
-      objectName,
-      JSON.stringify([key]),
-      " = ",
-      stringifyValue(value),
-      ";"
-    );
-}
-
-function assignVariant(prg, cfg) {
-  const value = cfg.value;
-  const name = cfg.name;
-  const parentName = cfg.parent;
-  const key = cfg.key;
-
-  if (value instanceof Array) {
-    addArray(prg, cfg);
-  } else if (value instanceof Object) {
-    addObject(prg, cfg);
-  } else if (parentName) {
-    prg.addLine(
-      parentName,
-      "[",
-      JSON.stringify(key),
-      "] = ",
-      stringifyValue(value),
-      ";"
-    );
-  } else if (value != null) {
-    prg.addLine(name, ".set(", stringifyValue(value), ");");
+    addObject(prg, { parent: object, key, name, value });
+  else {
+    key = JSON.stringify(key);
+    prg.addLine(`${object}[${key}] = ${stringifyValue(value)};`);
   }
 }
 
-export function writeCompositionCode(prg, root, name) {
-  assignVariant(prg, {
-    name: name,
-    value: root,
-  });
+function assignVariant(prg, { value, name, parent, key }) {
+  if (value instanceof Array) {
+    addArray(prg, { value, name, parent, key });
+  } else if (value instanceof Object) {
+    addObject(prg, { value, name, parent, key });
+  } else if (parent) {
+    key = JSON.stringify(key);
+    prg.addLine(`${parent}[${key}] = ${stringifyValue(value)};`);
+  } else if (value != null) {
+    prg.addLine(`${name}.set(${stringifyValue(value)});`);
+  }
+}
+
+export function writeCompositionCode(prg, value, name) {
+  assignVariant(prg, { name, value });
 }
 
 export function generateSerializingProgram(cfg) {
@@ -214,9 +124,9 @@ export function generateSerializingProgram(cfg) {
   const capacity = measureSize(cfg.root, cfg).recommended;
 
   if (cfg.cpu && cfg.cpu.heapThreshold < capacity) {
-    prg.addLine("DynamicJsonDocument doc(", capacity, ");");
+    prg.addLine(`DynamicJsonDocument doc(${capacity});`);
   } else {
-    prg.addLine("StaticJsonDocument<", capacity, "> doc;");
+    prg.addLine(`StaticJsonDocument<${capacity}> doc;`);
   }
 
   prg.addEmptyLine();
@@ -243,7 +153,7 @@ export function generateSerializingProgram(cfg) {
     default:
       args.push("output");
   }
-  prg.addLine("serializeJson(", args.join(", "), ");");
+  prg.addLine(`serializeJson(${args.join(", ")});`);
 
   return prg.toString();
 }
