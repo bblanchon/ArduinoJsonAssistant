@@ -137,7 +137,7 @@ export default {
             "This is most likely a bad choice, prefer <code>char*</code> or stream"
           );
         case "arduinoStream":
-          return `This is the most memory efficient option, but not the fastest; <a href="${this.baseUrl}/v6/how-to/improve-speed/">see state if your program is slow</a>.`;
+          return `This is the most memory efficient option, but not the fastest; <a href="${this.baseUrl}/v6/how-to/improve-speed/">see this page if your program is slow</a>.`;
         default:
           return null;
       }
