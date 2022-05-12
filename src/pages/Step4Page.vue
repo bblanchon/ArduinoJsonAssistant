@@ -52,9 +52,14 @@
             >Serialization Tutorial</a
           >
         </li>
-        <li class="list-inline-item">
+        <li v-if="useDynamicJsonDocument" class="list-inline-item">
           <a :href="`${baseUrl}/v6/api/dynamicjsondocument/`"
             ><code>DynamicJsonDocument</code></a
+          >
+        </li>
+        <li v-if="useStaticJsonDocument" class="list-inline-item">
+          <a :href="`${baseUrl}/v6/api/staticjsondocument/`"
+            ><code>StaticJsonDocument</code></a
           >
         </li>
         <li v-if="isDeserializing" class="list-inline-item">
@@ -136,6 +141,12 @@ export default {
       "useLongLong",
       "useDouble",
     ]),
+    useDynamicJsonDocument() {
+      return this.program.includes("DynamicJsonDocument");
+    },
+    useStaticJsonDocument() {
+      return this.program.includes("StaticJsonDocument");
+    },
   },
   created() {
     this.generateProgram();
