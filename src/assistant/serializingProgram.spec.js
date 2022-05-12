@@ -149,6 +149,22 @@ describe("writeCompositionCode()", () => {
   it("[{ a: 1 }, { a: 2 }]", () => {
     test([{ a: 1 }, { a: 2 }], 'doc[0]["a"] = 1;\ndoc[1]["a"] = 2;');
   });
+
+  it("[{ a: 1, b: 2 }, { a: 3, b: 4 }]", () => {
+    test(
+      [
+        { a: 1, b: 2 },
+        { a: 3, b: 4 },
+      ],
+      "JsonObject doc_0 = doc.createNestedObject();\n" +
+        'doc_0["a"] = 1;\n' +
+        'doc_0["b"] = 2;\n' +
+        "\n" +
+        "JsonObject doc_1 = doc.createNestedObject();\n" +
+        'doc_1["a"] = 3;\n' +
+        'doc_1["b"] = 4;'
+    );
+  });
 });
 
 describe("generateSerializingProgram", function () {
