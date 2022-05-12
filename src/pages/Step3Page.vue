@@ -267,6 +267,7 @@ export default {
   computed: {
     ...mapState(useStore, [
       "configuration",
+      "cpu",
       "cpuInfo",
       "defaults",
       "expression",
