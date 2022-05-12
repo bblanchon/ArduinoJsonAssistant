@@ -40,7 +40,7 @@
           <pre><code class="hljs" v-html="programHtml"></code></pre>
         </div>
       </figure>
-      <ul class="list-inline">
+      <ul class="list-inline card-text">
         <li class="list-inline-item font-weight-bold">See also</li>
         <li v-if="isDeserializing" class="list-inline-item">
           <a :href="`${baseUrl}/v6/doc/deserialization/`"
