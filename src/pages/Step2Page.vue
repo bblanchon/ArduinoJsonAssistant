@@ -35,6 +35,7 @@
             class="form-control flex-fill resize-none"
             :class="{ 'is-invalid': inputError }"
             rows="10"
+            spellcheck="false"
             :value="inputJson"
             @input="setInputJson($event.target.value)"
           ></textarea>
