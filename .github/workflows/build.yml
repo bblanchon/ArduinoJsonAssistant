@@ -23,7 +23,7 @@ jobs:
 
   deploy:
     needs: [build]
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/6.x'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v3
