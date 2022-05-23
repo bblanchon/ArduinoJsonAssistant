@@ -3,69 +3,90 @@
     <h2 class="h4 card-header bg-primary text-white">Step 1: Configuration</h2>
 
     <div class="card-body">
-      <form class="mb-4">
-        <div class="form-group row">
-          <label for="cpu-selector" class="col-sm-2 col-form-label"
-            >Processor</label
-          >
-          <div class="col-sm-10">
-            <select
-              id="cpu-selector"
-              class="form-control"
-              :value="cpu"
-              @input="selectCpu($event.target.value)"
+      <div class="row">
+        <form class="col-lg-8 mb-4">
+          <div class="form-group row">
+            <label for="cpu-selector" class="col-sm-2 col-form-label"
+              >Processor</label
             >
-              <option v-for="(value, key) in cpuInfos" :value="key" :key="key">
-                {{ value.label }}
-              </option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label for="mode-selector" class="col-sm-2 col-form-label"
-            >Mode</label
-          >
-          <div class="col-sm-10">
-            <select
-              id="mode-selector"
-              class="form-control"
-              :value="mode"
-              @input="selectMode($event.target.value)"
-            >
-              <option value="deserialize">Deserialize</option>
-              <option value="deserialize-filter">Deserialize and filter</option>
-              <option value="serialize">Serialize</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label for="io-type" class="col-sm-2 col-form-label">
-            {{ isSerializing ? "Output" : "Input" }} type
-          </label>
-          <div class="col-sm-10">
-            <select
-              id="io-type"
-              class="form-control"
-              :value="ioTypeId"
-              @input="selectIoType($event.target.value)"
-            >
-              <option
-                v-for="(type, key) in ioTypes"
-                :key="key"
-                :value="key"
-                :disabled="type.disabled"
+            <div class="col-sm-10">
+              <select
+                id="cpu-selector"
+                class="form-control"
+                :value="cpu"
+                @input="selectCpu($event.target.value)"
               >
-                {{ type.label }}
-              </option>
-            </select>
-            <small
-              v-if="ioTypeInfo"
-              class="form-text text-muted"
-              v-html="ioTypeInfo"
-            ></small>
+                <option
+                  v-for="(value, key) in cpuInfos"
+                  :value="key"
+                  :key="key"
+                >
+                  {{ value.label }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="mode-selector" class="col-sm-2 col-form-label"
+              >Mode</label
+            >
+            <div class="col-sm-10">
+              <select
+                id="mode-selector"
+                class="form-control"
+                :value="mode"
+                @input="selectMode($event.target.value)"
+              >
+                <option value="deserialize">Deserialize</option>
+                <option value="deserialize-filter">
+                  Deserialize and filter
+                </option>
+                <option value="serialize">Serialize</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="io-type" class="col-sm-2 col-form-label">
+              {{ isSerializing ? "Output" : "Input" }} type
+            </label>
+            <div class="col-sm-10">
+              <select
+                id="io-type"
+                class="form-control"
+                :value="ioTypeId"
+                @input="selectIoType($event.target.value)"
+              >
+                <option
+                  v-for="(type, key) in ioTypes"
+                  :key="key"
+                  :value="key"
+                  :disabled="type.disabled"
+                >
+                  {{ type.label }}
+                </option>
+              </select>
+              <small
+                v-if="ioTypeInfo"
+                class="form-text text-muted"
+                v-html="ioTypeInfo"
+              ></small>
+            </div>
+          </div>
+        </form>
+        <div class="d-none d-lg-block col-4 mb-2" id="assistant-sponsors">
+          <div class="bg-light p-2 h-100">
+            <div class="text-center text-muted">Our sponsors</div>
+            <div class="m-4" v-for="sponsor in sponsors" :key="sponsor">
+              <a :href="sponsor.url" rel="sponsored"
+                ><img
+                  class="img img-fluid"
+                  :src="sponsor.image.url"
+                  :alt="sponsor.name"
+              /></a>
+            </div>
           </div>
         </div>
-      </form>
+      </div>
       <p class="short-warning" v-if="adBlocked">
         <strong>Your adblocker is blocking web analytics.</strong>
         Please consider whitelisting <code>arduinojson.org</code>
@@ -95,7 +116,7 @@ import { useStore } from "@/store";
 
 export default {
   components: { RouterLink },
-  inject: ["version", "baseUrl"],
+  inject: ["version", "baseUrl", "sponsors"],
   data() {
     return {
       adBlocked: false,
