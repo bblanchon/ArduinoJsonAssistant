@@ -124,9 +124,9 @@ export default {
     };
   },
   mounted() {
-    if (window.google_tag_data === undefined) {
-      this.adBlocked = true;
-    }
+    ga(() => {
+      this.adBlocked = window.google_tag_data === undefined;
+    });
   },
   beforeUnmount() {
     this.report({ action: "config", label: "Set configuration" });
