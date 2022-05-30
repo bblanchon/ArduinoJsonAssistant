@@ -77,7 +77,7 @@
           <div class="bg-light p-2 h-100">
             <div class="text-center text-muted">Our sponsors</div>
             <div class="m-4" v-for="sponsor in sponsors" :key="sponsor">
-              <a :href="sponsor.url" rel="sponsored"
+              <a :href="sponsor.url" rel="sponsored" target="_blank"
                 ><img
                   class="img img-fluid"
                   :src="sponsor.image.url"
