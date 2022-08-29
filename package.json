@@ -1,6 +1,11 @@
 {
-  "name": "arduinojson-assistant",
-  "version": "0.0.0",
+  "name": "@bblanchon/arduinojson-assistant",
+  "version": "6.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bblanchon/ArduinoJsonAssistant"
+  },
+  "main": "dist/assistant.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

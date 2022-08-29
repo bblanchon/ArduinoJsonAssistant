@@ -43,3 +43,22 @@ jobs:
           git_username: GitHub Actions
           git_email: 41898282+github-actions[bot]@users.noreply.github.com
           deploy_key: ${{ secrets.DEPLOY_KEY }}
+
+  publish:
+    needs: [build]
+    if: github.ref == 'refs/heads/6.x'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+          cache: 'npm'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@bblanchon'
+      - run: npm ci
+      - run: npm version --no-git-tag-version 6.0.${{ github.run_number }}
+      - run: npm run build
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
