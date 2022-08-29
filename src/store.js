@@ -30,6 +30,7 @@ export const useStore = defineStore("assistant", {
   },
   actions: {
     setSettings(cfg) {
+      if (!cfg) return;
       if (cfg.rootJson) {
         this.inputJson = cfg.rootJson;
         try {
