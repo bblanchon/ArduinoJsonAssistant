@@ -20,45 +20,9 @@ jobs:
         with:
           name: arduinojson-assistant
           path: dist/
-
-  deploy:
-    needs: [build]
-    if: github.ref == 'refs/heads/6.x'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v3
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/6.x'
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          name: arduinojson-assistant
-          path: dist
-      - uses: leigholiver/commit-with-deploy-key@v1.0.3
-        with:
-          source: dist
-          destination_folder: v6/assistant
-          destination_repo: bblanchon/ArduinoJson-web
-          destination_branch: master
-          commit_message: |
-            Update Assistant
-
-            https://github.com/${{ github.repository }}/commit/${{ github.sha }}
-          git_username: GitHub Actions
-          git_email: 41898282+github-actions[bot]@users.noreply.github.com
-          deploy_key: ${{ secrets.DEPLOY_KEY }}
-
-  publish:
-    needs: [build]
-    if: github.ref == 'refs/heads/6.x'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '16.x'
-          cache: 'npm'
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@bblanchon'
-      - run: npm ci
-      - run: npm version --no-git-tag-version 6.0.${{ github.run_number }}
-      - run: npm run build
-      - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          folder: dist
+          target-folder: v6
