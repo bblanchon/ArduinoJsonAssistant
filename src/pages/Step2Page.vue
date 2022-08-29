@@ -178,7 +178,7 @@ import { useStore } from "@/store";
 
 export default {
   components: { RouterLink },
-  inject: ["baseUrl"],
+  inject: ["baseUrl", "scriptUrl"],
   data() {
     return {
       isDownloading: false,
@@ -236,17 +236,15 @@ export default {
     prettifyFilter() {
       this.setFilterJson(JSON.stringify(this.filter, null, 2));
     },
-    downloadSettings(url) {
-      const request = new XMLHttpRequest();
-
-      const that = this;
-      request.onload = function () {
-        that.isDownloading = false;
-        that.setSettings(JSON.parse(this.responseText));
-      };
-      request.open("get", url);
-      request.send();
+    async downloadSettings(url) {
+      if (this.scriptUrl) url = new URL(url, this.scriptUrl);
       this.isDownloading = true;
+      try {
+        const res = await fetch(url);
+        this.setSettings(await res.json());
+      } finally {
+        this.isDownloading = false;
+      }
     },
   },
 };
