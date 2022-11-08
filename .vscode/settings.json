@@ -4,4 +4,10 @@
     "package.json": "package-lock.json, yarn.lock",
     "*.js": "${capture}.spec.js"
   },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
 }
