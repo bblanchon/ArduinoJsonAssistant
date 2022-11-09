@@ -18,14 +18,5 @@ export default defineConfig({
       name: "ArduinoJsonAssistant",
       fileName: (format) => "assistant.js",
     },
-    rollupOptions: {
-      output: {
-        // https://github.com/vitejs/vite/issues/4863
-        assetFileNames: (assetInfo) => {
-          if (assetInfo.name === "style.css") return "assistant.css";
-          return assetInfo.name;
-        },
-      },
-    },
   },
 });
