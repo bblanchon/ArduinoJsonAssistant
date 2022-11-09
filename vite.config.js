@@ -1,7 +1,8 @@
-import { fileURLToPath, URL } from "url";
+import { fileURLToPath, URL } from "node:url";
+import path from "node:path";
+
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
-import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -18,5 +19,8 @@ export default defineConfig({
       name: "ArduinoJsonAssistant",
       fileName: (format) => "assistant.js",
     },
+  },
+  define: {
+    "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
   },
 });
