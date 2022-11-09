@@ -1,9 +1,10 @@
 import { describe, it, expect } from "vitest";
+
 import {
   stringifyValue,
   makeVariableName,
   makeItemName,
-} from "@/assistant/programWriter.js";
+} from "./programWriter";
 
 describe("makeVariableName()", function () {
   it("should return valid identifiers unchanged", () => {

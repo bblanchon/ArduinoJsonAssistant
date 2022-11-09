@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { buildExpression } from "@/assistant/expression.js";
+
+import { buildExpression } from "./expression";
 
 describe("buildExpression", () => {
   it("should return for an null or undefined", () => {

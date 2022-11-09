@@ -1,10 +1,11 @@
 import { describe, it, expect } from "vitest";
-import cpuInfos from "@/assistant/cpus.js";
-import { ProgramWriter } from "@/assistant/programWriter.js";
+
+import cpuInfos from "./cpus";
+import { ProgramWriter } from "./programWriter";
 import {
   generateSerializingProgram,
   writeCompositionCode,
-} from "@/assistant/serializingProgram.js";
+} from "./serializingProgram";
 
 describe("writeCompositionCode()", () => {
   function test(root, expectedOutput) {

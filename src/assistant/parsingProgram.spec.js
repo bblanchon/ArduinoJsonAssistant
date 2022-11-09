@@ -1,12 +1,13 @@
 import { describe, it, expect } from "vitest";
-import { ProgramWriter } from "@/assistant/programWriter.js";
+
+import { ProgramWriter } from "./programWriter";
 import {
   generateParsingProgram,
   writeDeserializationCode,
   writeDecompositionCode,
   writeErrorCheckingCode,
-} from "@/assistant/parsingProgram.js";
-import cpuInfos from "@/assistant/cpus.js";
+} from "./parsingProgram";
+import cpuInfos from "./cpus";
 
 describe("writeDeserializationCode()", () => {
   function testDeserializationCode(config, expectedOutput) {

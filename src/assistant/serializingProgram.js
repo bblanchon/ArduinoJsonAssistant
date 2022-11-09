@@ -1,5 +1,5 @@
-import { ProgramWriter, sanitizeName } from "./programWriter.js";
-import { measureSize } from "./analyzer.js";
+import { ProgramWriter, sanitizeName } from "./programWriter";
+import { measureSize } from "./analyzer";
 
 function stringifyValue(value) {
   return value === null ? "nullptr" : JSON.stringify(value);
