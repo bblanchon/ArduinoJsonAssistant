@@ -1,28 +1,31 @@
-export function ProgramWriter() {
-  const lines = [];
-  let indent = 1;
+export class ProgramWriter {
+  constructor() {
+    this.lines = [];
+    this.depth = 1;
+  }
 
-  this.addLine = function () {
+  addLine() {
     const args = Array.prototype.slice.call(arguments);
     const line = args.join("");
-    lines.push(Array(indent).join("  ") + line);
-  };
+    this.lines.push(Array(this.depth).join("  ") + line);
+  }
 
-  this.addEmptyLine = function () {
-    if (lines.length > 0 && lines[lines.length - 1] != "") lines.push("");
-  };
+  addEmptyLine() {
+    if (this.lines.length > 0 && this.lines[this.lines.length - 1] != "")
+      this.lines.push("");
+  }
 
-  this.indent = function () {
-    indent++;
-  };
+  indent() {
+    this.depth++;
+  }
 
-  this.unindent = function () {
-    indent--;
-  };
+  unindent() {
+    this.depth--;
+  }
 
-  this.toString = function () {
-    return lines.join("\n");
-  };
+  toString() {
+    return this.lines.join("\n");
+  }
 }
 
 export function sanitizeName(name) {
