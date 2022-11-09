@@ -1,43 +1,47 @@
-export function JsonFilter(value) {
-  this.mode =
-    value instanceof Array
-      ? "array"
-      : value instanceof Object
-      ? "object"
-      : value === true
-      ? "accept"
-      : "reject";
+export class JsonFilter {
+  constructor(value) {
+    this.value = value;
+    this.mode =
+      value instanceof Array
+        ? "array"
+        : value instanceof Object
+        ? "object"
+        : value === true
+        ? "accept"
+        : "reject";
+    this.allowsArray = this.mode == "array" || this.mode == "accept";
+    this.allowsObject = this.mode == "object" || this.mode == "accept";
+    this.allowsValue = this.mode == "accept";
+    this.allowsSomething = this.mode !== "reject";
+  }
 
-  this.getMemberFilter = function (key) {
+  getMemberFilter(key) {
     switch (this.mode) {
       case "accept":
         return new JsonFilter(true);
 
       case "object":
-        return new JsonFilter(key in value ? value[key] : value["*"]);
+        return new JsonFilter(
+          key in this.value ? this.value[key] : this.value["*"]
+        );
 
       default:
         return new JsonFilter(false);
     }
-  };
+  }
 
-  this.getElementFilter = function () {
+  getElementFilter() {
     switch (this.mode) {
       case "accept":
         return new JsonFilter(true);
       case "array":
-        return new JsonFilter(value[0]);
+        return new JsonFilter(this.value[0]);
       default:
         return new JsonFilter(false);
     }
-  };
+  }
 
-  this.allowsArray = this.mode == "array" || this.mode == "accept";
-  this.allowsObject = this.mode == "object" || this.mode == "accept";
-  this.allowsValue = this.mode == "accept";
-  this.allowsSomething = this.mode !== "reject";
-
-  this.filterDocument = function (input) {
+  filterDocument(input) {
     switch (this.mode) {
       case "reject":
         return null;
@@ -63,7 +67,7 @@ export function JsonFilter(value) {
         return output;
       }
     }
-  };
+  }
 }
 
 export function makeJsonFilter(filter) {
