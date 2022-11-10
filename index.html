@@ -20,7 +20,12 @@
 </head>
 
 <body>
-  <div id="assistant-app" data-version="6.X.X" data-url="https://arduinojson.org" class="container"></div>
+  <div id="assistant-app" data-version="6.X.X" data-url="https://arduinojson.org" class="container">
+    <div class="alert alert-info">
+      <span class="spinner-border spinner-border-sm" role="status"></span>
+      The Arduino Assistant is loading. Please wait.
+    </div>
+  </div>
   <script src="https://arduinojson.org/node_modules/jquery/dist/jquery.slim.min.js"></script>
   <script src="https://arduinojson.org/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   <script type="module" src="/src/main.js"></script>
