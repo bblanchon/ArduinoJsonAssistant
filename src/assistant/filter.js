@@ -44,12 +44,12 @@ export class JsonFilter {
   filterDocument(input) {
     switch (this.mode) {
       case "reject":
-        return null;
+        return undefined;
       case "accept":
         return input;
 
       case "array": {
-        if (!Array.isArray(input)) return null;
+        if (!Array.isArray(input)) return undefined;
         const elementFilter = this.getElementFilter();
         if (elementFilter.mode === "reject") return [];
         return input.map((el) => elementFilter.filterDocument(el));
@@ -61,7 +61,7 @@ export class JsonFilter {
           if (k in input) {
             const memberFilter = this.getMemberFilter(k);
             const memberValue = memberFilter.filterDocument(input[k]);
-            if (memberValue) output[k] = memberValue;
+            if (memberValue !== undefined) output[k] = memberValue;
           }
         }
         return output;
@@ -75,5 +75,5 @@ export function makeJsonFilter(filter) {
 }
 
 export function applyFilter(input, filter) {
-  return new JsonFilter(filter).filterDocument(input);
+  return new JsonFilter(filter).filterDocument(input) ?? null;
 }

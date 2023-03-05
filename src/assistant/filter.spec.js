@@ -26,9 +26,9 @@ describe("applyFilter()", () => {
 
   it("returns filtered members", () => {
     testFilter(
-      { a: 1, b: 2, c: 3, d: 4 },
-      { a: true, c: true },
-      { a: 1, c: 3 }
+      { a: 1, b: 2, c: 3, d: 4, z: 0 },
+      { a: true, c: true, z: true },
+      { a: 1, c: 3, z: 0 }
     );
   });
 
