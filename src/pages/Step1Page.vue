@@ -37,11 +37,9 @@
                 :value="mode"
                 @input="selectMode($event.target.value)"
               >
-                <option value="deserialize">Deserialize</option>
-                <option value="deserialize-filter">
-                  Deserialize and filter
+                <option v-for="(mode, key) in modes" :key="key" :value="key">
+                  {{ mode }}
                 </option>
-                <option value="serialize">Serialize</option>
               </select>
             </div>
           </div>
@@ -121,6 +119,11 @@ export default {
     return {
       adBlocked: false,
       cpuInfos,
+      modes: {
+        deserialize: "Deserialize",
+        "deserialize-filter": "Deserialize and filter",
+        serialize: "Serialize",
+      },
     };
   },
   mounted() {
@@ -130,6 +133,17 @@ export default {
   },
   beforeUnmount() {
     this.report({ action: "config", label: "Set configuration" });
+  },
+  beforeRouteLeave(to) {
+    if (to.name == "step2") {
+      window.plausible("ArduinoJson Assistant: Configuration", {
+        props: {
+          mode: this.modes[this.mode],
+          cpu: this.cpuInfos[this.cpu].label,
+          type: this.ioTypes[this.ioTypeId].label,
+        },
+      });
+    }
   },
   computed: {
     ...mapState(useStore, [
