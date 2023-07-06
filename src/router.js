@@ -36,7 +36,7 @@ const router = createRouter({
     },
     {
       path: "/:pathMatch(.*)*",
-      redirect: { name: "step1" },
+      redirect: { name: "step1", params: {} },
     },
   ],
   linkActiveClass: "active",
