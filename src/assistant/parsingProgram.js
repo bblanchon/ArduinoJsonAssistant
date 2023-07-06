@@ -46,7 +46,7 @@ function extractValue(prg, cfg) {
             value: value[i],
             parent: elementExpression,
             name: makeVariableName(elementExpression),
-            siblings: cfg.siblings?.map((x) => x[i]),
+            siblings: cfg.siblings?.map((x) => (x ? x[i] : null)),
           });
         }
       }
