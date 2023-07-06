@@ -184,13 +184,6 @@ export default {
       isDownloading: false,
     };
   },
-  beforeUnmount() {
-    this.report({
-      action: "json",
-      label: "Set JSON",
-      value: this.inputJson.length,
-    });
-  },
   computed: {
     ...mapState(useStore, [
       "filter",
@@ -224,12 +217,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(useStore, [
-      "report",
-      "setInputJson",
-      "setFilterJson",
-      "setSettings",
-    ]),
+    ...mapActions(useStore, ["setInputJson", "setFilterJson", "setSettings"]),
     prettifyInput() {
       this.setInputJson(JSON.stringify(this.input, null, 2));
     },

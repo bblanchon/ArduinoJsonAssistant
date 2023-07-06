@@ -257,13 +257,6 @@ import { useStore } from "@/store";
 export default {
   components: { InfoIcon, RouterLink },
   inject: ["baseUrl"],
-  created() {
-    this.report({
-      action: "size",
-      label: "View size",
-      value: this.capacity.recommended,
-    });
-  },
   computed: {
     ...mapState(useStore, [
       "configuration",
@@ -330,7 +323,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(useStore, ["report", "setSettings"]),
+    ...mapActions(useStore, ["setSettings"]),
     resetTweaks() {
       this.setSettings(this.defaults);
     },

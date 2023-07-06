@@ -16,8 +16,5 @@ module.exports = {
     "prefer-const": "warn",
     "no-var": "error",
   },
-  globals: {
-    ga: "readonly",
-  },
   ignorePatterns: [".eslintrc.cjs", "vite.config.js", "wallaby.conf.js"],
 };

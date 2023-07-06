@@ -111,19 +111,6 @@ export const useStore = defineStore("assistant", {
         this.inputError = ex.message;
       }
     },
-    report({ action, label, value }) {
-      ga("set", {
-        dimension1: this.mode,
-        dimension2: this.cpu,
-        dimension3: this.ioTypeId,
-      });
-      ga("send", "event", {
-        eventCategory: "assistant",
-        eventAction: action,
-        eventLabel: label,
-        eventValue: value,
-      });
-    },
   },
   getters: {
     cpuInfo() {

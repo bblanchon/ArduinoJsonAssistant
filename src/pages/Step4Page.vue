@@ -104,7 +104,7 @@ hljs.registerLanguage("cpp", (hljs) => {
 
 import { generateParsingProgram } from "@/assistant/parsingProgram";
 import { generateSerializingProgram } from "@/assistant/serializingProgram";
-import { mapState, mapActions } from "pinia";
+import { mapState } from "pinia";
 import { RouterLink } from "vue-router";
 import { useStore } from "@/store";
 
@@ -150,15 +150,8 @@ export default {
   },
   created() {
     this.generateProgram();
-    const lineCount = this.program.split("\n").length;
-    this.report({
-      action: "program",
-      label: "Generate program",
-      value: lineCount,
-    });
   },
   methods: {
-    ...mapActions(useStore, ["report"]),
     async copyProgram() {
       await navigator.clipboard.writeText(this.program);
       this.programCopied = true;

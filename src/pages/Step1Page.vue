@@ -85,11 +85,7 @@
           </div>
         </div>
       </div>
-      <p class="short-warning" v-if="adBlocked">
-        <strong>Your adblocker is blocking web analytics.</strong>
-        Please consider whitelisting <code>arduinojson.org</code>
-      </p>
-      <p class="short-tip" v-else>
+      <p class="short-tip">
         This is the Assistant for ArduinoJson {{ version }}. Make sure the same
         version is installed on your computer.
       </p>
@@ -117,7 +113,6 @@ export default {
   inject: ["version", "baseUrl", "sponsors"],
   data() {
     return {
-      adBlocked: false,
       cpuInfos,
       modes: {
         deserialize: "Deserialize",
@@ -125,14 +120,6 @@ export default {
         serialize: "Serialize",
       },
     };
-  },
-  mounted() {
-    ga(() => {
-      this.adBlocked = window.google_tag_data === undefined;
-    });
-  },
-  beforeUnmount() {
-    this.report({ action: "config", label: "Set configuration" });
   },
   beforeRouteLeave(to) {
     if (to.name == "step2") {
@@ -178,11 +165,6 @@ export default {
       }
     },
   },
-  methods: mapActions(useStore, [
-    "selectCpu",
-    "selectMode",
-    "selectIoType",
-    "report",
-  ]),
+  methods: mapActions(useStore, ["selectCpu", "selectMode", "selectIoType"]),
 };
 </script>
