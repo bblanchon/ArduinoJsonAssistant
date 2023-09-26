@@ -98,7 +98,7 @@
         class="short-warning mt-4"
       >
         This document is deeply nested; don't forget to pass
-        <a :href="`${baseUrl}/v6/api/json/deserializejson/#nesting-limit`"
+        <a :href="`${baseUrl}/v7/api/json/deserializejson/#nesting-limit`"
           ><code
             >DeserializationOption::NestingLimit({{ nestingLevel }})</code
           ></a
@@ -111,7 +111,7 @@
         class="short-warning mt-4"
       >
         This document contains <code>long&nbsp;long</code>; you should define
-        <a :href="`${baseUrl}/v6/api/config/use_long_long/`"
+        <a :href="`${baseUrl}/v7/api/config/use_long_long/`"
           ><code>ARDUINOJSON_USE_LONG_LONG</code></a
         >
         to <code>1</code>
@@ -121,7 +121,7 @@
         class="short-warning mt-4"
       >
         This document contains <code>double</code>; you should define
-        <a :href="`${baseUrl}/v6/api/config/use_double/`"
+        <a :href="`${baseUrl}/v7/api/config/use_double/`"
           ><code>ARDUINOJSON_USE_DOUBLE</code></a
         >
         to <code>1</code>
@@ -138,10 +138,10 @@
         need to call
         <a
           v-if="isDeserializing"
-          :href="`${baseUrl}/v6/api/json/deserializejson/`"
+          :href="`${baseUrl}/v7/api/json/deserializejson/`"
           ><code>deserializeJson()</code></a
         >
-        <a v-else :href="`${baseUrl}/v6/api/json/serializejson/`"
+        <a v-else :href="`${baseUrl}/v7/api/json/serializejson/`"
           ><code>serializeJson()</code></a
         >
         multiple time.

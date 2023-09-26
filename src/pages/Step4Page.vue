@@ -8,7 +8,7 @@
         v-if="cpuInfo.useLongLong && cpuInfo.useLongLong.default != useLongLong"
       >
         ⚠️ This program assumes you defined
-        <a :href="`${baseUrl}/v6/api/config/use_long_long/`"
+        <a :href="`${baseUrl}/v7/api/config/use_long_long/`"
           ><code>ARDUINOJSON_USE_LONG_LONG</code></a
         >
         to <code>{{ +useLongLong }}</code>
@@ -18,7 +18,7 @@
         v-if="cpuInfo.useDouble && cpuInfo.useDouble.default != useDouble"
       >
         ⚠️ This program assumes you defined
-        <a :href="`${baseUrl}/v6/api/config/use_double/`"
+        <a :href="`${baseUrl}/v7/api/config/use_double/`"
           ><code>ARDUINOJSON_USE_DOUBLE</code></a
         >
         to <code>{{ +useDouble }}</code>
@@ -43,27 +43,27 @@
       <ul class="list-inline card-text">
         <li class="list-inline-item font-weight-bold">See also</li>
         <li v-if="isDeserializing" class="list-inline-item">
-          <a :href="`${baseUrl}/v6/doc/deserialization/`"
+          <a :href="`${baseUrl}/v7/tutorial/deserialization/`"
             >Deserialization Tutorial</a
           >
         </li>
         <li v-if="isSerializing" class="list-inline-item">
-          <a :href="`${baseUrl}/v6/doc/serialization/`"
+          <a :href="`${baseUrl}/v7/tutorial/serialization/`"
             >Serialization Tutorial</a
           >
         </li>
         <li class="list-inline-item">
-          <a :href="`${baseUrl}/v6/api/jsondocument/`"
+          <a :href="`${baseUrl}/v7/api/jsondocument/`"
             ><code>JsonDocument</code></a
           >
         </li>
         <li v-if="isDeserializing" class="list-inline-item">
-          <a :href="`${baseUrl}/v6/api/json/deserializejson/`"
+          <a :href="`${baseUrl}/v7/api/json/deserializejson/`"
             ><code>deserializeJson()</code></a
           >
         </li>
         <li v-if="isSerializing" class="list-inline-item">
-          <a :href="`${baseUrl}/v6/api/json/serializejson/`"
+          <a :href="`${baseUrl}/v7/api/json/serializejson/`"
             ><code>serializeJson()</code></a
           >
         </li>

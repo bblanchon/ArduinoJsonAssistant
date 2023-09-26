@@ -50,7 +50,7 @@
           <td>{{ capacity.minimum }}</td>
           <td class="text-muted">
             Minimum capacity for the
-            <a :href="`${baseUrl}/v6/api/jsondocument/`"
+            <a :href="`${baseUrl}/v7/api/jsondocument/`"
               ><code>JsonDocument</code></a
             >.
           </td>
@@ -69,7 +69,7 @@
         v-if="capacity.recommended > cpuInfo.ramError"
       >
         This is too big to fit in the RAM. See
-        <a :href="`${baseUrl}/v6/how-to/deserialize-a-very-large-document/`"
+        <a :href="`${baseUrl}/v7/how-to/deserialize-a-very-large-document/`"
           >How to deserialize a very large document?</a
         >
       </p>
@@ -84,7 +84,7 @@
         v-if="capacity.recommended > cpuInfo.ramWarning && cpu === 'esp32'"
       >
         See also:
-        <a :href="`${baseUrl}/v6/how-to/use-external-ram-on-esp32/`"
+        <a :href="`${baseUrl}/v7/how-to/use-external-ram-on-esp32/`"
           >How to use external RAM on an ESP32?</a
         >
       </p>
