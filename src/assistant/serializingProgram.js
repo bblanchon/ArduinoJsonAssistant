@@ -25,8 +25,11 @@ function addArray(prg, { name, value, parent, key }) {
     });
   } else {
     prg.addEmptyLine();
-    key = typeof key === "string" ? JSON.stringify(key) : "";
-    prg.addLine(`JsonArray ${name} = ${parent}.createNestedArray(${key});`);
+    if (typeof key === "string")
+      prg.addLine(
+        `JsonArray ${name} = ${parent}[${JSON.stringify(key)}].to<JsonArray>();`
+      );
+    else prg.addLine(`JsonArray ${name} = ${parent}.add<JsonArray>();`);
   }
   value.forEach((elem, index) => {
     addArrayElement(prg, {

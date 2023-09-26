@@ -71,10 +71,10 @@ describe("writeCompositionCode()", () => {
         [1, 2],
         [3, 4],
       ],
-      "JsonArray doc_0 = doc.createNestedArray();\n" +
+      "JsonArray doc_0 = doc.add<JsonArray>();\n" +
         "doc_0.add(1);\n" +
         "doc_0.add(2);\n\n" +
-        "JsonArray doc_1 = doc.createNestedArray();\n" +
+        "JsonArray doc_1 = doc.add<JsonArray>();\n" +
         "doc_1.add(3);\n" +
         "doc_1.add(4);"
     );
@@ -101,11 +101,11 @@ describe("writeCompositionCode()", () => {
           [44, 45],
         ],
       ],
-      "JsonArray doc_0 = doc.createNestedArray();\n\n" +
-        "JsonArray doc_0_0 = doc_0.createNestedArray();\n" +
+      "JsonArray doc_0 = doc.add<JsonArray>();\n\n" +
+        "JsonArray doc_0_0 = doc_0.add<JsonArray>();\n" +
         "doc_0_0.add(42);\n" +
         "doc_0_0.add(43);\n\n" +
-        "JsonArray doc_0_1 = doc_0.createNestedArray();\n" +
+        "JsonArray doc_0_1 = doc_0.add<JsonArray>();\n" +
         "doc_0_1.add(44);\n" +
         "doc_0_1.add(45);"
     );
@@ -114,7 +114,7 @@ describe("writeCompositionCode()", () => {
   it('{"hello world":[42, 43]}', () => {
     test(
       { "hello world": [42, 43] },
-      'JsonArray hello_world = doc.createNestedArray("hello world");\n' +
+      'JsonArray hello_world = doc["hello world"].to<JsonArray>();\n' +
         "hello_world.add(42);\n" +
         "hello_world.add(43);"
     );
