@@ -147,11 +147,11 @@ export const useStore = defineStore("assistant", {
     },
     ignoreKeys() {
       if (this.isSerializing) return this.assumeConstKeys;
-      else return !!this.ioType.ignoreStrings;
+      else return false;
     },
     ignoreValues() {
       if (this.isSerializing) return this.assumeConstValues;
-      else return !!this.ioType.ignoreStrings;
+      else return false;
     },
     ioType() {
       return this.ioTypes[this.ioTypeId];
@@ -160,11 +160,9 @@ export const useStore = defineStore("assistant", {
       return {
         charPtr: {
           label: "char*",
-          ignoreStrings: true,
         },
         charArray: {
           label: "char[N]",
-          ignoreStrings: true,
         },
         constCharPtr: {
           label: "const char*",

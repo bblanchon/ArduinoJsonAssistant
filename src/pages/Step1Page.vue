@@ -63,11 +63,6 @@
                   {{ type.label }}
                 </option>
               </select>
-              <small
-                v-if="ioTypeInfo"
-                class="form-text text-muted"
-                v-html="ioTypeInfo"
-              ></small>
             </div>
           </div>
         </form>
@@ -143,27 +138,6 @@ export default {
       "mode",
       "ioTypeId",
     ]),
-    ioTypeInfo() {
-      switch (this.ioTypeId) {
-        case "charPtr":
-        case "charArray":
-          return (
-            this.isDeserializing &&
-            "Uses the zero-copy mode: the <code>JsonDocument</code> stores pointer instead of copies of strings"
-          );
-        case "constCharPtr":
-        case "arduinoString":
-        case "stdString":
-          return (
-            this.isDeserializing &&
-            "This is most likely a bad choice, prefer <code>char*</code> or stream"
-          );
-        case "arduinoStream":
-          return `This is the most memory efficient option, but not the fastest; <a href="${this.baseUrl}/v6/how-to/improve-speed/">see this page if your program is slow</a>.`;
-        default:
-          return null;
-      }
-    },
   },
   methods: mapActions(useStore, ["selectCpu", "selectMode", "selectIoType"]),
 };
