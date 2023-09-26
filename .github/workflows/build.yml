@@ -21,8 +21,8 @@ jobs:
           name: arduinojson-assistant
           path: dist/
       - name: Deploy to GitHub Pages
-        if: github.ref == 'refs/heads/6.x'
+        if: github.ref == 'refs/heads/7.x'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: dist
-          target-folder: v6
+          target-folder: v7
