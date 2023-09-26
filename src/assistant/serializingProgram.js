@@ -48,8 +48,13 @@ function addObject(prg, { parent, key, name, value }) {
     objectName = parent + JSON.stringify([key]);
   } else {
     prg.addEmptyLine();
-    key = typeof key === "string" ? JSON.stringify(key) : "";
-    prg.addLine(`JsonObject ${name} = ${parent}.createNestedObject(${key});`);
+    if (typeof key === "string")
+      prg.addLine(
+        `JsonObject ${name} = ${parent}[${JSON.stringify(
+          key
+        )}].to<JsonObject>();`
+      );
+    else prg.addLine(`JsonObject ${name} = ${parent}.add<JsonObject>();`);
   }
 
   const memberPrefix = name !== "doc" ? name + "_" : "";

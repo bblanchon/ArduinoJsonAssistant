@@ -83,7 +83,7 @@ describe("writeCompositionCode()", () => {
   it('{ A: { B: { C: "D" }, E: { F: "G" } } }', () => {
     test(
       { A: { B: { C: "D" }, E: { F: "G" } } },
-      'JsonObject A = doc.createNestedObject("A");\n' +
+      'JsonObject A = doc["A"].to<JsonObject>();\n' +
         'A["B"]["C"] = "D";\n' +
         'A["E"]["F"] = "G";'
     );
@@ -123,7 +123,7 @@ describe("writeCompositionCode()", () => {
   it("{ list: [{ dt: true }] }", () => {
     test(
       { list: [{ dt: true, main: true }] },
-      'JsonObject list_0 = doc["list"].createNestedObject();\n' +
+      'JsonObject list_0 = doc["list"].add<JsonObject>();\n' +
         'list_0["dt"] = true;\n' +
         'list_0["main"] = true;'
     );
@@ -132,7 +132,7 @@ describe("writeCompositionCode()", () => {
   it("{ list: [{ dt: true, main: true }] }", () => {
     test(
       { list: [{ dt: true, main: true }] },
-      'JsonObject list_0 = doc["list"].createNestedObject();\n' +
+      'JsonObject list_0 = doc["list"].add<JsonObject>();\n' +
         'list_0["dt"] = true;\n' +
         'list_0["main"] = true;'
     );
@@ -141,7 +141,7 @@ describe("writeCompositionCode()", () => {
   it("{ data: { children: [{ data: { title: true, ups: true } }] } }", () => {
     test(
       { data: { children: [{ data: { title: true, ups: true } }] } },
-      'JsonObject data_children_0_data = doc["data"]["children"][0].createNestedObject("data");\n' +
+      'JsonObject data_children_0_data = doc["data"]["children"][0]["data"].to<JsonObject>();\n' +
         'data_children_0_data["title"] = true;\n' +
         'data_children_0_data["ups"] = true;'
     );
@@ -157,11 +157,11 @@ describe("writeCompositionCode()", () => {
         { a: 1, b: 2 },
         { a: 3, b: 4 },
       ],
-      "JsonObject doc_0 = doc.createNestedObject();\n" +
+      "JsonObject doc_0 = doc.add<JsonObject>();\n" +
         'doc_0["a"] = 1;\n' +
         'doc_0["b"] = 2;\n' +
         "\n" +
-        "JsonObject doc_1 = doc.createNestedObject();\n" +
+        "JsonObject doc_1 = doc.add<JsonObject>();\n" +
         'doc_1["a"] = 3;\n' +
         'doc_1["b"] = 4;'
     );
