@@ -176,7 +176,7 @@ describe("generateSerializingProgram", function () {
   it('{"answer":42}', () => {
     testSerializingProgram(
       { root: { answer: 42 }, cpu: cpuInfos.avr },
-      "StaticJsonDocument<32> doc;\n\n" +
+      "JsonDocument doc;\n\n" +
         'doc["answer"] = 42;\n\n' +
         "serializeJson(doc, output);"
     );
@@ -185,7 +185,7 @@ describe("generateSerializingProgram", function () {
   it("null", () => {
     testSerializingProgram(
       { root: null, cpu: cpuInfos.avr },
-      "StaticJsonDocument<0> doc;\n\nserializeJson(doc, output);"
+      "JsonDocument doc;\n\nserializeJson(doc, output);"
     );
   });
 
@@ -194,7 +194,7 @@ describe("generateSerializingProgram", function () {
       { outputType: "charPtr", cpu: cpuInfos.avr },
       "// char* output;\n" +
         "// size_t outputCapacity;\n\n" +
-        "StaticJsonDocument<0> doc;\n\n" +
+        "JsonDocument doc;\n\n" +
         "serializeJson(doc, output, outputCapacity);"
     );
   });
@@ -202,7 +202,7 @@ describe("generateSerializingProgram", function () {
   it("outputType = charArray", () => {
     testSerializingProgram(
       { outputType: "charArray", cpu: cpuInfos.avr },
-      "StaticJsonDocument<0> doc;\n\n" +
+      "JsonDocument doc;\n\n" +
         "char output[MAX_OUTPUT_SIZE];\n" +
         "serializeJson(doc, output);"
     );
@@ -211,7 +211,7 @@ describe("generateSerializingProgram", function () {
   it("outputType = arduinoString", () => {
     testSerializingProgram(
       { outputType: "arduinoString", cpu: cpuInfos.avr },
-      "StaticJsonDocument<0> doc;\n\n" +
+      "JsonDocument doc;\n\n" +
         "String output;\n" +
         "serializeJson(doc, output);"
     );
@@ -220,7 +220,7 @@ describe("generateSerializingProgram", function () {
   it("outputType = stdString", () => {
     testSerializingProgram(
       { outputType: "stdString", cpu: cpuInfos.avr },
-      "StaticJsonDocument<0> doc;\n\n" +
+      "JsonDocument doc;\n\n" +
         "std::string output;\n" +
         "serializeJson(doc, output);"
     );
@@ -230,7 +230,7 @@ describe("generateSerializingProgram", function () {
     testSerializingProgram(
       { outputType: "arduinoStream", cpu: cpuInfos.avr },
       "// Stream& output;\n\n" +
-        "StaticJsonDocument<0> doc;\n\n" +
+        "JsonDocument doc;\n\n" +
         "serializeJson(doc, output);"
     );
   });
@@ -239,16 +239,7 @@ describe("generateSerializingProgram", function () {
     testSerializingProgram(
       { outputType: "stdStream", cpu: cpuInfos.avr },
       "// std::ostream& output;\n\n" +
-        "StaticJsonDocument<0> doc;\n\n" +
-        "serializeJson(doc, output);"
-    );
-  });
-
-  it("DynamicJsonDocument", () => {
-    testSerializingProgram(
-      { root: "abcdef", cpu: { heapThreshold: 23 } },
-      "DynamicJsonDocument doc(24);\n\n" +
-        'doc.set("abcdef");\n\n' +
+        "JsonDocument doc;\n\n" +
         "serializeJson(doc, output);"
     );
   });

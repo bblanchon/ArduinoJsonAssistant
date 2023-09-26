@@ -1,5 +1,4 @@
 import { ProgramWriter, sanitizeName } from "./programWriter";
-import { measureSize } from "./analyzer";
 
 function stringifyValue(value) {
   return value === null ? "nullptr" : JSON.stringify(value);
@@ -120,13 +119,7 @@ export function generateSerializingProgram(cfg) {
   }
   prg.addEmptyLine();
 
-  const capacity = measureSize(cfg.root, cfg).recommended;
-
-  if (cfg.cpu && cfg.cpu.heapThreshold < capacity) {
-    prg.addLine(`DynamicJsonDocument doc(${capacity});`);
-  } else {
-    prg.addLine(`StaticJsonDocument<${capacity}> doc;`);
-  }
+  prg.addLine("JsonDocument doc;");
 
   prg.addEmptyLine();
   writeCompositionCode(prg, cfg.root, "doc");

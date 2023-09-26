@@ -3,7 +3,6 @@ import {
   canLoop,
   getCommonCppTypeFor,
   getCppTypeFor,
-  measureSize,
   measureNesting,
 } from "./analyzer";
 import {
@@ -168,18 +167,12 @@ export function writeDeserializationCode(prg, cfg) {
 
   const filter = cfg.filter;
   if (filter) {
-    const filterCapacity = measureSize(filter, cfg).slots;
-    prg.addLine("StaticJsonDocument<", filterCapacity, "> filter;");
+    prg.addLine("JsonDocument filter;");
     writeCompositionCode(prg, filter, "filter");
     prg.addEmptyLine();
   }
 
-  const capacity = measureSize(cfg.root, cfg).recommended;
-  if (cfg.cpu.heapThreshold < capacity) {
-    prg.addLine("DynamicJsonDocument doc(", capacity, ");");
-  } else {
-    prg.addLine("StaticJsonDocument<", capacity, "> doc;");
-  }
+  prg.addLine("JsonDocument doc;");
 
   const args = ["doc", "input"];
 

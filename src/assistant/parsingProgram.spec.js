@@ -21,7 +21,7 @@ describe("writeDeserializationCode()", () => {
       { inputType: "charPtr", cpu: cpuInfos.avr },
       "// char* input;\n" +
         "// size_t inputLength; (optional)\n\n" +
-        "StaticJsonDocument<0> doc;\n\n" +
+        "JsonDocument doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input, inputLength);"
     );
   });
@@ -30,7 +30,7 @@ describe("writeDeserializationCode()", () => {
     testDeserializationCode(
       { inputType: "charArray", cpu: cpuInfos.avr },
       "// char input[MAX_INPUT_LENGTH];\n\n" +
-        "StaticJsonDocument<0> doc;\n\n" +
+        "JsonDocument doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input, MAX_INPUT_LENGTH);"
     );
   });
@@ -40,7 +40,7 @@ describe("writeDeserializationCode()", () => {
       { inputType: "constCharPtr", cpu: cpuInfos.avr },
       "// const char* input;\n" +
         "// size_t inputLength; (optional)\n\n" +
-        "StaticJsonDocument<0> doc;\n\n" +
+        "JsonDocument doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input, inputLength);"
     );
   });
@@ -49,7 +49,7 @@ describe("writeDeserializationCode()", () => {
     testDeserializationCode(
       { inputType: "arduinoString", cpu: cpuInfos.avr },
       "// String input;\n\n" +
-        "StaticJsonDocument<0> doc;\n\n" +
+        "JsonDocument doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input);"
     );
   });
@@ -58,7 +58,7 @@ describe("writeDeserializationCode()", () => {
     testDeserializationCode(
       { inputType: "arduinoStream", cpu: cpuInfos.avr },
       "// Stream& input;\n\n" +
-        "StaticJsonDocument<0> doc;\n\n" +
+        "JsonDocument doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input);"
     );
   });
@@ -67,7 +67,7 @@ describe("writeDeserializationCode()", () => {
     testDeserializationCode(
       { inputType: "stdString", cpu: cpuInfos.avr },
       "// std::string input;\n\n" +
-        "StaticJsonDocument<0> doc;\n\n" +
+        "JsonDocument doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input);"
     );
   });
@@ -76,7 +76,7 @@ describe("writeDeserializationCode()", () => {
     testDeserializationCode(
       { inputType: "stdStream", cpu: cpuInfos.avr },
       "// std::istream& input;\n\n" +
-        "StaticJsonDocument<0> doc;\n\n" +
+        "JsonDocument doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input);"
     );
   });
@@ -130,7 +130,7 @@ describe("generateParsingProgram", function () {
         root: [[[[[[[[[[[]]]]]]]]]]],
         cpu: { nestingLimit: 10, slotSize: 8 },
       },
-      "StaticJsonDocument<96> doc;\n\n" +
+      "JsonDocument doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input, DeserializationOption::NestingLimit(11));\n\n" +
         "if (error) {\n" +
         '  std::cerr << "deserializeJson() failed: " << error.c_str() << std::endl;\n' +
@@ -146,9 +146,9 @@ describe("generateParsingProgram", function () {
         filter: { a: true },
         cpu: { slotSize: 8, nestingLimit: 10 },
       },
-      "StaticJsonDocument<8> filter;\n" +
+      "JsonDocument filter;\n" +
         'filter["a"] = true;\n\n' +
-        "StaticJsonDocument<24> doc;\n\n" +
+        "JsonDocument doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input, DeserializationOption::Filter(filter), DeserializationOption::NestingLimit(11));\n\n" +
         "if (error) {\n" +
         '  std::cerr << "deserializeJson() failed: " << error.c_str() << std::endl;\n' +
@@ -160,27 +160,14 @@ describe("generateParsingProgram", function () {
   it("filter", () => {
     testParginProgram(
       { root: {}, filter: { a: true }, cpu: { slotSize: 8 } },
-      "StaticJsonDocument<8> filter;\n" +
+      "JsonDocument filter;\n" +
         'filter["a"] = true;\n\n' +
-        "StaticJsonDocument<0> doc;\n\n" +
+        "JsonDocument doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input, DeserializationOption::Filter(filter));\n\n" +
         "if (error) {\n" +
         '  std::cerr << "deserializeJson() failed: " << error.c_str() << std::endl;\n' +
         "  return;\n" +
         "}\n"
-    );
-  });
-
-  it("DynamicJsonDocument", () => {
-    testParginProgram(
-      { root: "abcdef", cpu: { slotSize: 8, heapThreshold: 23 } },
-      "DynamicJsonDocument doc(24);\n\n" +
-        "DeserializationError error = deserializeJson(doc, input);\n\n" +
-        "if (error) {\n" +
-        '  std::cerr << "deserializeJson() failed: " << error.c_str() << std::endl;\n' +
-        "  return;\n" +
-        "}\n\n" +
-        'const char* root = doc.as<const char*>(); // "abcdef"'
     );
   });
 });

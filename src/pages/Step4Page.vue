@@ -52,14 +52,9 @@
             >Serialization Tutorial</a
           >
         </li>
-        <li v-if="useDynamicJsonDocument" class="list-inline-item">
-          <a :href="`${baseUrl}/v6/api/dynamicjsondocument/`"
-            ><code>DynamicJsonDocument</code></a
-          >
-        </li>
-        <li v-if="useStaticJsonDocument" class="list-inline-item">
-          <a :href="`${baseUrl}/v6/api/staticjsondocument/`"
-            ><code>StaticJsonDocument</code></a
+        <li class="list-inline-item">
+          <a :href="`${baseUrl}/v6/api/jsondocument/`"
+            ><code>JsonDocument</code></a
           >
         </li>
         <li v-if="isDeserializing" class="list-inline-item">
@@ -94,8 +89,7 @@ hljs.registerLanguage("cpp", (hljs) => {
     "JsonArray",
     "JsonObject",
     "JsonVariant",
-    "StaticJsonDocument",
-    "DynamicJsonDocument",
+    "JsonDocument",
     "DeserializationError",
     "DeserializationOption"
   );
@@ -141,12 +135,6 @@ export default {
       "useLongLong",
       "useDouble",
     ]),
-    useDynamicJsonDocument() {
-      return this.program.includes("DynamicJsonDocument");
-    },
-    useStaticJsonDocument() {
-      return this.program.includes("StaticJsonDocument");
-    },
   },
   created() {
     this.generateProgram();
