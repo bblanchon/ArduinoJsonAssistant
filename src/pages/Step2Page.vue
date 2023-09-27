@@ -1,20 +1,8 @@
 <template>
   <div class="card">
     <h2 class="h4 card-header bg-primary text-white">Step 2: JSON</h2>
-
     <div class="card-body resize-lg-vertical d-flex flex-column">
-      <p v-if="isDownloading">Downloading example...</p>
-      <p v-else>
-        Examples:
-        <a
-          href="#"
-          @click.prevent="downloadSettings('examples/openweathermap.json')"
-          >OpenWeatherMap</a
-        >,
-        <a href="#" @click.prevent="downloadSettings('examples/reddit.json')"
-          >Reddit</a
-        >
-      </p>
+      <ExampleDownloader />
       <div class="row flex-fill">
         <div class="col-lg d-flex flex-column">
           <template v-if="isSerializing">
@@ -350,12 +338,7 @@ import { useStore } from "@/store";
 import { measureSize } from "@/assistant/analyzer";
 
 export default {
-  inject: ["baseUrl", "scriptUrl"],
-  data() {
-    return {
-      isDownloading: false,
-    };
-  },
+  inject: ["baseUrl"],
   computed: {
     ...mapState(useStore, [
       "configuration",
@@ -434,16 +417,6 @@ export default {
     },
     prettifyFilter() {
       this.setFilterJson(JSON.stringify(this.filter, null, 2));
-    },
-    async downloadSettings(url) {
-      if (this.scriptUrl) url = new URL(url, this.scriptUrl);
-      this.isDownloading = true;
-      try {
-        const res = await fetch(url);
-        this.setSettings(await res.json());
-      } finally {
-        this.isDownloading = false;
-      }
     },
     resetTweaks() {
       this.setSettings(this.defaults);
