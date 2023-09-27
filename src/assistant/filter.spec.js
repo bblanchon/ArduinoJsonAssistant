@@ -28,7 +28,7 @@ describe("applyFilter()", () => {
     testFilter(
       { a: 1, b: 2, c: 3, d: 4, z: 0 },
       { a: true, c: true, z: true },
-      { a: 1, c: 3, z: 0 }
+      { a: 1, c: 3, z: 0 },
     );
   });
 
@@ -36,7 +36,7 @@ describe("applyFilter()", () => {
     testFilter(
       { a: { c1: 1, c2: 2 }, b: { c1: 3, c2: 4 } },
       { a: { c1: true }, b: { c2: true } },
-      { a: { c1: 1 }, b: { c2: 4 } }
+      { a: { c1: 1 }, b: { c2: 4 } },
     );
   });
 
@@ -44,7 +44,7 @@ describe("applyFilter()", () => {
     testFilter(
       { a: { c1: 1, c2: 2 }, b: { c1: 3, c2: 4 } },
       { "*": { c1: true }, b: { c2: true } },
-      { a: { c1: 1 }, b: { c2: 4 } }
+      { a: { c1: 1 }, b: { c2: 4 } },
     );
   });
 
@@ -68,7 +68,7 @@ describe("applyFilter()", () => {
         { example: 3, ignore: 4 },
       ],
       [{ example: true }],
-      [{ example: 1 }, { example: 3 }]
+      [{ example: 1 }, { example: 3 }],
     );
   });
 });

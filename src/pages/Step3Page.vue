@@ -299,7 +299,7 @@ export default {
     tweakCount() {
       return Object.entries(this.defaults).filter(
         ([key, defaultValue]) =>
-          defaultValue !== undefined && this[key] !== defaultValue
+          defaultValue !== undefined && this[key] !== defaultValue,
       ).length;
     },
     stringsDetails() {

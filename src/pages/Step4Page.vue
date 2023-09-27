@@ -91,7 +91,7 @@ hljs.registerLanguage("cpp", (hljs) => {
     "JsonVariant",
     "JsonDocument",
     "DeserializationError",
-    "DeserializationOption"
+    "DeserializationOption",
   );
   return lang;
 });

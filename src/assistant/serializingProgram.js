@@ -27,7 +27,9 @@ function addArray(prg, { name, value, parent, key }) {
     prg.addEmptyLine();
     if (typeof key === "string")
       prg.addLine(
-        `JsonArray ${name} = ${parent}[${JSON.stringify(key)}].to<JsonArray>();`
+        `JsonArray ${name} = ${parent}[${JSON.stringify(
+          key,
+        )}].to<JsonArray>();`,
       );
     else prg.addLine(`JsonArray ${name} = ${parent}.add<JsonArray>();`);
   }
@@ -54,8 +56,8 @@ function addObject(prg, { parent, key, name, value }) {
     if (typeof key === "string")
       prg.addLine(
         `JsonObject ${name} = ${parent}[${JSON.stringify(
-          key
-        )}].to<JsonObject>();`
+          key,
+        )}].to<JsonObject>();`,
       );
     else prg.addLine(`JsonObject ${name} = ${parent}.add<JsonObject>();`);
   }

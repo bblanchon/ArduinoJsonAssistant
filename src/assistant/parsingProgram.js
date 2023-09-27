@@ -194,7 +194,7 @@ export function writeDeserializationCode(prg, cfg) {
 
   prg.addEmptyLine();
   prg.addLine(
-    `DeserializationError error = deserializeJson(${args.join(", ")});`
+    `DeserializationError error = deserializeJson(${args.join(", ")});`,
   );
 }
 
@@ -209,7 +209,7 @@ export function writeErrorCheckingCode(prg, cfg) {
     prg.addLine("Serial.println(error.c_str());");
   } else {
     prg.addLine(
-      'std::cerr << "deserializeJson() failed: " << error.c_str() << std::endl;'
+      'std::cerr << "deserializeJson() failed: " << error.c_str() << std::endl;',
     );
   }
   prg.addLine("return;");

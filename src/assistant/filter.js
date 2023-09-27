@@ -22,7 +22,7 @@ export class JsonFilter {
 
       case "object":
         return new JsonFilter(
-          key in this.value ? this.value[key] : this.value["*"]
+          key in this.value ? this.value[key] : this.value["*"],
         );
 
       default:
