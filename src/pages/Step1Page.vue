@@ -100,11 +100,9 @@
 <script>
 import { mapState, mapActions } from "pinia";
 import cpuInfos from "@/assistant/cpus";
-import { RouterLink } from "vue-router";
 import { useStore } from "@/store";
 
 export default {
-  components: { RouterLink },
   inject: ["version", "baseUrl", "sponsors"],
   data() {
     return {

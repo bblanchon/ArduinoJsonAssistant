@@ -95,9 +95,19 @@
       </div>
 
       <div class="d-flex align-items-center my-3">
-        <div class="flex-none mr-3">Memory consumption: <b>{{ capacity.minimum }} bytes</b></div>
+        <div class="flex-none mr-3">
+          Memory consumption: <b>{{ capacity.minimum }} bytes</b>
+        </div>
         <div class="progress flex-fill">
-          <div class="progress-bar" :class="`bg-${ramColor}`" role="progressbar" :style="{width: ramPercent + '%'}" :aria-valuenow="ramPercent" aria-valuemin="0" aria-valuemax="100"></div>
+          <div
+            class="progress-bar"
+            :class="`bg-${ramColor}`"
+            role="progressbar"
+            :style="{ width: ramPercent + '%' }"
+            :aria-valuenow="ramPercent"
+            aria-valuemin="0"
+            aria-valuemax="100"
+          ></div>
         </div>
       </div>
 
@@ -158,25 +168,16 @@
           moment.</strong
         >
       </p>
-      <p
-        class="short-danger mb-3"
-        v-if="ramColor == 'danger'"
-      >
+      <p class="short-danger mb-3" v-if="ramColor == 'danger'">
         This is too big to fit in the RAM. See
         <a :href="`${baseUrl}/v7/how-to/deserialize-a-very-large-document/`"
           >How to deserialize a very large document?</a
         >
       </p>
-      <p
-        class="short-warning mb-3"
-        v-if="ramColor == 'warning'"
-      >
+      <p class="short-warning mb-3" v-if="ramColor == 'warning'">
         This may not fit in the RAM. Make sure there is enough free space.
       </p>
-      <p
-        class="short-tip mb-3"
-        v-if="ramColor == 'danger' && cpu === 'esp32'"
-      >
+      <p class="short-tip mb-3" v-if="ramColor == 'danger' && cpu === 'esp32'">
         See also:
         <a :href="`${baseUrl}/v7/how-to/use-external-ram-on-esp32/`"
           >How to use external RAM on an ESP32?</a
@@ -342,7 +343,6 @@
 </template>
 
 <script>
-import { RouterLink } from "vue-router";
 import { mapActions, mapState, mapWritableState } from "pinia";
 import { hasJsonInJsonSyndrome, measureNesting } from "@/assistant/analyzer";
 import { needsDouble, needsLongLong } from "@/assistant/analyzer";
@@ -350,7 +350,6 @@ import { useStore } from "@/store";
 import { measureSize } from "@/assistant/analyzer";
 
 export default {
-  components: { RouterLink },
   inject: ["baseUrl", "scriptUrl"],
   data() {
     return {

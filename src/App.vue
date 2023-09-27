@@ -2,7 +2,7 @@
   <div>
     <nav class="assistant-nav">
       <StepNumber
-        v-for="step, idx in steps"
+        v-for="(step, idx) in steps"
         :key="step.number"
         :route="{ name: step.route }"
         :disabled="step.disabled"
@@ -16,13 +16,10 @@
 </template>
 
 <script>
-import { RouterView } from "vue-router";
 import { mapState } from "pinia";
 import { useStore } from "@/store";
-import StepNumber from "@/components/StepNumber.vue";
 
 export default {
-  components: { RouterView, StepNumber },
   computed: {
     ...mapState(useStore, ["hasErrors"]),
     steps() {

@@ -99,7 +99,6 @@ hljs.registerLanguage("cpp", (hljs) => {
 import { generateParsingProgram } from "@/assistant/parsingProgram";
 import { generateSerializingProgram } from "@/assistant/serializingProgram";
 import { mapState } from "pinia";
-import { RouterLink } from "vue-router";
 import { useStore } from "@/store";
 
 const sleep = (m) => new Promise((r) => setTimeout(r, m));
@@ -117,7 +116,6 @@ function generateProgram(cfg) {
 }
 
 export default {
-  components: { RouterLink },
   inject: ["baseUrl"],
   data() {
     return {
