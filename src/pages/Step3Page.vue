@@ -106,7 +106,6 @@ const sleep = (m) => new Promise((r) => setTimeout(r, m));
 function generateProgram(cfg) {
   switch (cfg.mode) {
     case "deserialize":
-    case "deserialize-filter":
       return generateParsingProgram(cfg);
 
     case "serialize":

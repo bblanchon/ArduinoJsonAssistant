@@ -30,6 +30,7 @@ export const useStore = defineStore("assistant", {
       inputJson: JSON.stringify(defaultInput, null, 2),
       ioTypeId: "arduinoStream",
       mode: "deserialize",
+      filterEnabled: false,
       useDouble: false,
       useLongLong: false,
     };
@@ -50,13 +51,15 @@ export const useStore = defineStore("assistant", {
       }
       if (cfg.filterJson) {
         this.filterJson = cfg.filterJson;
+        this.filter = tryParse(cfg.filterJson);
       } else if (cfg.filter) {
+        this.filter = cfg.filter;
         this.filterJson = JSON.stringify(cfg.filter, null, 2);
       }
       if (cfg.mode) {
         this.mode = cfg.mode;
         const serializing = cfg.mode === "serialize";
-        const deserializing = this.mode.indexOf("deserialize") === 0;
+        const deserializing = cfg.mode === "deserialize";
         this.assumeConstKeys = serializing ? true : undefined;
         this.assumeConstValues = serializing ? false : undefined;
         this.deduplicateKeys = deserializing ? true : undefined;
@@ -86,7 +89,7 @@ export const useStore = defineStore("assistant", {
     selectMode(mode) {
       this.mode = mode;
       const serializing = mode === "serialize";
-      const deserializing = this.mode.indexOf("deserialize") === 0;
+      const deserializing = mode === "deserialize";
       this.assumeConstKeys = serializing ? true : undefined;
       this.assumeConstValues = serializing ? false : undefined;
       this.deduplicateKeys = deserializing ? true : undefined;
@@ -128,9 +131,6 @@ export const useStore = defineStore("assistant", {
         useDouble: this.useDouble,
         inputType: this.ioTypeId,
       };
-    },
-    filterEnabled() {
-      return this.mode === "deserialize-filter";
     },
     filteredInput() {
       if (!this.filterEnabled) return this.input;

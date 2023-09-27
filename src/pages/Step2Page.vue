@@ -2,7 +2,20 @@
   <div class="card">
     <h2 class="h4 card-header bg-primary text-white">Step 2: JSON</h2>
     <div class="card-body resize-lg-vertical d-flex flex-column">
-      <ExampleDownloader />
+      <div class="d-flex justify-content-between">
+        <ExampleDownloader />
+        <div class="custom-control custom-switch" v-if="isDeserializing">
+          <input
+            type="checkbox"
+            class="custom-control-input"
+            id="filter-switch"
+            v-model="filterEnabled"
+          />
+          <label class="custom-control-label" for="filter-switch"
+            >Enable input filter</label
+          >
+        </div>
+      </div>
       <div class="row flex-fill">
         <div class="col-lg d-flex flex-column">
           <template v-if="isSerializing">
@@ -24,7 +37,10 @@
             @update:modelValue="setInputJson"
           />
         </div>
-        <div v-if="filterEnabled" class="col-lg d-flex flex-column">
+        <div
+          v-if="isDeserializing && filterEnabled"
+          class="col-lg d-flex flex-column"
+        >
           <h3 class="h5">Filter</h3>
           <small class="text-muted"
             >Enter here the filter you want to apply to your input
@@ -35,7 +51,10 @@
             @update:modelValue="setFilterJson"
           />
         </div>
-        <div v-if="filterEnabled" class="col-lg d-flex flex-column">
+        <div
+          v-if="isDeserializing && filterEnabled"
+          class="col-lg d-flex flex-column"
+        >
           <h3 class="h5">Filtered input</h3>
           <small class="text-muted"
             >See here the result of applying the filter to your input
@@ -243,7 +262,6 @@ export default {
       "cpuInfo",
       "filter",
       "filteredInput",
-      "filterEnabled",
       "filterJson",
       "hasErrors",
       "hasJsonInJsonSyndrome",
@@ -259,6 +277,7 @@ export default {
       "assumeConstValues",
       "deduplicateKeys",
       "deduplicateValues",
+      "filterEnabled",
       "useDouble",
       "useLongLong",
     ]),

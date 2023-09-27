@@ -27,20 +27,33 @@
             </div>
           </div>
           <div class="form-group row">
-            <label for="mode-selector" class="col-sm-2 col-form-label"
-              >Mode</label
-            >
+            <span class="col-sm-2 col-form-label">Mode</span>
             <div class="col-sm-10">
-              <select
-                id="mode-selector"
-                class="form-control"
-                :value="mode"
-                @input="selectMode($event.target.value)"
-              >
-                <option v-for="(mode, key) in modes" :key="key" :value="key">
-                  {{ mode }}
-                </option>
-              </select>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  v-model="selectedMode"
+                  value="deserialize"
+                  id="deserialize-radio"
+                />
+                <label class="form-check-label" for="deserialize-radio">
+                  Deserialize
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  v-model="selectedMode"
+                  name="mode"
+                  value="serialize"
+                  id="serialize-radio"
+                />
+                <label class="form-check-label" for="serialize-radio">
+                  Serialize
+                </label>
+              </div>
             </div>
           </div>
           <div class="form-group row">
@@ -107,18 +120,13 @@ export default {
   data() {
     return {
       cpuInfos,
-      modes: {
-        deserialize: "Deserialize",
-        "deserialize-filter": "Deserialize and filter",
-        serialize: "Serialize",
-      },
     };
   },
   beforeRouteLeave(to) {
     if (to.name == "step2") {
       window.plausible("ArduinoJson Assistant: Configuration", {
         props: {
-          mode: this.modes[this.mode],
+          mode: this.mode,
           cpu: this.cpuInfos[this.cpu].label,
           type: this.ioTypes[this.ioTypeId].label,
         },
@@ -136,6 +144,14 @@ export default {
       "mode",
       "ioTypeId",
     ]),
+    selectedMode: {
+      get() {
+        return this.mode;
+      },
+      set(value) {
+        this.selectMode(value);
+      },
+    },
   },
   methods: mapActions(useStore, ["selectCpu", "selectMode", "selectIoType"]),
 };
