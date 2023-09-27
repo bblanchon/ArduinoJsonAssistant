@@ -19,28 +19,10 @@
               parse.</small
             >
           </template>
-          <textarea
-            class="form-control flex-fill resize-none"
-            :class="{ 'is-invalid': inputError }"
-            rows="10"
-            spellcheck="false"
-            :value="inputJson"
-            @input="setInputJson($event.target.value)"
-          ></textarea>
-          <div v-if="inputError" class="invalid-feedback">
-            {{ inputError }}
-          </div>
-          <small v-else class="d-flex justify-content-between">
-            <span class="form-text text-muted"
-              >Input length: {{ inputJson.length }}</span
-            >
-            <a
-              href="#"
-              class="btn btn-sm btn-primary mt-1"
-              @click.prevent="prettifyInput"
-              >Prettify</a
-            >
-          </small>
+          <JsonEditor
+            :modelValue="inputJson"
+            @update:modelValue="setInputJson"
+          />
         </div>
         <div v-if="filterEnabled" class="col-lg d-flex flex-column">
           <h3 class="h5">Filter</h3>
@@ -48,24 +30,10 @@
             >Enter here the filter you want to apply to your input
             document.</small
           >
-          <textarea
-            class="form-control flex-fill resize-none"
-            :class="{ 'is-invalid': filterError }"
-            rows="10"
-            @input="setFilterJson($event.target.value)"
-            :value="filterJson"
-          ></textarea>
-          <div v-if="filterError" class="invalid-feedback">
-            {{ filterError }}
-          </div>
-          <small v-else class="text-right">
-            <a
-              href="#"
-              class="btn btn-sm btn-primary mt-1"
-              @click.prevent="prettifyFilter"
-              >Prettify</a
-            >
-          </small>
+          <JsonEditor
+            :modelValue="filterJson"
+            @update:modelValue="setFilterJson"
+          />
         </div>
         <div v-if="filterEnabled" class="col-lg d-flex flex-column">
           <h3 class="h5">Filtered input</h3>
@@ -73,12 +41,7 @@
             >See here the result of applying the filter to your input
             document.</small
           >
-          <textarea
-            class="form-control flex-fill resize-none"
-            rows="10"
-            readonly
-            v-model="filteredInputJson"
-          ></textarea>
+          <JsonEditor :modelValue="filteredInputJson" readonly />
         </div>
       </div>
 
@@ -347,14 +310,12 @@ export default {
       "filter",
       "filteredInput",
       "filterEnabled",
-      "filterError",
       "filterJson",
       "hasErrors",
       "hasJsonInJsonSyndrome",
       "ignoreKeys",
       "ignoreValues",
       "input",
-      "inputError",
       "inputJson",
       "isDeserializing",
       "isSerializing",
@@ -412,12 +373,6 @@ export default {
   },
   methods: {
     ...mapActions(useStore, ["setInputJson", "setFilterJson", "setSettings"]),
-    prettifyInput() {
-      this.setInputJson(JSON.stringify(this.input, null, 2));
-    },
-    prettifyFilter() {
-      this.setFilterJson(JSON.stringify(this.filter, null, 2));
-    },
     resetTweaks() {
       this.setSettings(this.defaults);
     },

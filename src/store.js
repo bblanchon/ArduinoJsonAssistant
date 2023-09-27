@@ -8,6 +8,14 @@ const defaultInput = {
   data: [48.75608, 2.302038],
 };
 
+function tryParse(input) {
+  try {
+    return JSON.parse(input);
+  } catch {
+    return undefined;
+  }
+}
+
 export const useStore = defineStore("assistant", {
   state() {
     return {
@@ -17,10 +25,8 @@ export const useStore = defineStore("assistant", {
       deduplicateKeys: undefined,
       deduplicateValues: undefined,
       filter: true,
-      filterError: null,
       filterJson: "true",
       input: defaultInput,
-      inputError: "",
       inputJson: JSON.stringify(defaultInput, null, 2),
       ioTypeId: "arduinoStream",
       mode: "deserialize",
@@ -35,10 +41,8 @@ export const useStore = defineStore("assistant", {
         this.inputJson = cfg.rootJson;
         try {
           this.input = JSON.parse(this.inputJson);
-          this.inputError = "";
-        } catch (ex) {
+        } catch {
           this.input = undefined;
-          this.inputError = ex.message;
         }
       } else if (cfg.root) {
         this.input = cfg.root;
@@ -93,23 +97,11 @@ export const useStore = defineStore("assistant", {
     },
     setFilterJson(val) {
       this.filterJson = val;
-      try {
-        this.filter = JSON.parse(val);
-        this.filterError = "";
-      } catch (ex) {
-        this.filter = undefined;
-        this.filterError = ex.message;
-      }
+      this.filter = tryParse(val);
     },
     setInputJson(val) {
       this.inputJson = val;
-      try {
-        this.input = JSON.parse(val);
-        this.inputError = "";
-      } catch (ex) {
-        this.input = undefined;
-        this.inputError = ex.message;
-      }
+      this.input = tryParse(val);
     },
   },
   getters: {
@@ -142,7 +134,6 @@ export const useStore = defineStore("assistant", {
     },
     filteredInput() {
       if (!this.filterEnabled) return this.input;
-      if (this.filterError) return undefined;
       return applyFilter(this.input, this.filter);
     },
     ignoreKeys() {
