@@ -2,12 +2,12 @@
   <div>
     <nav class="assistant-nav">
       <StepNumber
-        v-for="step in steps"
+        v-for="step, idx in steps"
         :key="step.number"
         :route="{ name: step.route }"
         :disabled="step.disabled"
         :label="step.label"
-        :number="step.number"
+        :number="idx + 1"
       />
     </nav>
 
@@ -28,25 +28,16 @@ export default {
     steps() {
       return [
         {
-          number: 1,
           route: "step1",
           label: "Configuration",
         },
         {
-          number: 2,
-          route: "step2",
           label: "JSON",
+          route: "step2",
         },
         {
-          number: 3,
-          route: "step3",
-          label: "Size",
-          disabled: this.hasErrors,
-        },
-        {
-          number: 4,
           label: "Program",
-          route: "step4",
+          route: "step3",
           disabled: this.hasErrors,
         },
       ];

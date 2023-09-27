@@ -106,7 +106,7 @@ function fillAccumulator(acc, value, filter) {
 export function measureSize(obj, cfg) {
   cfg = cfg || {};
   const acc = new SizeAccumulator(cfg);
-  fillAccumulator(acc, obj, new JsonFilter(cfg.filter || true));
+  fillAccumulator(acc, obj, new JsonFilter(cfg.filter ?? true));
   return acc.results;
 }
 

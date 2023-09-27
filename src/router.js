@@ -2,7 +2,6 @@ import { createRouter, createWebHashHistory } from "vue-router";
 import AssistantStep1 from "./pages/Step1Page.vue";
 import AssistantStep2 from "./pages/Step2Page.vue";
 import AssistantStep3 from "./pages/Step3Page.vue";
-import AssistantStep4 from "./pages/Step4Page.vue";
 import { useStore } from "./store";
 
 const router = createRouter({
@@ -22,14 +21,6 @@ const router = createRouter({
       path: "/step3",
       name: "step3",
       component: AssistantStep3,
-      meta: {
-        requiresNoError: true,
-      },
-    },
-    {
-      path: "/step4",
-      name: "step4",
-      component: AssistantStep4,
       meta: {
         requiresNoError: true,
       },
