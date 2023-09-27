@@ -63,77 +63,11 @@
       </div>
 
       <p
-        v-if="isDeserializing && nestingLevel > cpuInfo.nestingLimit"
-        class="short-warning mb-3"
-      >
-        This document is deeply nested; don't forget to pass
-        <a :href="`${baseUrl}/v7/api/json/deserializejson/#nesting-limit`"
-          ><code
-            >DeserializationOption::NestingLimit({{ nestingLevel }})</code
-          ></a
-        >.
-      </p>
-      <p
-        v-if="
-          needsLongLong && cpuInfo.useLongLong && !cpuInfo.useLongLong.default
-        "
-        class="short-warning mb-3"
-      >
-        This document contains <code>long&nbsp;long</code>; you should define
-        <a :href="`${baseUrl}/v7/api/config/use_long_long/`"
-          ><code>ARDUINOJSON_USE_LONG_LONG</code></a
-        >
-        to <code>1</code>
-      </p>
-      <p
-        v-if="needsDouble && cpuInfo.useDouble && !cpuInfo.useDouble.default"
-        class="short-warning mb-3"
-      >
-        This document contains <code>double</code>; you should define
-        <a :href="`${baseUrl}/v7/api/config/use_double/`"
-          ><code>ARDUINOJSON_USE_DOUBLE</code></a
-        >
-        to <code>1</code>
-      </p>
-      <p v-if="needsDouble && !cpuInfo.useDouble" class="short-warning mb-3">
-        This document contains double-precision floating points values but the
-        selected platform ({{ cpuInfo.label }}) doesn't support them (<code
-          >double</code
-        >
-        is the same as <code>float</code>).
-      </p>
-      <p v-if="hasJsonInJsonSyndrome" class="short-warning mb-3">
-        This document suffers from the <q>JSON in JSON</q> syndrome, so you may
-        need to call
-        <a
-          v-if="isDeserializing"
-          :href="`${baseUrl}/v7/api/json/deserializejson/`"
-          ><code>deserializeJson()</code></a
-        >
-        <a v-else :href="`${baseUrl}/v7/api/json/serializejson/`"
-          ><code>serializeJson()</code></a
-        >
-        multiple time.
-        <strong
-          >The ArduinoJson Assistant doesn't support this scenario for the
-          moment.</strong
-        >
-      </p>
-      <p class="short-danger mb-3" v-if="ramColor == 'danger'">
-        This is too big to fit in the RAM. See
-        <a :href="`${baseUrl}/v7/how-to/deserialize-a-very-large-document/`"
-          >How to deserialize a very large document?</a
-        >
-      </p>
-      <p class="short-warning mb-3" v-if="ramColor == 'warning'">
-        This may not fit in the RAM. Make sure there is enough free space.
-      </p>
-      <p class="short-tip mb-3" v-if="ramColor == 'danger' && cpu === 'esp32'">
-        See also:
-        <a :href="`${baseUrl}/v7/how-to/use-external-ram-on-esp32/`"
-          >How to use external RAM on an ESP32?</a
-        >
-      </p>
+        v-for="alert in alerts"
+        :key="alert.id"
+        :class="`short-${alert.type} mb-3`"
+        v-html="alert.message"
+      ></p>
 
       <details>
         <summary>
@@ -369,6 +303,66 @@ export default {
       if (this.capacity.recommended > this.cpuInfo.ramError) return "danger";
       if (this.capacity.recommended > this.cpuInfo.ramWarning) return "warning";
       return "success";
+    },
+    alerts() {
+      const alerts = [];
+      if (this.isDeserializing && this.nestingLevel > this.cpuInfo.nestingLimit)
+        alerts.push({
+          id: "too-deep",
+          type: "warning",
+          message: `This document is deeply nested; don't forget to pass <a href="${this.baseUrl}/v7/api/json/deserializejson/#nesting-limit"><code>DeserializationOption::NestingLimit(${this.nestingLevel})</code></a>`,
+        });
+      if (
+        this.needsLongLong &&
+        this.cpuInfo.useLongLong &&
+        !this.cpuInfo.useLongLong.default
+      )
+        alerts.push({
+          id: "long-long",
+          type: "warning",
+          message: `This document contains <code>long&nbsp;long</code>; you should define <a href="${this.baseUrl}/v7/api/config/use_long_long/"><code>ARDUINOJSON_USE_LONG_LONG</code></a> to <code>1</code>`,
+        });
+      if (
+        this.needsDouble &&
+        this.cpuInfo.useDouble &&
+        !this.cpuInfo.useDouble.default
+      )
+        alerts.push({
+          id: "double",
+          type: "warning",
+          message: `This document contains <code>double</code>; you should define <a href="${this.baseUrl}/v7/api/config/use_double/"><code>ARDUINOJSON_USE_DOUBLE</code></a> to <code>1</code>`,
+        });
+      if (this.needsDouble && !this.cpuInfo.useDouble)
+        alerts.push({
+          id: "double-not-supported",
+          type: "warning",
+          message: `This document contains double-precision floating points values but ${this.cpuInfo.label} doesn't support them (<code>double</code> is the same as <code>float</code>)`,
+        });
+      if (this.hasJsonInJsonSyndrome)
+        alerts.push({
+          id: "json-in-json",
+          type: "warning",
+          message: `This document suffers from the <q>JSON in JSON</q> syndrome, so you may need to call <a href="${this.baseUrl}/v7/api/json/deserializejson/"><code>deserializeJson()</code></a> multiple times. <strong>The ArduinoJson Assistant doesn't support this scenario.</strong>`,
+        });
+      if (this.ramColor == "danger")
+        alerts.push({
+          id: "size-error",
+          type: "danger",
+          message: `This is too big to fit in the RAM. See <a href="${this.baseUrl}/v7/how-to/deserialize-a-very-large-document/">How to deserialize a very large document?</a>`,
+        });
+      if (this.ramColor == "warning")
+        alerts.push({
+          id: "size-warning",
+          type: "warning",
+          message: `This may not fit in the RAM. Make sure there is enough free space.`,
+        });
+      if (this.ramColor == "danger" && this.cpu === "esp32")
+        alerts.push({
+          id: "esp32-psram",
+          type: "tip",
+          message: `This is too big to fit in the RAM. See <a href="${this.baseUrl}/v7/how-to/use-external-ram-on-esp32/">How to use external RAM on an ESP32?</a>`,
+        });
+      return alerts;
     },
   },
   methods: {
