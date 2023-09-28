@@ -18,23 +18,13 @@
       </div>
       <div class="row flex-fill">
         <div class="col-lg d-flex flex-column">
-          <template v-if="isSerializing">
-            <h3 class="h5">Output</h3>
-            <small class="text-muted"
-              >Enter here the JSON document you want your program to
-              generate.</small
-            >
-          </template>
-          <template v-else>
-            <h3 class="h5">Input</h3>
-            <small class="text-muted"
-              >Enter here the JSON document you want your program to
-              parse.</small
-            >
-          </template>
+          <h3 class="h5">{{ isSerializing ? "Output" : "Input" }}</h3>
           <JsonEditor
             :modelValue="inputJson"
             @update:modelValue="setInputJson"
+            :placeholder="`Enter here the JSON document you want your program to ${
+              isSerializing ? 'generate' : 'parse'
+            }.`"
           />
         </div>
         <div
@@ -42,13 +32,10 @@
           class="col-lg d-flex flex-column"
         >
           <h3 class="h5">Filter</h3>
-          <small class="text-muted"
-            >Enter here the filter you want to apply to your input
-            document.</small
-          >
           <JsonEditor
             :modelValue="filterJson"
             @update:modelValue="setFilterJson"
+            placeholder="Enter here the filter you want to apply to your inputdocument."
           />
         </div>
         <div
@@ -56,11 +43,12 @@
           class="col-lg d-flex flex-column"
         >
           <h3 class="h5">Filtered input</h3>
-          <small class="text-muted"
-            >See here the result of applying the filter to your input
-            document.</small
-          >
-          <JsonEditor :modelValue="filteredInputJson" readonly />
+          <JsonEditor
+            :modelValue="filteredInputJson"
+            readonly
+            placeholder="See here the result of applying the filter to your input
+            document."
+          />
         </div>
       </div>
 

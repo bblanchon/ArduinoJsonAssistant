@@ -3,10 +3,11 @@
     <textarea
       class="form-control resize-none"
       :class="{ 'is-invalid': !!error }"
-      rows="10"
+      rows="15"
       spellcheck="false"
       v-model="text"
       :readonly="readonly"
+      v-bind="$attrs"
     ></textarea>
     <button
       v-if="!readonly"
@@ -28,6 +29,7 @@ import PrettifyIcon from "bootstrap-icons/icons/magic.svg";
 
 export default {
   emits: ["update:modelValue"],
+  inheritAttrs: false,
   components: { PrettifyIcon },
   props: {
     modelValue: {
@@ -61,6 +63,7 @@ export default {
       }
     },
     error() {
+      if (!this.text.trim()) return "Please enter a JSON document";
       try {
         JSON.parse(this.text);
         return null;
@@ -73,6 +76,10 @@ export default {
 </script>
 
 <style scoped>
+textarea {
+  overflow-x: auto;
+  overflow-y: scroll;
+}
 .prettify-btn {
   position: absolute;
   right: 25px;
