@@ -15,7 +15,7 @@
       :disabled="prettyText == text"
       v-tooltip="'Prettify JSON'"
     >
-      🧹
+      <PrettifyIcon />
     </button>
   </div>
   <div v-if="error" class="invalid-feedback">
@@ -24,8 +24,11 @@
 </template>
 
 <script>
+import PrettifyIcon from "bootstrap-icons/icons/magic.svg";
+
 export default {
   emits: ["update:modelValue"],
+  components: { PrettifyIcon },
   props: {
     modelValue: {
       type: String,
@@ -74,8 +77,9 @@ export default {
   position: absolute;
   right: 25px;
   bottom: 10px;
-  width: 30px;
-  height: 30px;
+  width: 27px;
+  height: 27px;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
