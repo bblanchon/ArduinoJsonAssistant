@@ -1,23 +1,24 @@
 <template>
-  <textarea
-    class="form-control flex-fill resize-none"
-    :class="{ 'is-invalid': !!error }"
-    rows="10"
-    spellcheck="false"
-    v-model="text"
-    :readonly="readonly"
-  ></textarea>
+  <div class="position-relative" :class="{ 'is-invalid': !!error }">
+    <textarea
+      class="form-control resize-none"
+      :class="{ 'is-invalid': !!error }"
+      rows="10"
+      spellcheck="false"
+      v-model="text"
+      :readonly="readonly"
+    ></textarea>
+    <button
+      v-if="!readonly"
+      class="btn btn-sm btn-primary prettify-btn"
+      @click.prevent="prettify"
+      :disabled="prettyText == text"
+    >
+      🧹
+    </button>
+  </div>
   <div v-if="error" class="invalid-feedback">
     {{ error }}
-  </div>
-  <div v-else-if="!readonly" class="text-right">
-    <button
-      class="btn btn-sm btn-primary mt-1"
-      @click.prevent="prettify"
-      :disabled="!!error"
-    >
-      Prettify
-    </button>
   </div>
 </template>
 
@@ -36,10 +37,7 @@ export default {
   },
   methods: {
     prettify() {
-      this.$emit(
-        "update:modelValue",
-        JSON.stringify(JSON.parse(this.modelValue), null, 2),
-      );
+      this.$emit("update:modelValue", this.prettyText);
     },
   },
   computed: {
@@ -50,6 +48,13 @@ export default {
       get() {
         return this.modelValue;
       },
+    },
+    prettyText() {
+      try {
+        return JSON.stringify(JSON.parse(this.text), null, 2);
+      } catch (e) {
+        return this.text;
+      }
     },
     error() {
       try {
@@ -62,3 +67,18 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.prettify-btn {
+  position: absolute;
+  right: 25px;
+  bottom: 10px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.4);
+}
+</style>
