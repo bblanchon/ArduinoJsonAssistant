@@ -6,10 +6,10 @@
       <div class="row">
         <form class="col-lg-8 mb-4">
           <div class="form-group row">
-            <label for="cpu-selector" class="col-sm-2 col-form-label"
+            <label for="cpu-selector" class="col-sm-3 col-form-label"
               >Processor</label
             >
-            <div class="col-sm-10">
+            <div class="col-sm-9">
               <select
                 id="cpu-selector"
                 class="form-control"
@@ -27,8 +27,8 @@
             </div>
           </div>
           <div class="form-group row">
-            <span class="col-sm-2 col-form-label">Mode</span>
-            <div class="col-sm-10">
+            <span class="col-sm-3 col-form-label">Mode</span>
+            <div class="col-sm-9">
               <div class="form-check">
                 <input
                   class="form-check-input"
@@ -57,10 +57,10 @@
             </div>
           </div>
           <div class="form-group row">
-            <label for="io-type" class="col-sm-2 col-form-label">
+            <label for="io-type" class="col-sm-3 col-form-label">
               {{ isSerializing ? "Output" : "Input" }} type
             </label>
-            <div class="col-sm-10">
+            <div class="col-sm-9">
               <select
                 id="io-type"
                 class="form-control"
