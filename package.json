@@ -22,6 +22,7 @@
     "@rushstack/eslint-patch": "^1.5.0",
     "@vitejs/plugin-vue": "^4.3.4",
     "@vue/eslint-config-prettier": "^8.0.0",
+    "bootstrap-icons": "^1.11.1",
     "eslint": "^8.50.0",
     "eslint-plugin-vue": "^9.17.0",
     "highlight.js": "^11.8.0",
@@ -29,6 +30,7 @@
     "sass": "^1.68.0",
     "unplugin-vue-components": "^0.25.2",
     "vite": "^4.4.9",
+    "vite-svg-loader": "^4.0.0",
     "vitest": "^0.34.5"
   }
 }
