@@ -69,12 +69,12 @@
         </div>
       </div>
 
-      <p
+      <div
         v-for="alert in alerts"
         :key="alert.id"
         :class="`short-${alert.type} mb-3`"
         v-html="alert.message"
-      ></p>
+      ></div>
 
       <AdvancedSettings />
     </div>
@@ -124,18 +124,6 @@ export default {
     filteredInputJson() {
       return JSON.stringify(this.filteredInput, null, 2);
     },
-    hasJsonInJsonSyndrome() {
-      return hasJsonInJsonSyndrome(this.filteredInput);
-    },
-    needsDouble() {
-      return needsDouble(this.filteredInput);
-    },
-    needsLongLong() {
-      return needsLongLong(this.filteredInput);
-    },
-    nestingLevel() {
-      return measureNesting(this.input);
-    },
     capacity() {
       return measureSize(this.input, this.configuration);
     },
@@ -148,64 +136,62 @@ export default {
       return "success";
     },
     alerts() {
-      const alerts = [];
-      if (this.isDeserializing && this.nestingLevel > this.cpuInfo.nestingLimit)
-        alerts.push({
+      const longLongNeeded = needsLongLong(this.filteredInput);
+      const longLongIsDefault = !!this.cpuInfo.useLongLong?.default;
+      const doubleNeeded = needsDouble(this.filteredInput);
+      const doubleSupported = !!this.cpuInfo.useDouble;
+      const doubleIsDefault = !!this.cpuInfo.useDouble?.default;
+      const nestingLevel = measureNesting(this.input);
+      return [
+        {
+          if: this.isDeserializing && nestingLevel > this.cpuInfo.nestingLimit,
           id: "too-deep",
           type: "warning",
-          message: `This document is deeply nested; don't forget to pass <a href="${this.baseUrl}/v7/api/json/deserializejson/#nesting-limit"><code>DeserializationOption::NestingLimit(${this.nestingLevel})</code></a>`,
-        });
-      if (
-        this.needsLongLong &&
-        this.cpuInfo.useLongLong &&
-        !this.cpuInfo.useLongLong.default
-      )
-        alerts.push({
+          message: `This document is deeply nested; don't forget to pass <a href="${this.baseUrl}/v7/api/json/deserializejson/#nesting-limit"><code>DeserializationOption::NestingLimit(${nestingLevel})</code></a>`,
+        },
+        {
+          if: longLongNeeded && !longLongIsDefault,
           id: "long-long",
           type: "warning",
           message: `This document contains <code>long&nbsp;long</code>; you should define <a href="${this.baseUrl}/v7/api/config/use_long_long/"><code>ARDUINOJSON_USE_LONG_LONG</code></a> to <code>1</code>`,
-        });
-      if (
-        this.needsDouble &&
-        this.cpuInfo.useDouble &&
-        !this.cpuInfo.useDouble.default
-      )
-        alerts.push({
+        },
+        {
+          if: doubleNeeded && doubleSupported && !doubleIsDefault,
           id: "double",
           type: "warning",
           message: `This document contains <code>double</code>; you should define <a href="${this.baseUrl}/v7/api/config/use_double/"><code>ARDUINOJSON_USE_DOUBLE</code></a> to <code>1</code>`,
-        });
-      if (this.needsDouble && !this.cpuInfo.useDouble)
-        alerts.push({
+        },
+        {
+          if: doubleNeeded && !doubleSupported,
           id: "double-not-supported",
           type: "warning",
           message: `This document contains double-precision floating points values but ${this.cpuInfo.label} doesn't support them (<code>double</code> is the same as <code>float</code>)`,
-        });
-      if (this.hasJsonInJsonSyndrome)
-        alerts.push({
+        },
+        {
+          if: hasJsonInJsonSyndrome(this.filteredInput),
           id: "json-in-json",
           type: "warning",
           message: `This document suffers from the <q>JSON in JSON</q> syndrome, so you may need to call <a href="${this.baseUrl}/v7/api/json/deserializejson/"><code>deserializeJson()</code></a> multiple times. <strong>The ArduinoJson Assistant doesn't support this scenario.</strong>`,
-        });
-      if (this.ramColor == "danger")
-        alerts.push({
+        },
+        {
+          if: this.ramColor == "danger",
           id: "size-error",
           type: "danger",
           message: `This is too big to fit in the RAM. See <a href="${this.baseUrl}/v7/how-to/deserialize-a-very-large-document/">How to deserialize a very large document?</a>`,
-        });
-      if (this.ramColor == "warning")
-        alerts.push({
+        },
+        {
+          if: this.ramColor == "warning",
           id: "size-warning",
           type: "warning",
           message: `This may not fit in the RAM. Make sure there is enough free space.`,
-        });
-      if (this.ramColor == "danger" && this.cpu === "esp32")
-        alerts.push({
+        },
+        {
+          if: this.ramColor == "danger" && this.cpu === "esp32",
           id: "esp32-psram",
           type: "tip",
           message: `This is too big to fit in the RAM. See <a href="${this.baseUrl}/v7/how-to/use-external-ram-on-esp32/">How to use external RAM on an ESP32?</a>`,
-        });
-      return alerts;
+        },
+      ].filter((alert) => alert.if);
     },
   },
   methods: mapActions(useStore, [
