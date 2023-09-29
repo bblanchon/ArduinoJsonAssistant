@@ -1,7 +1,7 @@
-import { useStore } from "./store";
+import { useConfigStore } from "@/stores/config";
 
 export function persistStore() {
-  const store = useStore();
+  const store = useConfigStore();
 
   try {
     store.setSettings(JSON.parse(localStorage.getItem("assitantConfig")));

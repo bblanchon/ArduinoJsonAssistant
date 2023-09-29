@@ -99,7 +99,7 @@ hljs.registerLanguage("cpp", (hljs) => {
 import { generateParsingProgram } from "@/assistant/parsingProgram";
 import { generateSerializingProgram } from "@/assistant/serializingProgram";
 import { mapState } from "pinia";
-import { useStore } from "@/store";
+import { useConfigStore } from "@/stores/config";
 
 const sleep = (m) => new Promise((r) => setTimeout(r, m));
 
@@ -124,7 +124,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useStore, [
+    ...mapState(useConfigStore, [
       "cpuInfo",
       "isDeserializing",
       "isSerializing",

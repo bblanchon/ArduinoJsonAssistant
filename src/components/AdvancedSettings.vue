@@ -142,7 +142,7 @@
 
 <script>
 import { mapActions, mapState, mapWritableState } from "pinia";
-import { useStore } from "@/store";
+import { useConfigStore } from "@/stores/config";
 
 const fields = [
   "assumeConstKeys",
@@ -155,14 +155,14 @@ const fields = [
 
 export default {
   computed: {
-    ...mapState(useStore, [
+    ...mapState(useConfigStore, [
       "cpuInfo",
       "ignoreKeys",
       "ignoreValues",
       "isDeserializing",
       "isSerializing",
     ]),
-    ...mapWritableState(useStore, fields),
+    ...mapWritableState(useConfigStore, fields),
     defaults() {
       return {
         assumeConstKeys: this.isSerializing ? true : undefined,
@@ -178,7 +178,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(useStore, ["setSettings"]),
+    ...mapActions(useConfigStore, ["setSettings"]),
     resetTweaks() {
       this.setSettings(this.defaults);
     },

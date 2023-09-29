@@ -113,7 +113,7 @@
 <script>
 import { mapState, mapActions } from "pinia";
 import cpuInfos from "@/assistant/cpus";
-import { useStore } from "@/store";
+import { useConfigStore } from "@/stores/config";
 
 export default {
   inject: ["version", "baseUrl", "sponsors"],
@@ -134,7 +134,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(useStore, [
+    ...mapState(useConfigStore, [
       "isDeserializing",
       "isSerializing",
       "cpuInfo",
@@ -153,6 +153,10 @@ export default {
       },
     },
   },
-  methods: mapActions(useStore, ["selectCpu", "selectMode", "selectIoType"]),
+  methods: mapActions(useConfigStore, [
+    "selectCpu",
+    "selectMode",
+    "selectIoType",
+  ]),
 };
 </script>

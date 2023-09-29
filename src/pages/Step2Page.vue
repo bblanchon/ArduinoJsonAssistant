@@ -100,13 +100,13 @@
 import { mapActions, mapState, mapWritableState } from "pinia";
 import { hasJsonInJsonSyndrome, measureNesting } from "@/assistant/analyzer";
 import { needsDouble, needsLongLong } from "@/assistant/analyzer";
-import { useStore } from "@/store";
+import { useConfigStore } from "@/stores/config";
 import { measureSize } from "@/assistant/analyzer";
 
 export default {
   inject: ["baseUrl"],
   computed: {
-    ...mapState(useStore, [
+    ...mapState(useConfigStore, [
       "configuration",
       "cpu",
       "cpuInfo",
@@ -120,7 +120,7 @@ export default {
       "isDeserializing",
       "isSerializing",
     ]),
-    ...mapWritableState(useStore, ["filterEnabled"]),
+    ...mapWritableState(useConfigStore, ["filterEnabled"]),
     filteredInputJson() {
       return JSON.stringify(this.filteredInput, null, 2);
     },
@@ -194,7 +194,7 @@ export default {
       ].filter((alert) => alert.if);
     },
   },
-  methods: mapActions(useStore, [
+  methods: mapActions(useConfigStore, [
     "setInputJson",
     "setFilterJson",
     "setSettings",
