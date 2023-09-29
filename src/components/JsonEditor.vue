@@ -13,6 +13,7 @@
       class="btn btn-sm btn-primary prettify-btn"
       @click.prevent="prettify"
       :disabled="prettyText == text"
+      v-tooltip="'Prettify JSON'"
     >
       🧹
     </button>
