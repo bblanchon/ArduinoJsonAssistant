@@ -99,6 +99,7 @@
 <script>
 import { mapActions, mapState, mapWritableState } from "pinia";
 import { useConfigStore } from "@/stores/config";
+import { useCpuStore } from "@/stores/cpu";
 import { useAlertsStore } from "@/stores/alerts";
 import { measureSize } from "@/assistant/analyzer";
 
@@ -107,8 +108,6 @@ export default {
   computed: {
     ...mapState(useConfigStore, [
       "configuration",
-      "cpu",
-      "cpuInfo",
       "filter",
       "filteredInput",
       "filterJson",
@@ -118,6 +117,7 @@ export default {
       "isDeserializing",
       "isSerializing",
     ]),
+    ...mapState(useCpuStore, ["ramError", "ramWarning"]),
     ...mapState(useAlertsStore, ["alerts"]),
     ...mapWritableState(useConfigStore, ["filterEnabled"]),
     filteredInputJson() {
@@ -127,11 +127,11 @@ export default {
       return measureSize(this.input, this.configuration);
     },
     ramPercent() {
-      return (this.capacity.recommended / this.cpuInfo.ramError) * 100;
+      return (this.capacity.recommended / this.ramError) * 100;
     },
     ramColor() {
-      if (this.capacity.recommended > this.cpuInfo.ramError) return "danger";
-      if (this.capacity.recommended > this.cpuInfo.ramWarning) return "warning";
+      if (this.capacity.recommended > this.ramError) return "danger";
+      if (this.capacity.recommended > this.ramWarning) return "warning";
       return "success";
     },
   },

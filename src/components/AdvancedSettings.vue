@@ -13,26 +13,21 @@
       </button>
       <span v-else>(advanced users only)</span>
     </summary>
-    <div v-if="cpuInfo.useDouble" class="form-group">
+    <div v-if="doubleSupported" class="form-group">
       <label for="useDouble" class="col-form-label">
         Store floating point values as
       </label>
       <select id="useDouble" class="form-control" v-model="useDouble">
-        <option v-if="cpuInfo.useDouble.default" :value="true">
-          double (default)
-        </option>
+        <option v-if="doubleIsDefault" :value="true">double (default)</option>
         <option v-else :value="true">
           double (#define ARDUINOJSON_USE_DOUBLE 1)
         </option>
-        <option v-if="cpuInfo.useDouble.default" :value="false">
+        <option v-if="doubleIsDefault" :value="false">
           float (#define ARDUINOJSON_USE_DOUBLE 0)
         </option>
         <option v-else :value="false">float (default)</option>
       </select>
-      <small
-        v-if="cpuInfo.useDouble.slotSize == cpuInfo.slotSize"
-        class="form-text text-muted"
-      >
+      <small v-if="doubleInconsequential" class="form-text text-muted">
         This setting doesn't affect the document size of this platform, so you
         won't see any change in the table above.
       </small>
@@ -41,26 +36,23 @@
         <code>double</code> if you need the increased precision and range.
       </small>
     </div>
-    <div v-if="cpuInfo.useLongLong" class="form-group">
+    <div v-if="longLongSupported" class="form-group">
       <label for="useLongLong" class="col-form-label">
         Store integral values values as
       </label>
       <select id="useLongLong" class="form-control" v-model="useLongLong">
-        <option v-if="cpuInfo.useLongLong.default" :value="true">
+        <option v-if="longLongIsDefault" :value="true">
           long long (default)
         </option>
         <option v-else :value="true">
           long long (#define ARDUINOJSON_USE_LONG_LONG 1)
         </option>
-        <option v-if="cpuInfo.useLongLong.default" :value="false">
+        <option v-if="longLongIsDefault" :value="false">
           long (#define ARDUINOJSON_USE_LONG_LONG 0)
         </option>
         <option v-else :value="false">long (default)</option>
       </select>
-      <small
-        v-if="cpuInfo.useLongLong.slotSize == cpuInfo.slotSize"
-        class="form-text text-muted"
-      >
+      <small v-if="longLongInconsequential" class="form-text text-muted">
         This setting doesn't affect the document size of this platform, so you
         won't see any change in the table above.
       </small>
@@ -143,6 +135,7 @@
 <script>
 import { mapActions, mapState, mapWritableState } from "pinia";
 import { useConfigStore } from "@/stores/config";
+import { useCpuStore } from "@/stores/cpu";
 
 const fields = [
   "assumeConstKeys",
@@ -156,11 +149,17 @@ const fields = [
 export default {
   computed: {
     ...mapState(useConfigStore, [
-      "cpuInfo",
       "ignoreKeys",
       "ignoreValues",
-      "isDeserializing",
       "isSerializing",
+    ]),
+    ...mapState(useCpuStore, [
+      "doubleSupported",
+      "doubleIsDefault",
+      "doubleInconsequential",
+      "longLongSupported",
+      "longLongIsDefault",
+      "longLongInconsequential",
     ]),
     ...mapWritableState(useConfigStore, fields),
     defaults() {
@@ -169,8 +168,8 @@ export default {
         assumeConstValues: this.isSerializing ? false : undefined,
         deduplicateKeys: true,
         deduplicateValues: false,
-        useDouble: !!this.cpuInfo.useDouble?.default,
-        useLongLong: !!this.cpuInfo.useLongLong?.default,
+        useDouble: this.doubleIsDefault,
+        useLongLong: this.longLongIsDefault,
       };
     },
     tweakCount() {

@@ -137,7 +137,6 @@ export default {
     ...mapState(useConfigStore, [
       "isDeserializing",
       "isSerializing",
-      "cpuInfo",
       "ioTypes",
       "ioType",
       "cpu",

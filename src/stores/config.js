@@ -108,9 +108,6 @@ export const useConfigStore = defineStore("config", {
     },
   },
   getters: {
-    cpuInfo() {
-      return cpuInfos[this.cpu];
-    },
     isSerializing() {
       return this.mode === "serialize";
     },
@@ -122,7 +119,7 @@ export const useConfigStore = defineStore("config", {
         mode: this.mode,
         root: this.input,
         filter: this.filterEnabled ? this.filter : undefined,
-        cpu: this.cpuInfo,
+        cpu: cpuInfos[this.cpu],
         ignoreKeys: this.ignoreKeys,
         ignoreValues: this.ignoreValues,
         deduplicateKeys: this.deduplicateKeys,

@@ -3,20 +3,14 @@
     <h2 class="h4 card-header bg-primary text-white">Step 3: Program</h2>
 
     <div class="card-body">
-      <div
-        class="alert alert-warning"
-        v-if="cpuInfo.useLongLong && cpuInfo.useLongLong.default != useLongLong"
-      >
+      <div class="alert alert-warning" v-if="longLongIsDefault != useLongLong">
         ⚠️ This program assumes you defined
         <a :href="`${baseUrl}/v7/api/config/use_long_long/`"
           ><code>ARDUINOJSON_USE_LONG_LONG</code></a
         >
         to <code>{{ +useLongLong }}</code>
       </div>
-      <div
-        class="alert alert-warning"
-        v-if="cpuInfo.useDouble && cpuInfo.useDouble.default != useDouble"
-      >
+      <div class="alert alert-warning" v-if="doubleIsDefault != useDouble">
         ⚠️ This program assumes you defined
         <a :href="`${baseUrl}/v7/api/config/use_double/`"
           ><code>ARDUINOJSON_USE_DOUBLE</code></a
@@ -100,6 +94,7 @@ import { generateParsingProgram } from "@/assistant/parsingProgram";
 import { generateSerializingProgram } from "@/assistant/serializingProgram";
 import { mapState } from "pinia";
 import { useConfigStore } from "@/stores/config";
+import { useCpuStore } from "@/stores/cpu";
 
 const sleep = (m) => new Promise((r) => setTimeout(r, m));
 
@@ -125,13 +120,13 @@ export default {
   },
   computed: {
     ...mapState(useConfigStore, [
-      "cpuInfo",
       "isDeserializing",
       "isSerializing",
       "configuration",
       "useLongLong",
       "useDouble",
     ]),
+    ...mapState(useCpuStore, ["longLongIsDefault", "doubleIsDefault"]),
   },
   created() {
     this.generateProgram();
