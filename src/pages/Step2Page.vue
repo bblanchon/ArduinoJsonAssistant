@@ -54,7 +54,7 @@
 
       <div class="d-flex align-items-center my-3">
         <div class="flex-none mr-3">
-          Memory consumption: <b>{{ capacity.minimum }} bytes</b>
+          Memory consumption: <b>{{ ramUsage }} bytes</b>
         </div>
         <div class="progress flex-fill">
           <div
@@ -101,7 +101,7 @@ import { mapActions, mapState, mapWritableState } from "pinia";
 import { useConfigStore } from "@/stores/config";
 import { useCpuStore } from "@/stores/cpu";
 import { useAlertsStore } from "@/stores/alerts";
-import { measureSize } from "@/assistant/analyzer";
+import { useStatsStore } from "@/stores/stats";
 
 export default {
   inject: ["baseUrl"],
@@ -117,21 +117,19 @@ export default {
       "isDeserializing",
       "isSerializing",
     ]),
+    ...mapState(useStatsStore, ["peakRamUsage", "ramUsage"]),
     ...mapState(useCpuStore, ["ramError", "ramWarning"]),
     ...mapState(useAlertsStore, ["alerts"]),
     ...mapWritableState(useConfigStore, ["filterEnabled"]),
     filteredInputJson() {
       return JSON.stringify(this.filteredInput, null, 2);
     },
-    capacity() {
-      return measureSize(this.input, this.configuration);
-    },
     ramPercent() {
-      return (this.capacity.recommended / this.ramError) * 100;
+      return (this.peakRamUsage / this.ramError) * 100;
     },
     ramColor() {
-      if (this.capacity.recommended > this.ramError) return "danger";
-      if (this.capacity.recommended > this.ramWarning) return "warning";
+      if (this.peakRamUsage > this.ramError) return "danger";
+      if (this.peakRamUsage > this.ramWarning) return "warning";
       return "success";
     },
   },
