@@ -8,6 +8,7 @@ import { generateParsingProgram } from "@/assistant/parsingProgram";
 import { generateSerializingProgram } from "@/assistant/serializingProgram";
 
 import { useConfigStore } from "./config";
+import { useCpuStore } from "./cpu";
 
 hljs.registerLanguage("cpp", (hljs) => {
   const lang = cpp(hljs);
@@ -24,21 +25,25 @@ hljs.registerLanguage("cpp", (hljs) => {
 
 export const useProgramStore = defineStore("program", () => {
   const cfg = useConfigStore();
+  const cpu = useCpuStore();
   const program = ref("");
 
   async function generate() {
-    switch (cfg.mode) {
-      case "deserialize":
-        program.value = generateParsingProgram(cfg.configuration);
-        break;
+    const fct = {
+      deserialize: generateParsingProgram,
+      serialize: generateSerializingProgram,
+    }[cfg.mode];
 
-      case "serialize":
-        program.value = generateSerializingProgram(cfg.configuration);
-        break;
-
-      default:
-        throw new Error(`Invalid mode ${cfg.mode}`);
-    }
+    program.value = fct({
+      root: cfg.input,
+      filter: cfg.filterEnabled ? cfg.filter : undefined,
+      cpu: {
+        nestingLimit: cpu.nestingLimit,
+        serial: cpu.serial,
+        progmem: cpu.progmem,
+      },
+      inputType: cfg.ioTypeId,
+    });
 
     await sleep(100);
 

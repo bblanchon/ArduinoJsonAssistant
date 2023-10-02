@@ -99,7 +99,6 @@ export default {
     ...mapState(useCpuStore, ["longLongIsDefault", "doubleIsDefault"]),
   },
   created() {
-    console.log("Step3Page created");
     this.generate();
   },
   methods: {

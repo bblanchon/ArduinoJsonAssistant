@@ -114,21 +114,6 @@ export const useConfigStore = defineStore("config", {
     isDeserializing() {
       return this.mode.indexOf("deserialize") === 0;
     },
-    configuration() {
-      return {
-        mode: this.mode,
-        root: this.input,
-        filter: this.filterEnabled ? this.filter : undefined,
-        cpu: cpuInfos[this.cpu],
-        ignoreKeys: this.ignoreKeys,
-        ignoreValues: this.ignoreValues,
-        deduplicateKeys: this.deduplicateKeys,
-        deduplicateValues: this.deduplicateValues,
-        useLongLong: this.useLongLong,
-        useDouble: this.useDouble,
-        inputType: this.ioTypeId,
-      };
-    },
     filteredInput() {
       if (!this.filterEnabled) return this.input;
       return applyFilter(this.input, this.filter);

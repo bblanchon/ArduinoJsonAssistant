@@ -107,7 +107,6 @@ export default {
   inject: ["baseUrl"],
   computed: {
     ...mapState(useConfigStore, [
-      "configuration",
       "filter",
       "filteredInput",
       "filterJson",

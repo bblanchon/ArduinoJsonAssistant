@@ -24,5 +24,7 @@ export const useCpuStore = defineStore("cpu", () => {
       () => cpu.value.slotSize == cpu.value.useLongLong.slotSize,
     ),
     psram: computed(() => cfg.cpu === "esp32"),
+    serial: computed(() => cpu.value.serial),
+    progmem: computed(() => cpu.value.progmem),
   };
 });
