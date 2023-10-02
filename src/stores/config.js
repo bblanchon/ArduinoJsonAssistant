@@ -112,7 +112,7 @@ export const useConfigStore = defineStore("config", {
       return this.mode === "serialize";
     },
     isDeserializing() {
-      return this.mode.indexOf("deserialize") === 0;
+      return this.mode === "deserialize";
     },
     filteredInput() {
       if (!this.filterEnabled) return this.input;

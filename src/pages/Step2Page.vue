@@ -18,13 +18,13 @@
       </div>
       <div class="row flex-fill">
         <div class="col-lg d-flex flex-column">
-          <h3 class="h5">{{ isSerializing ? "Output" : "Input" }}</h3>
+          <h3 class="h5">
+            {{ { serialize: "Output", deserialize: "Input" }[mode] }}
+          </h3>
           <JsonEditor
             :modelValue="inputJson"
             @update:modelValue="setInputJson"
-            :placeholder="`Enter here the JSON document you want your program to ${
-              isSerializing ? 'generate' : 'parse'
-            }.`"
+            :placeholder="`Enter here the JSON document you want your program to ${mode}.`"
           />
         </div>
         <div
@@ -114,7 +114,7 @@ export default {
       "input",
       "inputJson",
       "isDeserializing",
-      "isSerializing",
+      "mode",
     ]),
     ...mapState(useStatsStore, ["peakRamUsage", "ramUsage"]),
     ...mapState(useCpuStore, ["ramError", "ramWarning"]),

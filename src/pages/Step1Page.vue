@@ -58,7 +58,7 @@
           </div>
           <div class="form-group row">
             <label for="io-type" class="col-sm-3 col-form-label">
-              {{ isSerializing ? "Output" : "Input" }} type
+              {{ inputTypeLabel }}
             </label>
             <div class="col-sm-9">
               <select
@@ -135,8 +135,6 @@ export default {
   },
   computed: {
     ...mapState(useConfigStore, [
-      "isDeserializing",
-      "isSerializing",
       "ioTypes",
       "ioType",
       "cpu",
@@ -150,6 +148,12 @@ export default {
       set(value) {
         this.selectMode(value);
       },
+    },
+    inputTypeLabel() {
+      return {
+        serialize: "Input",
+        deserialize: "Output",
+      }[this.mode];
     },
   },
   methods: mapActions(useConfigStore, [
