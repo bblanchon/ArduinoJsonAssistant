@@ -36,30 +36,8 @@
       </figure>
       <ul class="list-inline card-text">
         <li class="list-inline-item font-weight-bold">See also</li>
-        <li v-if="isDeserializing" class="list-inline-item">
-          <a :href="`${baseUrl}/v7/tutorial/deserialization/`"
-            >Deserialization Tutorial</a
-          >
-        </li>
-        <li v-if="isSerializing" class="list-inline-item">
-          <a :href="`${baseUrl}/v7/tutorial/serialization/`"
-            >Serialization Tutorial</a
-          >
-        </li>
-        <li class="list-inline-item">
-          <a :href="`${baseUrl}/v7/api/jsondocument/`"
-            ><code>JsonDocument</code></a
-          >
-        </li>
-        <li v-if="isDeserializing" class="list-inline-item">
-          <a :href="`${baseUrl}/v7/api/json/deserializejson/`"
-            ><code>deserializeJson()</code></a
-          >
-        </li>
-        <li v-if="isSerializing" class="list-inline-item">
-          <a :href="`${baseUrl}/v7/api/json/serializejson/`"
-            ><code>serializeJson()</code></a
-          >
+        <li v-for="link in links" :key="link.label" class="list-inline-item">
+          <a :href="link.url" v-html="link.label"></a>
         </li>
       </ul>
     </div>
@@ -97,6 +75,34 @@ export default {
       "useDouble",
     ]),
     ...mapState(useCpuStore, ["longLongIsDefault", "doubleIsDefault"]),
+    links() {
+      return [
+        {
+          if: this.isDeserializing,
+          label: "Deserialization Tutorial",
+          url: `${this.baseUrl}/v7/tutorial/deserialization/`,
+        },
+        {
+          if: this.isSerializing,
+          label: "Serialization Tutorial",
+          url: `${this.baseUrl}/v7/tutorial/serialization/`,
+        },
+        {
+          label: "<code>JsonDocument</code>",
+          url: `${this.baseUrl}/v7/api/jsondocument/`,
+        },
+        {
+          if: this.isDeserializing,
+          label: "<code>deserializeJson()</code>",
+          url: `${this.baseUrl}/v7/api/json/deserializejson/`,
+        },
+        {
+          if: this.isSerializing,
+          label: "<code>serializeJson()</code>",
+          url: `${this.baseUrl}/v7/api/json/serializejson/`,
+        },
+      ].filter((link) => link.if);
+    },
   },
   created() {
     this.generate();
