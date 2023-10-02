@@ -31,7 +31,7 @@
           {{ programCopied ? "✓ Copied" : "Copy" }}
         </button>
         <div class="highlight p-3">
-          <pre><code class="hljs" v-html="programHtml"></code></pre>
+          <pre><code class="hljs" v-html="program"></code></pre>
         </div>
       </figure>
       <ul class="list-inline card-text">
@@ -73,63 +73,34 @@
 </template>
 
 <script>
-import hljs from "highlight.js/lib/core";
-import cpp from "highlight.js/lib/languages/cpp";
+import { mapState } from "pinia";
 import "@/assets/highlight.scss";
 
-hljs.registerLanguage("cpp", (hljs) => {
-  const lang = cpp(hljs);
-  lang.keywords.type.push(
-    "JsonArray",
-    "JsonObject",
-    "JsonVariant",
-    "JsonDocument",
-    "DeserializationError",
-    "DeserializationOption",
-  );
-  return lang;
-});
-
-import { generateParsingProgram } from "@/assistant/parsingProgram";
-import { generateSerializingProgram } from "@/assistant/serializingProgram";
-import { mapState } from "pinia";
 import { useConfigStore } from "@/stores/config";
 import { useCpuStore } from "@/stores/cpu";
-
-const sleep = (m) => new Promise((r) => setTimeout(r, m));
-
-function generateProgram(cfg) {
-  switch (cfg.mode) {
-    case "deserialize":
-      return generateParsingProgram(cfg);
-
-    case "serialize":
-      return generateSerializingProgram(cfg);
-  }
-  throw new Error(`Invalid mode ${cfg.mode}`);
-}
+import { useProgramStore } from "@/stores/program";
+import { sleep } from "@/utils";
 
 export default {
   inject: ["baseUrl"],
   data() {
     return {
       programCopied: false,
-      program: "",
-      programHtml: "",
     };
   },
   computed: {
+    ...mapState(useProgramStore, ["program", "generate"]),
     ...mapState(useConfigStore, [
       "isDeserializing",
       "isSerializing",
-      "configuration",
       "useLongLong",
       "useDouble",
     ]),
     ...mapState(useCpuStore, ["longLongIsDefault", "doubleIsDefault"]),
   },
   created() {
-    this.generateProgram();
+    console.log("Step3Page created");
+    this.generate();
   },
   methods: {
     async copyProgram() {
@@ -137,13 +108,6 @@ export default {
       this.programCopied = true;
       await sleep(500);
       this.programCopied = false;
-    },
-    async generateProgram() {
-      this.programHtml = this.program = generateProgram(this.configuration);
-      await sleep(100);
-      this.programHtml = hljs.highlight(this.program, {
-        language: "cpp",
-      }).value;
     },
   },
 };
