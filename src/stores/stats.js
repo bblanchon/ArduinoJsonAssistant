@@ -11,11 +11,20 @@ import { useConfigStore } from "./config";
 export const useStatsStore = defineStore("stats", () => {
   const cfg = useConfigStore();
 
+  const slotSize = computed(() => {
+    const cpu = cpuInfos[cfg.cpu];
+    if (cfg.useLongLong && cfg.useDouble)
+      return Math.max(cpu.useLongLong.slotSize, cpu.useDouble.slotSize);
+    if (cfg.useDouble) return cpu.useDouble.slotSize;
+    if (cfg.useLongLong) return cpu.useLongLong.slotSize;
+    return cpu.slotSize;
+  });
+
   const size = computed(() =>
     measureSize(cfg.input, {
       mode: cfg.mode,
       filter: cfg.filterEnabled ? cfg.filter : undefined,
-      cpu: cpuInfos[cfg.cpu],
+      slotSize: slotSize.value,
       ignoreKeys: cfg.ignoreKeys,
       ignoreValues: cfg.ignoreValues,
       deduplicateKeys: cfg.deduplicateKeys,

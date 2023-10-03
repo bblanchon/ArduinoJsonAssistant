@@ -9,7 +9,6 @@ import {
   getCommonCppTypeFor,
   hasJsonInJsonSyndrome,
 } from "./analyzer";
-import cpuInfos from "./cpus";
 
 const sample_object = {
   sensor: "gps",
@@ -19,7 +18,7 @@ const sample_object = {
 
 describe("measureSize", function () {
   it("should return 0+0 for null", () => {
-    const result = measureSize(null, { cpu: cpuInfos.avr });
+    const result = measureSize(null, { slotSize: 8 });
     expect(result).toEqual({
       slots: 0,
       strings: 0,
@@ -29,7 +28,7 @@ describe("measureSize", function () {
   });
 
   it('should return 0+6 for "hello"', () => {
-    const result = measureSize("hello", { cpu: cpuInfos.avr });
+    const result = measureSize("hello", { slotSize: 8 });
     expect(result).toEqual({
       slots: 0,
       strings: 6,
@@ -39,7 +38,7 @@ describe("measureSize", function () {
   });
 
   it("should return 40+21 on AVR", () => {
-    const result = measureSize(sample_object, { cpu: cpuInfos.avr });
+    const result = measureSize(sample_object, { slotSize: 8 });
     expect(result).toEqual({
       slots: 40,
       strings: 21,
@@ -49,7 +48,7 @@ describe("measureSize", function () {
   });
 
   it("should return 80+21 on ESP", () => {
-    const result = measureSize(sample_object, { cpu: cpuInfos.esp8266 });
+    const result = measureSize(sample_object, { slotSize: 16 });
     expect(result).toEqual({
       slots: 80,
       strings: 21,
@@ -62,7 +61,7 @@ describe("measureSize", function () {
     const input = [{ example: 1 }, { example: 2 }];
     const result = measureSize(input, {
       deduplicateKeys: false,
-      cpu: { slotSize: 8 },
+      slotSize: 8,
     });
     expect(result).toEqual({
       slots: 32,
@@ -76,7 +75,7 @@ describe("measureSize", function () {
     const input = [{ example: 1 }, { example: 2 }];
     const result = measureSize(input, {
       deduplicateKeys: true,
-      cpu: { slotSize: 8 },
+      slotSize: 8,
     });
     expect(result).toEqual({
       slots: 32,
@@ -90,7 +89,7 @@ describe("measureSize", function () {
     const input = ["example", "example"];
     const result = measureSize(input, {
       deduplicateValues: false,
-      cpu: { slotSize: 8 },
+      slotSize: 8,
     });
     expect(result).toEqual({
       slots: 16,
@@ -104,7 +103,7 @@ describe("measureSize", function () {
     const input = ["example", "example"];
     const result = measureSize(input, {
       deduplicateValues: true,
-      cpu: { slotSize: 8 },
+      slotSize: 8,
     });
     expect(result).toEqual({
       slots: 16,
@@ -118,7 +117,7 @@ describe("measureSize", function () {
     expect(
       measureSize(
         { hello: 1, world: 2 },
-        { cpu: { slotSize: 8 }, filter: { hello: true } },
+        { slotSize: 8, filter: { hello: true } },
       ),
     ).toEqual({
       filter: 6,
@@ -138,7 +137,7 @@ describe("measureSize", function () {
           { hello: 3, x: "what a wonderful day!" },
         ],
         {
-          cpu: { slotSize: 8 },
+          slotSize: 8,
           deduplicateKeys: true,
           filter: [{ hello: true }],
         },
@@ -157,7 +156,7 @@ describe("measureSize", function () {
       measureSize(
         { hello: "world!!!" },
         {
-          cpu: { slotSize: 8 },
+          slotSize: 8,
           ignoreKeys: true,
         },
       ),
@@ -174,7 +173,7 @@ describe("measureSize", function () {
       measureSize(
         { hello: "world!!!" },
         {
-          cpu: { slotSize: 8 },
+          slotSize: 8,
           ignoreValues: true,
         },
       ),

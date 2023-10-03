@@ -13,14 +13,6 @@ export function getValueType(value) {
     : typeof value;
 }
 
-function getEffectiveSlotSize(cfg) {
-  if (cfg.useLongLong && cfg.useDouble)
-    return Math.max(cfg.cpu.useLongLong.slotSize, cfg.cpu.useDouble.slotSize);
-  if (cfg.useDouble) return cfg.cpu.useDouble.slotSize;
-  if (cfg.useLongLong) return cfg.cpu.useLongLong.slotSize;
-  return cfg.cpu.slotSize;
-}
-
 class SizeAccumulator {
   constructor(cfg) {
     this._totalSlotSize = 0;
@@ -32,7 +24,7 @@ class SizeAccumulator {
     this._deduplicateKeys = cfg.deduplicateKeys;
     this._deduplicateValues = cfg.deduplicateValues;
     this._filteringEnabled = !!cfg.filter;
-    this._slotSize = getEffectiveSlotSize(cfg);
+    this._slotSize = cfg.slotSize;
   }
 
   addArray(n) {
