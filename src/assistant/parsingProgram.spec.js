@@ -7,7 +7,6 @@ import {
   writeDecompositionCode,
   writeErrorCheckingCode,
 } from "./parsingProgram";
-import cpuInfos from "./cpus";
 
 describe("writeDeserializationCode()", () => {
   function testDeserializationCode(config, expectedOutput) {
@@ -18,7 +17,7 @@ describe("writeDeserializationCode()", () => {
 
   it("inputType == charPtr", () => {
     testDeserializationCode(
-      { inputType: "charPtr", cpu: cpuInfos.avr },
+      { inputType: "charPtr" },
       "// char* input;\n" +
         "// size_t inputLength; (optional)\n\n" +
         "JsonDocument doc;\n\n" +
@@ -28,7 +27,7 @@ describe("writeDeserializationCode()", () => {
 
   it("inputType == charArray", () => {
     testDeserializationCode(
-      { inputType: "charArray", cpu: cpuInfos.avr },
+      { inputType: "charArray" },
       "// char input[MAX_INPUT_LENGTH];\n\n" +
         "JsonDocument doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input, MAX_INPUT_LENGTH);",
@@ -37,7 +36,7 @@ describe("writeDeserializationCode()", () => {
 
   it("inputType == constCharPtr", () => {
     testDeserializationCode(
-      { inputType: "constCharPtr", cpu: cpuInfos.avr },
+      { inputType: "constCharPtr" },
       "// const char* input;\n" +
         "// size_t inputLength; (optional)\n\n" +
         "JsonDocument doc;\n\n" +
@@ -47,7 +46,7 @@ describe("writeDeserializationCode()", () => {
 
   it("inputType == arduinoString", () => {
     testDeserializationCode(
-      { inputType: "arduinoString", cpu: cpuInfos.avr },
+      { inputType: "arduinoString" },
       "// String input;\n\n" +
         "JsonDocument doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input);",
@@ -56,7 +55,7 @@ describe("writeDeserializationCode()", () => {
 
   it("inputType == arduinoStream", () => {
     testDeserializationCode(
-      { inputType: "arduinoStream", cpu: cpuInfos.avr },
+      { inputType: "arduinoStream" },
       "// Stream& input;\n\n" +
         "JsonDocument doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input);",
@@ -65,7 +64,7 @@ describe("writeDeserializationCode()", () => {
 
   it("inputType == stdString", () => {
     testDeserializationCode(
-      { inputType: "stdString", cpu: cpuInfos.avr },
+      { inputType: "stdString" },
       "// std::string input;\n\n" +
         "JsonDocument doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input);",
@@ -74,7 +73,7 @@ describe("writeDeserializationCode()", () => {
 
   it("inputType == stdStream", () => {
     testDeserializationCode(
-      { inputType: "stdStream", cpu: cpuInfos.avr },
+      { inputType: "stdStream" },
       "// std::istream& input;\n\n" +
         "JsonDocument doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input);",
@@ -85,7 +84,7 @@ describe("writeDeserializationCode()", () => {
 describe("writeErrorCheckingCode()", () => {
   it("should print to Serial when possible", () => {
     const prg = new ProgramWriter();
-    writeErrorCheckingCode(prg, { cpu: { serial: true } });
+    writeErrorCheckingCode(prg, { serial: true, cpu: {} });
     expect(prg.toString()).toEqual(
       "if (error) {\n" +
         '  Serial.print("deserializeJson() failed: ");\n' +
@@ -97,7 +96,7 @@ describe("writeErrorCheckingCode()", () => {
 
   it("should use PROGMEM when possible", () => {
     const prg = new ProgramWriter();
-    writeErrorCheckingCode(prg, { cpu: { serial: true, progmem: true } });
+    writeErrorCheckingCode(prg, { serial: true, progmem: true });
     expect(prg.toString()).toEqual(
       "if (error) {\n" +
         '  Serial.print(F("deserializeJson() failed: "));\n' +
@@ -109,7 +108,7 @@ describe("writeErrorCheckingCode()", () => {
 
   it("should print to cerr if Serial is not available", () => {
     const prg = new ProgramWriter();
-    writeErrorCheckingCode(prg, { cpu: { serial: false } });
+    writeErrorCheckingCode(prg, { serial: false });
     expect(prg.toString()).toEqual(
       "if (error) {\n" +
         '  std::cerr << "deserializeJson() failed: " << error.c_str() << std::endl;\n' +
@@ -129,7 +128,6 @@ describe("generateParsingProgram", function () {
       {
         root: [[[[[[[[[[[]]]]]]]]]]],
         nestingLimit: 11,
-        cpu: { slotSize: 8 },
       },
       "JsonDocument doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input, DeserializationOption::NestingLimit(11));\n\n" +
@@ -146,7 +144,6 @@ describe("generateParsingProgram", function () {
         root: { ignored: [[[[[[[[[[]]]]]]]]]] },
         filter: { a: true },
         nestingLimit: 11,
-        cpu: { slotSize: 8 },
       },
       "JsonDocument filter;\n" +
         'filter["a"] = true;\n\n' +
@@ -161,7 +158,7 @@ describe("generateParsingProgram", function () {
 
   it("filter", () => {
     testParginProgram(
-      { root: {}, filter: { a: true }, cpu: { slotSize: 8 } },
+      { root: {}, filter: { a: true } },
       "JsonDocument filter;\n" +
         'filter["a"] = true;\n\n' +
         "JsonDocument doc;\n\n" +

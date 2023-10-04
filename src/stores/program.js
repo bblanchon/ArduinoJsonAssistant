@@ -40,10 +40,8 @@ export const useProgramStore = defineStore("program", () => {
             stats.nestingLevel > cpu.nestingLimit
               ? stats.nestingLevel
               : undefined,
-          cpu: {
-            serial: cpu.serial,
-            progmem: cpu.progmem,
-          },
+          serial: cpu.serial,
+          progmem: cpu.progmem,
           inputType: cfg.ioTypeId,
         });
         break;

@@ -199,10 +199,10 @@ export function writeDeserializationCode(prg, cfg) {
 export function writeErrorCheckingCode(prg, cfg) {
   prg.addLine(`if (error) {`);
   prg.indent();
-  if (cfg.cpu.serial && cfg.cpu.progmem) {
+  if (cfg.serial && cfg.progmem) {
     prg.addLine('Serial.print(F("deserializeJson() failed: "));');
     prg.addLine("Serial.println(error.f_str());");
-  } else if (cfg.cpu.serial) {
+  } else if (cfg.serial) {
     prg.addLine('Serial.print("deserializeJson() failed: ");');
     prg.addLine("Serial.println(error.c_str());");
   } else {
