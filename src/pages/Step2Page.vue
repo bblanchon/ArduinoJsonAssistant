@@ -54,7 +54,9 @@
 
       <div class="d-flex align-items-center my-3">
         <div class="flex-none mr-3">
-          Memory consumption: <b>{{ ramUsage }} bytes</b>
+          Memory consumption: <b>{{ ramUsage }} bytes</b> (<b
+            >{{ peakRamUsage }} peak</b
+          >)
         </div>
         <div class="progress flex-fill">
           <div
@@ -63,6 +65,15 @@
             role="progressbar"
             :style="{ width: ramPercent + '%' }"
             :aria-valuenow="ramPercent"
+            aria-valuemin="0"
+            aria-valuemax="100"
+          ></div>
+          <div
+            class="progress-bar progress-bar-striped"
+            :class="`bg-${ramColor}`"
+            role="progressbar"
+            :style="{ width: peakRamPercent + '%' }"
+            :aria-valuenow="peakRamPercent"
             aria-valuemin="0"
             aria-valuemax="100"
           ></div>
@@ -125,6 +136,10 @@ export default {
     },
     ramPercent() {
       return (this.peakRamUsage / this.ramError) * 100;
+    },
+    peakRamPercent() {
+      if (this.ramUsage >= this.ramError) return 0;
+      return ((this.peakRamUsage - this.ramUsage) / this.ramError) * 100;
     },
     ramColor() {
       if (this.peakRamUsage > this.ramError) return "danger";

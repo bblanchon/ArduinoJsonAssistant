@@ -20,40 +20,38 @@ describe("measureSize", function () {
   it("should return 0+0 for null", () => {
     const result = measureSize(null, { slotSize: 8 });
     expect(result).toEqual({
-      slots: 0,
-      strings: 0,
-      minimum: 0,
-      recommended: 0,
+      memoryUsage: 0,
+      peakMemoryUsage: 0,
     });
   });
 
   it('should return 0+6 for "hello"', () => {
     const result = measureSize("hello", { slotSize: 8 });
     expect(result).toEqual({
-      slots: 0,
-      strings: 6,
-      minimum: 6,
-      recommended: 16,
+      memoryUsage: 6,
+      peakMemoryUsage: 6,
     });
   });
 
-  it("should return 40+21 on AVR", () => {
-    const result = measureSize(sample_object, { slotSize: 8 });
+  it("sample object on AVR", () => {
+    const result = measureSize(sample_object, {
+      slotSize: 8,
+      poolCapacity: 16,
+    });
     expect(result).toEqual({
-      slots: 40,
-      strings: 21,
-      minimum: 61,
-      recommended: 96,
+      memoryUsage: 61,
+      peakMemoryUsage: 149,
     });
   });
 
-  it("should return 80+21 on ESP", () => {
-    const result = measureSize(sample_object, { slotSize: 16 });
+  it("sample object on ESP", () => {
+    const result = measureSize(sample_object, {
+      slotSize: 16,
+      poolCapacity: 64,
+    });
     expect(result).toEqual({
-      slots: 80,
-      strings: 21,
-      minimum: 101,
-      recommended: 128,
+      memoryUsage: 101,
+      peakMemoryUsage: 1045,
     });
   });
 
@@ -62,12 +60,11 @@ describe("measureSize", function () {
     const result = measureSize(input, {
       deduplicateKeys: false,
       slotSize: 8,
+      poolCapacity: 16,
     });
     expect(result).toEqual({
-      slots: 32,
-      strings: 16,
-      minimum: 48,
-      recommended: 64,
+      memoryUsage: 48,
+      peakMemoryUsage: 144,
     });
   });
 
@@ -76,12 +73,11 @@ describe("measureSize", function () {
     const result = measureSize(input, {
       deduplicateKeys: true,
       slotSize: 8,
+      poolCapacity: 16,
     });
     expect(result).toEqual({
-      slots: 32,
-      strings: 8,
-      minimum: 40,
-      recommended: 64,
+      memoryUsage: 40,
+      peakMemoryUsage: 136,
     });
   });
 
@@ -90,12 +86,11 @@ describe("measureSize", function () {
     const result = measureSize(input, {
       deduplicateValues: false,
       slotSize: 8,
+      poolCapacity: 16,
     });
     expect(result).toEqual({
-      slots: 16,
-      strings: 16,
-      minimum: 32,
-      recommended: 48,
+      memoryUsage: 32,
+      peakMemoryUsage: 144,
     });
   });
 
@@ -104,12 +99,11 @@ describe("measureSize", function () {
     const result = measureSize(input, {
       deduplicateValues: true,
       slotSize: 8,
+      poolCapacity: 16,
     });
     expect(result).toEqual({
-      slots: 16,
-      strings: 8,
-      minimum: 24,
-      recommended: 48,
+      memoryUsage: 24,
+      peakMemoryUsage: 136,
     });
   });
 
@@ -117,14 +111,11 @@ describe("measureSize", function () {
     expect(
       measureSize(
         { hello: 1, world: 2 },
-        { slotSize: 8, filter: { hello: true } },
+        { slotSize: 8, poolCapacity: 16, filter: { hello: true } },
       ),
     ).toEqual({
-      filter: 6,
-      slots: 8,
-      strings: 6,
-      minimum: 20,
-      recommended: 32,
+      memoryUsage: 14,
+      peakMemoryUsage: 140,
     });
   });
 
@@ -138,16 +129,14 @@ describe("measureSize", function () {
         ],
         {
           slotSize: 8,
+          poolCapacity: 16,
           deduplicateKeys: true,
           filter: [{ hello: true }],
         },
       ),
     ).toEqual({
-      filter: 11,
-      slots: 48,
-      strings: 6,
-      minimum: 65,
-      recommended: 96,
+      memoryUsage: 54,
+      peakMemoryUsage: 145,
     });
   });
 
@@ -157,14 +146,13 @@ describe("measureSize", function () {
         { hello: "world!!!" },
         {
           slotSize: 8,
+          poolCapacity: 16,
           ignoreKeys: true,
         },
       ),
     ).toEqual({
-      slots: 8,
-      strings: 9,
-      minimum: 17,
-      recommended: 32,
+      memoryUsage: 17,
+      peakMemoryUsage: 137,
     });
   });
 
@@ -174,14 +162,13 @@ describe("measureSize", function () {
         { hello: "world!!!" },
         {
           slotSize: 8,
+          poolCapacity: 16,
           ignoreValues: true,
         },
       ),
     ).toEqual({
-      slots: 8,
-      strings: 6,
-      minimum: 14,
-      recommended: 24,
+      memoryUsage: 14,
+      peakMemoryUsage: 134,
     });
   });
 });

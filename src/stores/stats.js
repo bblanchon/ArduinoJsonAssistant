@@ -25,6 +25,7 @@ export const useStatsStore = defineStore("stats", () => {
       mode: cfg.mode,
       filter: cfg.filterEnabled ? cfg.filter : undefined,
       slotSize: slotSize.value,
+      poolCapacity: cpuInfos[cfg.cpu].poolCapacity,
       ignoreKeys: cfg.ignoreKeys,
       ignoreValues: cfg.ignoreValues,
       deduplicateKeys: cfg.deduplicateKeys,
@@ -36,8 +37,8 @@ export const useStatsStore = defineStore("stats", () => {
 
   return {
     nestingLevel: computed(() => measureNesting(cfg.input)),
-    ramUsage: computed(() => size.value.minimum),
-    peakRamUsage: computed(() => size.value.recommended),
+    ramUsage: computed(() => size.value.memoryUsage),
+    peakRamUsage: computed(() => size.value.peakMemoryUsage),
     doubleNeeded: computed(() => needsDouble(cfg.filteredInput)),
     longLongNeeded: computed(() => needsLongLong(cfg.filteredInput)),
     jsonInJson: computed(() => hasJsonInJsonSyndrome(cfg.filteredInput)),

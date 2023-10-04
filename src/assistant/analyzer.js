@@ -13,58 +13,97 @@ export function getValueType(value) {
     : typeof value;
 }
 
+class Memory {
+  constructor() {
+    this.memoryUsage = 0;
+    this.peakMemoryUsage = 0;
+  }
+
+  alloc(n) {
+    this.memoryUsage += n;
+    this.peakMemoryUsage = Math.max(this.peakMemoryUsage, this.memoryUsage);
+  }
+
+  free(n) {
+    this.memoryUsage -= n;
+  }
+}
+
+class SlotPoolList {
+  constructor(cfg, memory) {
+    this._memory = memory;
+    this._poolCapacity = cfg.poolCapacity;
+    this._slotSize = cfg.slotSize;
+    this._freeSlots = 0;
+  }
+
+  allocSlot() {
+    if (this._freeSlots == 0) {
+      this._memory.alloc(this._slotSize * this._poolCapacity);
+      this._freeSlots = this._poolCapacity;
+    }
+    this._freeSlots--;
+  }
+
+  shrinkToFit() {
+    this._memory.free(this._slotSize * this._freeSlots);
+    this._freeSlots = 0;
+  }
+}
+
 class SizeAccumulator {
   constructor(cfg) {
-    this._totalSlotSize = 0;
-    this._totalStringSize = 0;
     this._strings = {};
-    this._largestIgnoredKey = 0;
     this._ignoreKeys = cfg.ignoreKeys;
     this._ignoreValues = cfg.ignoreValues;
     this._deduplicateKeys = cfg.deduplicateKeys;
     this._deduplicateValues = cfg.deduplicateValues;
     this._filteringEnabled = !!cfg.filter;
     this._slotSize = cfg.slotSize;
+
+    this._memory = new Memory();
+    this._poolList = new SlotPoolList(cfg, this._memory);
+  }
+
+  allocSlots(n) {
+    for (let i = 0; i < n; i++) this._poolList.allocSlot();
+  }
+
+  allocString(s) {
+    // TODO: alloc for over allocation  in deserialize mode
+    this._memory.alloc(s.length + 1);
   }
 
   addArray(n) {
-    this._totalSlotSize += n * this._slotSize;
+    this.allocSlots(n);
   }
 
   addObjectMember(key) {
-    this._totalSlotSize += this._slotSize;
+    this.allocSlots(1);
     if (this._ignoreKeys) return;
     if (this._deduplicateKeys && this._strings[key]) return;
-    this._totalStringSize += key.length + 1;
+    this.allocString(key);
     this._strings[key] = true;
   }
 
   addString(s) {
     if (this._ignoreValues) return;
     if (this._deduplicateValues && this._strings[s]) return;
-    this._totalStringSize += s.length + 1;
+    this.allocString(s);
     this._strings[s] = true;
   }
 
   addIgnoredKey(s) {
-    this._largestIgnoredKey = Math.max(this._largestIgnoredKey, s.length + 1);
+    this.allocString(s);
+    this._memory.free(s.length + 1);
   }
 
   get results() {
-    const minimum =
-      this._totalSlotSize + this._totalStringSize + this._largestIgnoredKey;
-
-    const variableSize = this._totalStringSize + this._largestIgnoredKey;
-    const slack = variableSize && Math.max(10, 0.1 * variableSize);
-
-    const result = {
-      slots: this._totalSlotSize,
-      strings: this._totalStringSize,
-      minimum: minimum,
-      recommended: roundCapacity(minimum + slack),
+    this._poolList.shrinkToFit();
+    return {
+      memoryUsage: this._memory.memoryUsage,
+      peakMemoryUsage: this._memory.peakMemoryUsage,
     };
-    if (this._filteringEnabled) result.filter = this._largestIgnoredKey;
-    return result;
   }
 }
 
