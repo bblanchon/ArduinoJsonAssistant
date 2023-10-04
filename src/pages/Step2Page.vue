@@ -52,33 +52,7 @@
         </div>
       </div>
 
-      <div class="d-flex align-items-center my-3">
-        <div class="flex-none mr-3">
-          Memory consumption: <b>{{ ramUsage }} bytes</b> (<b
-            >{{ peakRamUsage }} peak</b
-          >)
-        </div>
-        <div class="progress flex-fill">
-          <div
-            class="progress-bar"
-            :class="`bg-${ramColor}`"
-            role="progressbar"
-            :style="{ width: ramPercent + '%' }"
-            :aria-valuenow="ramPercent"
-            aria-valuemin="0"
-            aria-valuemax="100"
-          ></div>
-          <div
-            class="progress-bar progress-bar-striped"
-            :class="`bg-${ramColor}`"
-            role="progressbar"
-            :style="{ width: peakRamPercent + '%' }"
-            :aria-valuenow="peakRamPercent"
-            aria-valuemin="0"
-            aria-valuemax="100"
-          ></div>
-        </div>
-      </div>
+      <MemoryUsage class="my-3" />
 
       <div
         v-for="alert in alerts"
@@ -110,12 +84,9 @@
 <script>
 import { mapActions, mapState, mapWritableState } from "pinia";
 import { useConfigStore } from "@/stores/config";
-import { useCpuStore } from "@/stores/cpu";
 import { useAlertsStore } from "@/stores/alerts";
-import { useStatsStore } from "@/stores/stats";
 
 export default {
-  inject: ["baseUrl"],
   computed: {
     ...mapState(useConfigStore, [
       "filter",
@@ -127,24 +98,10 @@ export default {
       "isDeserializing",
       "mode",
     ]),
-    ...mapState(useStatsStore, ["peakRamUsage", "ramUsage"]),
-    ...mapState(useCpuStore, ["ramError", "ramWarning"]),
     ...mapState(useAlertsStore, ["alerts"]),
     ...mapWritableState(useConfigStore, ["filterEnabled"]),
     filteredInputJson() {
       return JSON.stringify(this.filteredInput, null, 2);
-    },
-    ramPercent() {
-      return (this.peakRamUsage / this.ramError) * 100;
-    },
-    peakRamPercent() {
-      if (this.ramUsage >= this.ramError) return 0;
-      return ((this.peakRamUsage - this.ramUsage) / this.ramError) * 100;
-    },
-    ramColor() {
-      if (this.peakRamUsage > this.ramError) return "danger";
-      if (this.peakRamUsage > this.ramWarning) return "warning";
-      return "success";
     },
   },
   methods: mapActions(useConfigStore, [
