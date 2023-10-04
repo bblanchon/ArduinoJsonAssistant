@@ -9,15 +9,14 @@ import {
 } from "./parsingProgram";
 
 describe("writeDeserializationCode()", () => {
-  function testDeserializationCode(config, expectedOutput) {
+  function getDeserializationCode(config) {
     const prg = new ProgramWriter();
     writeDeserializationCode(prg, config);
-    expect(prg.toString()).toEqual(expectedOutput);
+    return prg.toString();
   }
 
   it("inputType == charPtr", () => {
-    testDeserializationCode(
-      { inputType: "charPtr" },
+    expect(getDeserializationCode({ inputType: "charPtr" })).toEqual(
       "// char* input;\n" +
         "// size_t inputLength; (optional)\n\n" +
         "JsonDocument doc;\n\n" +
@@ -26,8 +25,7 @@ describe("writeDeserializationCode()", () => {
   });
 
   it("inputType == charArray", () => {
-    testDeserializationCode(
-      { inputType: "charArray" },
+    expect(getDeserializationCode({ inputType: "charArray" })).toEqual(
       "// char input[MAX_INPUT_LENGTH];\n\n" +
         "JsonDocument doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input, MAX_INPUT_LENGTH);",
@@ -35,8 +33,7 @@ describe("writeDeserializationCode()", () => {
   });
 
   it("inputType == constCharPtr", () => {
-    testDeserializationCode(
-      { inputType: "constCharPtr" },
+    expect(getDeserializationCode({ inputType: "constCharPtr" })).toEqual(
       "// const char* input;\n" +
         "// size_t inputLength; (optional)\n\n" +
         "JsonDocument doc;\n\n" +
@@ -45,8 +42,7 @@ describe("writeDeserializationCode()", () => {
   });
 
   it("inputType == arduinoString", () => {
-    testDeserializationCode(
-      { inputType: "arduinoString" },
+    expect(getDeserializationCode({ inputType: "arduinoString" })).toEqual(
       "// String input;\n\n" +
         "JsonDocument doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input);",
@@ -54,8 +50,7 @@ describe("writeDeserializationCode()", () => {
   });
 
   it("inputType == arduinoStream", () => {
-    testDeserializationCode(
-      { inputType: "arduinoStream" },
+    expect(getDeserializationCode({ inputType: "arduinoStream" })).toEqual(
       "// Stream& input;\n\n" +
         "JsonDocument doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input);",
@@ -63,8 +58,7 @@ describe("writeDeserializationCode()", () => {
   });
 
   it("inputType == stdString", () => {
-    testDeserializationCode(
-      { inputType: "stdString" },
+    expect(getDeserializationCode({ inputType: "stdString" })).toEqual(
       "// std::string input;\n\n" +
         "JsonDocument doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input);",
@@ -72,8 +66,7 @@ describe("writeDeserializationCode()", () => {
   });
 
   it("inputType == stdStream", () => {
-    testDeserializationCode(
-      { inputType: "stdStream" },
+    expect(getDeserializationCode({ inputType: "stdStream" })).toEqual(
       "// std::istream& input;\n\n" +
         "JsonDocument doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input);",
@@ -82,10 +75,14 @@ describe("writeDeserializationCode()", () => {
 });
 
 describe("writeErrorCheckingCode()", () => {
-  it("should print to Serial when possible", () => {
+  function getErrorCheckingCode(config) {
     const prg = new ProgramWriter();
-    writeErrorCheckingCode(prg, { serial: true, cpu: {} });
-    expect(prg.toString()).toEqual(
+    writeErrorCheckingCode(prg, config);
+    return prg.toString();
+  }
+
+  it("should print to Serial when possible", () => {
+    expect(getErrorCheckingCode({ serial: true, cpu: {} })).toEqual(
       "if (error) {\n" +
         '  Serial.print("deserializeJson() failed: ");\n' +
         "  Serial.println(error.c_str());\n" +
@@ -95,9 +92,7 @@ describe("writeErrorCheckingCode()", () => {
   });
 
   it("should use PROGMEM when possible", () => {
-    const prg = new ProgramWriter();
-    writeErrorCheckingCode(prg, { serial: true, progmem: true });
-    expect(prg.toString()).toEqual(
+    expect(getErrorCheckingCode({ serial: true, progmem: true })).toEqual(
       "if (error) {\n" +
         '  Serial.print(F("deserializeJson() failed: "));\n' +
         "  Serial.println(error.f_str());\n" +
@@ -107,9 +102,7 @@ describe("writeErrorCheckingCode()", () => {
   });
 
   it("should print to cerr if Serial is not available", () => {
-    const prg = new ProgramWriter();
-    writeErrorCheckingCode(prg, { serial: false });
-    expect(prg.toString()).toEqual(
+    expect(getErrorCheckingCode({ serial: false })).toEqual(
       "if (error) {\n" +
         '  std::cerr << "deserializeJson() failed: " << error.c_str() << std::endl;\n' +
         "  return;\n" +
@@ -119,16 +112,13 @@ describe("writeErrorCheckingCode()", () => {
 });
 
 describe("generateParsingProgram", function () {
-  function testParginProgram(config, expectedOutput) {
-    expect(generateParsingProgram(config)).toEqual(expectedOutput);
-  }
-
   it("nesting limit witout filter", () => {
-    testParginProgram(
-      {
+    expect(
+      generateParsingProgram({
         input: [[[[[[[[[[[]]]]]]]]]]],
         nestingLimit: 11,
-      },
+      }),
+    ).toEqual(
       "JsonDocument doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input, DeserializationOption::NestingLimit(11));\n\n" +
         "if (error) {\n" +
@@ -139,12 +129,13 @@ describe("generateParsingProgram", function () {
   });
 
   it("nesting limit with filter", () => {
-    testParginProgram(
-      {
+    expect(
+      generateParsingProgram({
         input: { ignored: [[[[[[[[[[]]]]]]]]]] },
         filter: { a: true },
         nestingLimit: 11,
-      },
+      }),
+    ).toEqual(
       "JsonDocument filter;\n" +
         'filter["a"] = true;\n\n' +
         "JsonDocument doc;\n\n" +
@@ -157,8 +148,7 @@ describe("generateParsingProgram", function () {
   });
 
   it("filter", () => {
-    testParginProgram(
-      { input: {}, filter: { a: true } },
+    expect(generateParsingProgram({ input: {}, filter: { a: true } })).toEqual(
       "JsonDocument filter;\n" +
         'filter["a"] = true;\n\n' +
         "JsonDocument doc;\n\n" +
@@ -172,36 +162,39 @@ describe("generateParsingProgram", function () {
 });
 
 describe("writeDecompositionCode", function () {
-  function testDescompositionCode(input, expectedOutput) {
+  function getDecompositionCode(input) {
     const prg = new ProgramWriter();
     writeDecompositionCode(prg, input);
-    expect(prg.toString()).toEqual(expectedOutput);
+    return prg.toString();
   }
 
   it("[]", () => {
-    testDescompositionCode([], "");
+    expect(getDecompositionCode([])).toEqual("");
   });
 
   it("{}", () => {
-    testDescompositionCode({}, "");
+    expect(getDecompositionCode({})).toEqual("");
   });
 
   it("42", () => {
-    testDescompositionCode(42, "int root = doc.as<int>(); // 42");
+    expect(getDecompositionCode(42)).toEqual("int root = doc.as<int>(); // 42");
   });
 
   it("[42]", () => {
-    testDescompositionCode([42], "int root_0 = doc[0]; // 42\n");
+    expect(getDecompositionCode([42])).toEqual("int root_0 = doc[0]; // 42\n");
   });
 
   it("bool", () => {
-    testDescompositionCode(true, "bool root = doc.as<bool>(); // true");
-    testDescompositionCode(false, "bool root = doc.as<bool>(); // false");
+    expect(getDecompositionCode(true)).toEqual(
+      "bool root = doc.as<bool>(); // true",
+    );
+    expect(getDecompositionCode(false)).toEqual(
+      "bool root = doc.as<bool>(); // false",
+    );
   });
 
   it("[1,2,3]", () => {
-    testDescompositionCode(
-      [1, 2, 3],
+    expect(getDecompositionCode([1, 2, 3])).toEqual(
       "int root_0 = doc[0]; // 1\n" +
         "int root_1 = doc[1]; // 2\n" +
         "int root_2 = doc[2]; // 3\n",
@@ -209,26 +202,25 @@ describe("writeDecompositionCode", function () {
   });
 
   it('{"hello":true}', () => {
-    testDescompositionCode(
-      { hello: true },
+    expect(getDecompositionCode({ hello: true })).toEqual(
       'bool hello = doc["hello"]; // true\n',
     );
   });
 
   it('{"hello":null}', () => {
-    testDescompositionCode({ hello: null }, '// doc["hello"] is null\n');
+    expect(getDecompositionCode({ hello: null })).toEqual(
+      '// doc["hello"] is null\n',
+    );
   });
 
   it('{"hello":"world"}', () => {
-    testDescompositionCode(
-      { hello: "world" },
+    expect(getDecompositionCode({ hello: "world" })).toEqual(
       'const char* hello = doc["hello"]; // "world"\n',
     );
   });
 
   it('[{"a":1,"b":2,"c":3}]', () => {
-    testDescompositionCode(
-      [{ a: 1, b: 2, c: 3 }],
+    expect(getDecompositionCode([{ a: 1, b: 2, c: 3 }])).toEqual(
       "JsonObject root_0 = doc[0];\n" +
         'int root_0_a = root_0["a"]; // 1\n' +
         'int root_0_b = root_0["b"]; // 2\n' +
@@ -237,15 +229,13 @@ describe("writeDecompositionCode", function () {
   });
 
   it("[[[[[[[[[[[42]]]]]]]]]]]", () => {
-    testDescompositionCode(
-      [[[[[[[[[[[42]]]]]]]]]]],
+    expect(getDecompositionCode([[[[[[[[[[[42]]]]]]]]]]])).toEqual(
       "int root_0_0_0_0_0_0_0_0_0_0_0 = doc[0][0][0][0][0][0][0][0][0][0][0]; // 42\n",
     );
   });
 
   it("[10000,10000000,10000000000]", () => {
-    testDescompositionCode(
-      [10000, 10000000, 10000000000],
+    expect(getDecompositionCode([10000, 10000000, 10000000000])).toEqual(
       "int root_0 = doc[0]; // 10000\n" +
         "long root_1 = doc[1]; // 10000000\n" +
         "long long root_2 = doc[2]; // 10000000000\n",
@@ -253,12 +243,14 @@ describe("writeDecompositionCode", function () {
   });
 
   it('{"123":1}', () => {
-    testDescompositionCode({ 123: 1 }, 'int root_123 = doc["123"]; // 1\n');
+    expect(getDecompositionCode({ 123: 1 })).toEqual(
+      'int root_123 = doc["123"]; // 1\n',
+    );
   });
 
   it("loop on root", () => {
-    testDescompositionCode(
-      [
+    expect(
+      getDecompositionCode([
         {
           dt: 1511978400,
           main: { temp: 3.95 },
@@ -269,7 +261,8 @@ describe("writeDecompositionCode", function () {
           main: { temp: 3.2 },
           weather: [{ description: "clear sky" }],
         },
-      ],
+      ]),
+    ).toEqual(
       "for (JsonObject item : doc.as<JsonArray>()) {\n\n" +
         '  long dt = item["dt"]; // 1511978400, 1511989200\n\n' +
         '  float main_temp = item["main"]["temp"]; // 3.95, 3.2\n\n' +
@@ -279,8 +272,8 @@ describe("writeDecompositionCode", function () {
   });
 
   it("loop in member array", () => {
-    testDescompositionCode(
-      {
+    expect(
+      getDecompositionCode({
         list: [
           {
             dt: 1511978400,
@@ -298,7 +291,8 @@ describe("writeDecompositionCode", function () {
             weather: [{ description: "light rain" }],
           },
         ],
-      },
+      }),
+    ).toEqual(
       'for (JsonObject list_item : doc["list"].as<JsonArray>()) {\n\n' +
         '  long list_item_dt = list_item["dt"]; // 1511978400, 1511989200, 1512000000\n\n' +
         '  float list_item_main_temp = list_item["main"]["temp"]; // 3.95, 3.2, 3.25\n\n' +
@@ -308,8 +302,8 @@ describe("writeDecompositionCode", function () {
   });
 
   it("loop in member object", () => {
-    testDescompositionCode(
-      {
+    expect(
+      getDecompositionCode({
         properties: {
           batt: {
             unit: "%",
@@ -324,7 +318,8 @@ describe("writeDecompositionCode", function () {
             name: "humidity",
           },
         },
-      },
+      }),
+    ).toEqual(
       'for (JsonPair property : doc["properties"].as<JsonObject>()) {\n' +
         '  const char* property_key = property.key().c_str(); // "batt", "tempc", "hum"\n\n' +
         '  const char* property_value_unit = property.value()["unit"]; // "%", "°C", "%"\n' +
@@ -334,8 +329,9 @@ describe("writeDecompositionCode", function () {
   });
 
   it("loop with mixed integer and long-longs", () => {
-    testDescompositionCode(
-      [{ x: 10000 }, { x: 10000000 }, { x: 10000000000 }],
+    expect(
+      getDecompositionCode([{ x: 10000 }, { x: 10000000 }, { x: 10000000000 }]),
+    ).toEqual(
       "for (JsonObject item : doc.as<JsonArray>()) {\n\n" +
         '  long long x = item["x"]; // 10000, 10000000, 10000000000\n\n' +
         "}\n",
@@ -343,8 +339,7 @@ describe("writeDecompositionCode", function () {
   });
 
   it("loop with mixed integer and floats", () => {
-    testDescompositionCode(
-      [{ x: 10000 }, { x: 1.4 }],
+    expect(getDecompositionCode([{ x: 10000 }, { x: 1.4 }])).toEqual(
       "for (JsonObject item : doc.as<JsonArray>()) {\n\n" +
         '  float x = item["x"]; // 10000, 1.4\n\n' +
         "}\n",
@@ -352,8 +347,7 @@ describe("writeDecompositionCode", function () {
   });
 
   it("loop with mixed null and integer", () => {
-    testDescompositionCode(
-      [{ x: null }, { x: 42 }],
+    expect(getDecompositionCode([{ x: null }, { x: 42 }])).toEqual(
       "for (JsonObject item : doc.as<JsonArray>()) {\n\n" +
         '  int x = item["x"]; // 0, 42\n\n' +
         "}\n",
@@ -361,13 +355,14 @@ describe("writeDecompositionCode", function () {
   });
 
   it("loop with many values shows ellipsis", () => {
-    testDescompositionCode(
-      [
+    expect(
+      getDecompositionCode([
         { very_long_name: "long value" },
         { very_long_name: "another long value" },
         { very_long_name: "yes another long value" },
         { very_long_name: "some string" },
-      ],
+      ]),
+    ).toEqual(
       "for (JsonObject item : doc.as<JsonArray>()) {\n\n" +
         '  const char* very_long_name = item["very_long_name"]; // "long value", "another long value", "yes another ...\n\n' +
         "}\n",
@@ -375,8 +370,7 @@ describe("writeDecompositionCode", function () {
   });
 
   it("loop on root with null siblings", () => {
-    testDescompositionCode(
-      [{ x: { id: 10 } }, { x: null }],
+    expect(getDecompositionCode([{ x: { id: 10 } }, { x: null }])).toEqual(
       "for (JsonObject item : doc.as<JsonArray>()) {\n\n" +
         '  int x_id = item["x"]["id"]; // 10, 0\n\n' +
         "}\n",
@@ -384,11 +378,12 @@ describe("writeDecompositionCode", function () {
   });
 
   it("nested array with potential name conflict #1623", () => {
-    testDescompositionCode(
-      [
+    expect(
+      getDecompositionCode([
         { data: [{ time: 1 }, { time: 2 }] },
         { data: [{ time: 3 }, { time: 4 }] },
-      ],
+      ]),
+    ).toEqual(
       "for (JsonObject item : doc.as<JsonArray>()) {\n\n" +
         '  for (JsonObject data_item : item["data"].as<JsonArray>()) {\n\n' +
         '    int data_item_time = data_item["time"]; // 1, 2\n\n' +
@@ -398,8 +393,13 @@ describe("writeDecompositionCode", function () {
   });
 
   it("null sibling array", () => {
-    testDescompositionCode(
-      [{ data: [1, 3] }, { data: [2, 4] }, { data: null }],
+    expect(
+      getDecompositionCode([
+        { data: [1, 3] },
+        { data: [2, 4] },
+        { data: null },
+      ]),
+    ).toEqual(
       `for (JsonObject item : doc.as<JsonArray>()) {
 
   int data_0 = item["data"][0]; // 1, 2, 0

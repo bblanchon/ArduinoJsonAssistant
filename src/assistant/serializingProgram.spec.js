@@ -8,69 +8,77 @@ import {
 } from "./serializingProgram";
 
 describe("writeCompositionCode()", () => {
-  function test(output, expectedCode) {
+  function getCompositionCode(output) {
     const prg = new ProgramWriter();
     writeCompositionCode(prg, output, "doc");
-    expect(prg.toString()).toEqual(expectedCode);
+    return prg.toString();
   }
 
   it("null", () => {
-    test(null, "");
+    expect(getCompositionCode(null)).toEqual("");
   });
 
   it("[]", () => {
-    test([], "doc.to<JsonArray>();");
+    expect(getCompositionCode([])).toEqual("doc.to<JsonArray>();");
   });
 
   it("{}", () => {
-    test({}, "doc.to<JsonObject>();");
+    expect(getCompositionCode({})).toEqual("doc.to<JsonObject>();");
   });
 
   it("[42]", () => {
-    test([42], "doc[0] = 42;");
+    expect(getCompositionCode([42])).toEqual("doc[0] = 42;");
   });
 
   it("[null]", () => {
-    test([null], "doc[0] = nullptr;");
+    expect(getCompositionCode([null])).toEqual("doc[0] = nullptr;");
   });
 
   it('["hello"]', () => {
-    test(["hello"], 'doc[0] = "hello";');
+    expect(getCompositionCode(["hello"])).toEqual('doc[0] = "hello";');
   });
 
   it('["hello","world",null]', () => {
-    test(
-      ["hello", "world", null],
+    expect(getCompositionCode(["hello", "world", null])).toEqual(
       'doc.add("hello");\ndoc.add("world");\ndoc.add(nullptr);',
     );
   });
 
   it('{"answer":42}', () => {
-    test({ answer: 42 }, 'doc["answer"] = 42;');
+    expect(getCompositionCode({ answer: 42 })).toEqual('doc["answer"] = 42;');
   });
 
   it('{"answer":null}', () => {
-    test({ answer: null }, 'doc["answer"] = nullptr;');
+    expect(getCompositionCode({ answer: null })).toEqual(
+      'doc["answer"] = nullptr;',
+    );
   });
 
   it('[{"answer":42}]', () => {
-    test([{ answer: 42 }], 'doc[0]["answer"] = 42;');
+    expect(getCompositionCode([{ answer: 42 }])).toEqual(
+      'doc[0]["answer"] = 42;',
+    );
   });
 
   it('{"answers":[42]}', () => {
-    test({ answers: [42] }, 'doc["answers"][0] = 42;');
+    expect(getCompositionCode({ answers: [42] })).toEqual(
+      'doc["answers"][0] = 42;',
+    );
   });
 
   it('{"message":{"status":"ok"}}', () => {
-    test({ message: { status: "ok" } }, 'doc["message"]["status"] = "ok";');
+    expect(getCompositionCode({ message: { status: "ok" } })).toEqual(
+      'doc["message"]["status"] = "ok";',
+    );
   });
 
   it("[[1,2],[3,4]]", () => {
-    test(
-      [
+    expect(
+      getCompositionCode([
         [1, 2],
         [3, 4],
-      ],
+      ]),
+    ).toEqual(
       "JsonArray doc_0 = doc.add<JsonArray>();\n" +
         "doc_0.add(1);\n" +
         "doc_0.add(2);\n\n" +
@@ -81,8 +89,7 @@ describe("writeCompositionCode()", () => {
   });
 
   it('{ A: { B: { C: "D" }, E: { F: "G" } } }', () => {
-    test(
-      { A: { B: { C: "D" }, E: { F: "G" } } },
+    expect(getCompositionCode({ A: { B: { C: "D" }, E: { F: "G" } } })).toEqual(
       'JsonObject A = doc["A"].to<JsonObject>();\n' +
         'A["B"]["C"] = "D";\n' +
         'A["E"]["F"] = "G";',
@@ -90,17 +97,20 @@ describe("writeCompositionCode()", () => {
   });
 
   it('{ A: { B: { C: "D" } } }', () => {
-    test({ A: { B: { C: "D" } } }, 'doc["A"]["B"]["C"] = "D";');
+    expect(getCompositionCode({ A: { B: { C: "D" } } })).toEqual(
+      'doc["A"]["B"]["C"] = "D";',
+    );
   });
 
   it("[[[42, 43],[44, 45]]]", () => {
-    test(
-      [
+    expect(
+      getCompositionCode([
         [
           [42, 43],
           [44, 45],
         ],
-      ],
+      ]),
+    ).toEqual(
       "JsonArray doc_0 = doc.add<JsonArray>();\n\n" +
         "JsonArray doc_0_0 = doc_0.add<JsonArray>();\n" +
         "doc_0_0.add(42);\n" +
@@ -112,8 +122,7 @@ describe("writeCompositionCode()", () => {
   });
 
   it('{"hello world":[42, 43]}', () => {
-    test(
-      { "hello world": [42, 43] },
+    expect(getCompositionCode({ "hello world": [42, 43] })).toEqual(
       'JsonArray hello_world = doc["hello world"].to<JsonArray>();\n' +
         "hello_world.add(42);\n" +
         "hello_world.add(43);",
@@ -121,8 +130,7 @@ describe("writeCompositionCode()", () => {
   });
 
   it("{ list: [{ dt: true }] }", () => {
-    test(
-      { list: [{ dt: true, main: true }] },
+    expect(getCompositionCode({ list: [{ dt: true, main: true }] })).toEqual(
       'JsonObject list_0 = doc["list"].add<JsonObject>();\n' +
         'list_0["dt"] = true;\n' +
         'list_0["main"] = true;',
@@ -130,8 +138,7 @@ describe("writeCompositionCode()", () => {
   });
 
   it("{ list: [{ dt: true, main: true }] }", () => {
-    test(
-      { list: [{ dt: true, main: true }] },
+    expect(getCompositionCode({ list: [{ dt: true, main: true }] })).toEqual(
       'JsonObject list_0 = doc["list"].add<JsonObject>();\n' +
         'list_0["dt"] = true;\n' +
         'list_0["main"] = true;',
@@ -139,8 +146,11 @@ describe("writeCompositionCode()", () => {
   });
 
   it("{ data: { children: [{ data: { title: true, ups: true } }] } }", () => {
-    test(
-      { data: { children: [{ data: { title: true, ups: true } }] } },
+    expect(
+      getCompositionCode({
+        data: { children: [{ data: { title: true, ups: true } }] },
+      }),
+    ).toEqual(
       'JsonObject data_children_0_data = doc["data"]["children"][0]["data"].to<JsonObject>();\n' +
         'data_children_0_data["title"] = true;\n' +
         'data_children_0_data["ups"] = true;',
@@ -148,15 +158,18 @@ describe("writeCompositionCode()", () => {
   });
 
   it("[{ a: 1 }, { a: 2 }]", () => {
-    test([{ a: 1 }, { a: 2 }], 'doc[0]["a"] = 1;\ndoc[1]["a"] = 2;');
+    expect(getCompositionCode([{ a: 1 }, { a: 2 }])).toEqual(
+      'doc[0]["a"] = 1;\ndoc[1]["a"] = 2;',
+    );
   });
 
   it("[{ a: 1, b: 2 }, { a: 3, b: 4 }]", () => {
-    test(
-      [
+    expect(
+      getCompositionCode([
         { a: 1, b: 2 },
         { a: 3, b: 4 },
-      ],
+      ]),
+    ).toEqual(
       "JsonObject doc_0 = doc.add<JsonObject>();\n" +
         'doc_0["a"] = 1;\n' +
         'doc_0["b"] = 2;\n' +
@@ -168,14 +181,11 @@ describe("writeCompositionCode()", () => {
   });
 });
 
-describe("generateSerializingProgram", function () {
-  function testSerializingProgram(cfg, expectedCode) {
-    expect(generateSerializingProgram(cfg)).toEqual(expectedCode);
-  }
-
+describe("generateSerializingProgram()", function () {
   it('{"answer":42}', () => {
-    testSerializingProgram(
-      { output: { answer: 42 }, cpu: cpuInfos.avr },
+    expect(
+      generateSerializingProgram({ output: { answer: 42 }, cpu: cpuInfos.avr }),
+    ).toEqual(
       "JsonDocument doc;\n\n" +
         'doc["answer"] = 42;\n\n' +
         "serializeJson(doc, output);",
@@ -183,15 +193,15 @@ describe("generateSerializingProgram", function () {
   });
 
   it("null", () => {
-    testSerializingProgram(
-      { output: null, cpu: cpuInfos.avr },
-      "JsonDocument doc;\n\nserializeJson(doc, output);",
-    );
+    expect(
+      generateSerializingProgram({ output: null, cpu: cpuInfos.avr }),
+    ).toEqual("JsonDocument doc;\n\nserializeJson(doc, output);");
   });
 
   it("outputType = charPtr", () => {
-    testSerializingProgram(
-      { outputType: "charPtr", cpu: cpuInfos.avr },
+    expect(
+      generateSerializingProgram({ outputType: "charPtr", cpu: cpuInfos.avr }),
+    ).toEqual(
       "// char* output;\n" +
         "// size_t outputCapacity;\n\n" +
         "JsonDocument doc;\n\n" +
@@ -200,8 +210,12 @@ describe("generateSerializingProgram", function () {
   });
 
   it("outputType = charArray", () => {
-    testSerializingProgram(
-      { outputType: "charArray", cpu: cpuInfos.avr },
+    expect(
+      generateSerializingProgram({
+        outputType: "charArray",
+        cpu: cpuInfos.avr,
+      }),
+    ).toEqual(
       "JsonDocument doc;\n\n" +
         "char output[MAX_OUTPUT_SIZE];\n" +
         "serializeJson(doc, output);",
@@ -209,8 +223,12 @@ describe("generateSerializingProgram", function () {
   });
 
   it("outputType = arduinoString", () => {
-    testSerializingProgram(
-      { outputType: "arduinoString", cpu: cpuInfos.avr },
+    expect(
+      generateSerializingProgram({
+        outputType: "arduinoString",
+        cpu: cpuInfos.avr,
+      }),
+    ).toEqual(
       "JsonDocument doc;\n\n" +
         "String output;\n" +
         "serializeJson(doc, output);",
@@ -218,8 +236,12 @@ describe("generateSerializingProgram", function () {
   });
 
   it("outputType = stdString", () => {
-    testSerializingProgram(
-      { outputType: "stdString", cpu: cpuInfos.avr },
+    expect(
+      generateSerializingProgram({
+        outputType: "stdString",
+        cpu: cpuInfos.avr,
+      }),
+    ).toEqual(
       "JsonDocument doc;\n\n" +
         "std::string output;\n" +
         "serializeJson(doc, output);",
@@ -227,8 +249,12 @@ describe("generateSerializingProgram", function () {
   });
 
   it("outputType = arduinoStream", () => {
-    testSerializingProgram(
-      { outputType: "arduinoStream", cpu: cpuInfos.avr },
+    expect(
+      generateSerializingProgram({
+        outputType: "arduinoStream",
+        cpu: cpuInfos.avr,
+      }),
+    ).toEqual(
       "// Stream& output;\n\n" +
         "JsonDocument doc;\n\n" +
         "serializeJson(doc, output);",
@@ -236,8 +262,12 @@ describe("generateSerializingProgram", function () {
   });
 
   it("outputType = stdStream", () => {
-    testSerializingProgram(
-      { outputType: "stdStream", cpu: cpuInfos.avr },
+    expect(
+      generateSerializingProgram({
+        outputType: "stdStream",
+        cpu: cpuInfos.avr,
+      }),
+    ).toEqual(
       "// std::ostream& output;\n\n" +
         "JsonDocument doc;\n\n" +
         "serializeJson(doc, output);",
