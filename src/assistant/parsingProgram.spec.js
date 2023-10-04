@@ -17,59 +17,73 @@ describe("writeDeserializationCode()", () => {
 
   it("inputType == charPtr", () => {
     expect(getDeserializationCode({ inputType: "charPtr" })).toEqual(
-      "// char* input;\n" +
-        "// size_t inputLength; (optional)\n\n" +
-        "JsonDocument doc;\n\n" +
-        "DeserializationError error = deserializeJson(doc, input, inputLength);",
+      `// char* input;
+// size_t inputLength; (optional)
+
+JsonDocument doc;
+
+DeserializationError error = deserializeJson(doc, input, inputLength);`,
     );
   });
 
   it("inputType == charArray", () => {
     expect(getDeserializationCode({ inputType: "charArray" })).toEqual(
-      "// char input[MAX_INPUT_LENGTH];\n\n" +
-        "JsonDocument doc;\n\n" +
-        "DeserializationError error = deserializeJson(doc, input, MAX_INPUT_LENGTH);",
+      `// char input[MAX_INPUT_LENGTH];
+
+JsonDocument doc;
+
+DeserializationError error = deserializeJson(doc, input, MAX_INPUT_LENGTH);`,
     );
   });
 
   it("inputType == constCharPtr", () => {
     expect(getDeserializationCode({ inputType: "constCharPtr" })).toEqual(
-      "// const char* input;\n" +
-        "// size_t inputLength; (optional)\n\n" +
-        "JsonDocument doc;\n\n" +
-        "DeserializationError error = deserializeJson(doc, input, inputLength);",
+      `// const char* input;
+// size_t inputLength; (optional)
+
+JsonDocument doc;
+
+DeserializationError error = deserializeJson(doc, input, inputLength);`,
     );
   });
 
   it("inputType == arduinoString", () => {
     expect(getDeserializationCode({ inputType: "arduinoString" })).toEqual(
-      "// String input;\n\n" +
-        "JsonDocument doc;\n\n" +
-        "DeserializationError error = deserializeJson(doc, input);",
+      `// String input;
+
+JsonDocument doc;
+
+DeserializationError error = deserializeJson(doc, input);`,
     );
   });
 
   it("inputType == arduinoStream", () => {
     expect(getDeserializationCode({ inputType: "arduinoStream" })).toEqual(
-      "// Stream& input;\n\n" +
-        "JsonDocument doc;\n\n" +
-        "DeserializationError error = deserializeJson(doc, input);",
+      `// Stream& input;
+
+JsonDocument doc;
+
+DeserializationError error = deserializeJson(doc, input);`,
     );
   });
 
   it("inputType == stdString", () => {
     expect(getDeserializationCode({ inputType: "stdString" })).toEqual(
-      "// std::string input;\n\n" +
-        "JsonDocument doc;\n\n" +
-        "DeserializationError error = deserializeJson(doc, input);",
+      `// std::string input;
+
+JsonDocument doc;
+
+DeserializationError error = deserializeJson(doc, input);`,
     );
   });
 
   it("inputType == stdStream", () => {
     expect(getDeserializationCode({ inputType: "stdStream" })).toEqual(
-      "// std::istream& input;\n\n" +
-        "JsonDocument doc;\n\n" +
-        "DeserializationError error = deserializeJson(doc, input);",
+      `// std::istream& input;
+
+JsonDocument doc;
+
+DeserializationError error = deserializeJson(doc, input);`,
     );
   });
 });
@@ -83,30 +97,30 @@ describe("writeErrorCheckingCode()", () => {
 
   it("should print to Serial when possible", () => {
     expect(getErrorCheckingCode({ serial: true, cpu: {} })).toEqual(
-      "if (error) {\n" +
-        '  Serial.print("deserializeJson() failed: ");\n' +
-        "  Serial.println(error.c_str());\n" +
-        "  return;\n" +
-        "}",
+      `if (error) {
+  Serial.print("deserializeJson() failed: ");
+  Serial.println(error.c_str());
+  return;
+}`,
     );
   });
 
   it("should use PROGMEM when possible", () => {
     expect(getErrorCheckingCode({ serial: true, progmem: true })).toEqual(
-      "if (error) {\n" +
-        '  Serial.print(F("deserializeJson() failed: "));\n' +
-        "  Serial.println(error.f_str());\n" +
-        "  return;\n" +
-        "}",
+      `if (error) {
+  Serial.print(F("deserializeJson() failed: "));
+  Serial.println(error.f_str());
+  return;
+}`,
     );
   });
 
   it("should print to cerr if Serial is not available", () => {
     expect(getErrorCheckingCode({ serial: false })).toEqual(
-      "if (error) {\n" +
-        '  std::cerr << "deserializeJson() failed: " << error.c_str() << std::endl;\n' +
-        "  return;\n" +
-        "}",
+      `if (error) {
+  std::cerr << "deserializeJson() failed: " << error.c_str() << std::endl;
+  return;
+}`,
     );
   });
 });
@@ -119,12 +133,15 @@ describe("generateParsingProgram", function () {
         nestingLimit: 11,
       }),
     ).toEqual(
-      "JsonDocument doc;\n\n" +
-        "DeserializationError error = deserializeJson(doc, input, DeserializationOption::NestingLimit(11));\n\n" +
-        "if (error) {\n" +
-        '  std::cerr << "deserializeJson() failed: " << error.c_str() << std::endl;\n' +
-        "  return;\n" +
-        "}\n",
+      `JsonDocument doc;
+
+DeserializationError error = deserializeJson(doc, input, DeserializationOption::NestingLimit(11));
+
+if (error) {
+  std::cerr << "deserializeJson() failed: " << error.c_str() << std::endl;
+  return;
+}
+`,
     );
   });
 
@@ -136,27 +153,35 @@ describe("generateParsingProgram", function () {
         nestingLimit: 11,
       }),
     ).toEqual(
-      "JsonDocument filter;\n" +
-        'filter["a"] = true;\n\n' +
-        "JsonDocument doc;\n\n" +
-        "DeserializationError error = deserializeJson(doc, input, DeserializationOption::Filter(filter), DeserializationOption::NestingLimit(11));\n\n" +
-        "if (error) {\n" +
-        '  std::cerr << "deserializeJson() failed: " << error.c_str() << std::endl;\n' +
-        "  return;\n" +
-        "}\n",
+      `JsonDocument filter;
+filter["a"] = true;
+
+JsonDocument doc;
+
+DeserializationError error = deserializeJson(doc, input, DeserializationOption::Filter(filter), DeserializationOption::NestingLimit(11));
+
+if (error) {
+  std::cerr << "deserializeJson() failed: " << error.c_str() << std::endl;
+  return;
+}
+`,
     );
   });
 
   it("filter", () => {
     expect(generateParsingProgram({ input: {}, filter: { a: true } })).toEqual(
-      "JsonDocument filter;\n" +
-        'filter["a"] = true;\n\n' +
-        "JsonDocument doc;\n\n" +
-        "DeserializationError error = deserializeJson(doc, input, DeserializationOption::Filter(filter));\n\n" +
-        "if (error) {\n" +
-        '  std::cerr << "deserializeJson() failed: " << error.c_str() << std::endl;\n' +
-        "  return;\n" +
-        "}\n",
+      `JsonDocument filter;
+filter["a"] = true;
+
+JsonDocument doc;
+
+DeserializationError error = deserializeJson(doc, input, DeserializationOption::Filter(filter));
+
+if (error) {
+  std::cerr << "deserializeJson() failed: " << error.c_str() << std::endl;
+  return;
+}
+`,
     );
   });
 });
@@ -195,9 +220,10 @@ describe("writeDecompositionCode", function () {
 
   it("[1,2,3]", () => {
     expect(getDecompositionCode([1, 2, 3])).toEqual(
-      "int root_0 = doc[0]; // 1\n" +
-        "int root_1 = doc[1]; // 2\n" +
-        "int root_2 = doc[2]; // 3\n",
+      `int root_0 = doc[0]; // 1
+int root_1 = doc[1]; // 2
+int root_2 = doc[2]; // 3
+`,
     );
   });
 
@@ -221,10 +247,11 @@ describe("writeDecompositionCode", function () {
 
   it('[{"a":1,"b":2,"c":3}]', () => {
     expect(getDecompositionCode([{ a: 1, b: 2, c: 3 }])).toEqual(
-      "JsonObject root_0 = doc[0];\n" +
-        'int root_0_a = root_0["a"]; // 1\n' +
-        'int root_0_b = root_0["b"]; // 2\n' +
-        'int root_0_c = root_0["c"]; // 3\n',
+      `JsonObject root_0 = doc[0];
+int root_0_a = root_0["a"]; // 1
+int root_0_b = root_0["b"]; // 2
+int root_0_c = root_0["c"]; // 3
+`,
     );
   });
 
@@ -236,9 +263,10 @@ describe("writeDecompositionCode", function () {
 
   it("[10000,10000000,10000000000]", () => {
     expect(getDecompositionCode([10000, 10000000, 10000000000])).toEqual(
-      "int root_0 = doc[0]; // 10000\n" +
-        "long root_1 = doc[1]; // 10000000\n" +
-        "long long root_2 = doc[2]; // 10000000000\n",
+      `int root_0 = doc[0]; // 10000
+long root_1 = doc[1]; // 10000000
+long long root_2 = doc[2]; // 10000000000
+`,
     );
   });
 
@@ -263,11 +291,16 @@ describe("writeDecompositionCode", function () {
         },
       ]),
     ).toEqual(
-      "for (JsonObject item : doc.as<JsonArray>()) {\n\n" +
-        '  long dt = item["dt"]; // 1511978400, 1511989200\n\n' +
-        '  float main_temp = item["main"]["temp"]; // 3.95, 3.2\n\n' +
-        '  const char* weather_0_description = item["weather"][0]["description"]; // "light rain", "clear sky"\n\n' +
-        "}\n",
+      `for (JsonObject item : doc.as<JsonArray>()) {
+
+  long dt = item["dt"]; // 1511978400, 1511989200
+
+  float main_temp = item["main"]["temp"]; // 3.95, 3.2
+
+  const char* weather_0_description = item["weather"][0]["description"]; // "light rain", "clear sky"
+
+}
+`,
     );
   });
 
@@ -293,11 +326,16 @@ describe("writeDecompositionCode", function () {
         ],
       }),
     ).toEqual(
-      'for (JsonObject list_item : doc["list"].as<JsonArray>()) {\n\n' +
-        '  long list_item_dt = list_item["dt"]; // 1511978400, 1511989200, 1512000000\n\n' +
-        '  float list_item_main_temp = list_item["main"]["temp"]; // 3.95, 3.2, 3.25\n\n' +
-        '  const char* list_item_weather_0_description = list_item["weather"][0]["description"]; // "light rain", ...\n\n' +
-        "}\n",
+      `for (JsonObject list_item : doc["list"].as<JsonArray>()) {
+
+  long list_item_dt = list_item["dt"]; // 1511978400, 1511989200, 1512000000
+
+  float list_item_main_temp = list_item["main"]["temp"]; // 3.95, 3.2, 3.25
+
+  const char* list_item_weather_0_description = list_item["weather"][0]["description"]; // "light rain", ...
+
+}
+`,
     );
   });
 
@@ -320,11 +358,14 @@ describe("writeDecompositionCode", function () {
         },
       }),
     ).toEqual(
-      'for (JsonPair property : doc["properties"].as<JsonObject>()) {\n' +
-        '  const char* property_key = property.key().c_str(); // "batt", "tempc", "hum"\n\n' +
-        '  const char* property_value_unit = property.value()["unit"]; // "%", "°C", "%"\n' +
-        '  const char* property_value_name = property.value()["name"]; // "battery", "temperature", "humidity"\n\n' +
-        "}\n",
+      `for (JsonPair property : doc["properties"].as<JsonObject>()) {
+  const char* property_key = property.key().c_str(); // "batt", "tempc", "hum"
+
+  const char* property_value_unit = property.value()["unit"]; // "%", "°C", "%"
+  const char* property_value_name = property.value()["name"]; // "battery", "temperature", "humidity"
+
+}
+`,
     );
   });
 
@@ -332,25 +373,34 @@ describe("writeDecompositionCode", function () {
     expect(
       getDecompositionCode([{ x: 10000 }, { x: 10000000 }, { x: 10000000000 }]),
     ).toEqual(
-      "for (JsonObject item : doc.as<JsonArray>()) {\n\n" +
-        '  long long x = item["x"]; // 10000, 10000000, 10000000000\n\n' +
-        "}\n",
+      `for (JsonObject item : doc.as<JsonArray>()) {
+
+  long long x = item["x"]; // 10000, 10000000, 10000000000
+
+}
+`,
     );
   });
 
   it("loop with mixed integer and floats", () => {
     expect(getDecompositionCode([{ x: 10000 }, { x: 1.4 }])).toEqual(
-      "for (JsonObject item : doc.as<JsonArray>()) {\n\n" +
-        '  float x = item["x"]; // 10000, 1.4\n\n' +
-        "}\n",
+      `for (JsonObject item : doc.as<JsonArray>()) {
+
+  float x = item["x"]; // 10000, 1.4
+
+}
+`,
     );
   });
 
   it("loop with mixed null and integer", () => {
     expect(getDecompositionCode([{ x: null }, { x: 42 }])).toEqual(
-      "for (JsonObject item : doc.as<JsonArray>()) {\n\n" +
-        '  int x = item["x"]; // 0, 42\n\n' +
-        "}\n",
+      `for (JsonObject item : doc.as<JsonArray>()) {
+
+  int x = item["x"]; // 0, 42
+
+}
+`,
     );
   });
 
@@ -363,17 +413,23 @@ describe("writeDecompositionCode", function () {
         { very_long_name: "some string" },
       ]),
     ).toEqual(
-      "for (JsonObject item : doc.as<JsonArray>()) {\n\n" +
-        '  const char* very_long_name = item["very_long_name"]; // "long value", "another long value", "yes another ...\n\n' +
-        "}\n",
+      `for (JsonObject item : doc.as<JsonArray>()) {
+
+  const char* very_long_name = item["very_long_name"]; // "long value", "another long value", "yes another ...
+
+}
+`,
     );
   });
 
   it("loop on root with null siblings", () => {
     expect(getDecompositionCode([{ x: { id: 10 } }, { x: null }])).toEqual(
-      "for (JsonObject item : doc.as<JsonArray>()) {\n\n" +
-        '  int x_id = item["x"]["id"]; // 10, 0\n\n' +
-        "}\n",
+      `for (JsonObject item : doc.as<JsonArray>()) {
+
+  int x_id = item["x"]["id"]; // 10, 0
+
+}
+`,
     );
   });
 
@@ -384,11 +440,16 @@ describe("writeDecompositionCode", function () {
         { data: [{ time: 3 }, { time: 4 }] },
       ]),
     ).toEqual(
-      "for (JsonObject item : doc.as<JsonArray>()) {\n\n" +
-        '  for (JsonObject data_item : item["data"].as<JsonArray>()) {\n\n' +
-        '    int data_item_time = data_item["time"]; // 1, 2\n\n' +
-        "  }\n\n" +
-        "}\n",
+      `for (JsonObject item : doc.as<JsonArray>()) {
+
+  for (JsonObject data_item : item["data"].as<JsonArray>()) {
+
+    int data_item_time = data_item["time"]; // 1, 2
+
+  }
+
+}
+`,
     );
   });
 

@@ -79,20 +79,21 @@ describe("writeCompositionCode()", () => {
         [3, 4],
       ]),
     ).toEqual(
-      "JsonArray doc_0 = doc.add<JsonArray>();\n" +
-        "doc_0.add(1);\n" +
-        "doc_0.add(2);\n\n" +
-        "JsonArray doc_1 = doc.add<JsonArray>();\n" +
-        "doc_1.add(3);\n" +
-        "doc_1.add(4);",
+      `JsonArray doc_0 = doc.add<JsonArray>();
+doc_0.add(1);
+doc_0.add(2);
+
+JsonArray doc_1 = doc.add<JsonArray>();
+doc_1.add(3);
+doc_1.add(4);`,
     );
   });
 
   it('{ A: { B: { C: "D" }, E: { F: "G" } } }', () => {
     expect(getCompositionCode({ A: { B: { C: "D" }, E: { F: "G" } } })).toEqual(
-      'JsonObject A = doc["A"].to<JsonObject>();\n' +
-        'A["B"]["C"] = "D";\n' +
-        'A["E"]["F"] = "G";',
+      `JsonObject A = doc["A"].to<JsonObject>();
+A["B"]["C"] = "D";
+A["E"]["F"] = "G";`,
     );
   });
 
@@ -111,37 +112,39 @@ describe("writeCompositionCode()", () => {
         ],
       ]),
     ).toEqual(
-      "JsonArray doc_0 = doc.add<JsonArray>();\n\n" +
-        "JsonArray doc_0_0 = doc_0.add<JsonArray>();\n" +
-        "doc_0_0.add(42);\n" +
-        "doc_0_0.add(43);\n\n" +
-        "JsonArray doc_0_1 = doc_0.add<JsonArray>();\n" +
-        "doc_0_1.add(44);\n" +
-        "doc_0_1.add(45);",
+      `JsonArray doc_0 = doc.add<JsonArray>();
+
+JsonArray doc_0_0 = doc_0.add<JsonArray>();
+doc_0_0.add(42);
+doc_0_0.add(43);
+
+JsonArray doc_0_1 = doc_0.add<JsonArray>();
+doc_0_1.add(44);
+doc_0_1.add(45);`,
     );
   });
 
   it('{"hello world":[42, 43]}', () => {
     expect(getCompositionCode({ "hello world": [42, 43] })).toEqual(
-      'JsonArray hello_world = doc["hello world"].to<JsonArray>();\n' +
-        "hello_world.add(42);\n" +
-        "hello_world.add(43);",
+      `JsonArray hello_world = doc["hello world"].to<JsonArray>();
+hello_world.add(42);
+hello_world.add(43);`,
     );
   });
 
   it("{ list: [{ dt: true }] }", () => {
     expect(getCompositionCode({ list: [{ dt: true, main: true }] })).toEqual(
-      'JsonObject list_0 = doc["list"].add<JsonObject>();\n' +
-        'list_0["dt"] = true;\n' +
-        'list_0["main"] = true;',
+      `JsonObject list_0 = doc["list"].add<JsonObject>();
+list_0["dt"] = true;
+list_0["main"] = true;`,
     );
   });
 
   it("{ list: [{ dt: true, main: true }] }", () => {
     expect(getCompositionCode({ list: [{ dt: true, main: true }] })).toEqual(
-      'JsonObject list_0 = doc["list"].add<JsonObject>();\n' +
-        'list_0["dt"] = true;\n' +
-        'list_0["main"] = true;',
+      `JsonObject list_0 = doc["list"].add<JsonObject>();
+list_0["dt"] = true;
+list_0["main"] = true;`,
     );
   });
 
@@ -151,9 +154,9 @@ describe("writeCompositionCode()", () => {
         data: { children: [{ data: { title: true, ups: true } }] },
       }),
     ).toEqual(
-      'JsonObject data_children_0_data = doc["data"]["children"][0]["data"].to<JsonObject>();\n' +
-        'data_children_0_data["title"] = true;\n' +
-        'data_children_0_data["ups"] = true;',
+      `JsonObject data_children_0_data = doc["data"]["children"][0]["data"].to<JsonObject>();
+data_children_0_data["title"] = true;
+data_children_0_data["ups"] = true;`,
     );
   });
 
@@ -170,13 +173,13 @@ describe("writeCompositionCode()", () => {
         { a: 3, b: 4 },
       ]),
     ).toEqual(
-      "JsonObject doc_0 = doc.add<JsonObject>();\n" +
-        'doc_0["a"] = 1;\n' +
-        'doc_0["b"] = 2;\n' +
-        "\n" +
-        "JsonObject doc_1 = doc.add<JsonObject>();\n" +
-        'doc_1["a"] = 3;\n' +
-        'doc_1["b"] = 4;',
+      `JsonObject doc_0 = doc.add<JsonObject>();
+doc_0["a"] = 1;
+doc_0["b"] = 2;
+
+JsonObject doc_1 = doc.add<JsonObject>();
+doc_1["a"] = 3;
+doc_1["b"] = 4;`,
     );
   });
 });
@@ -186,26 +189,34 @@ describe("generateSerializingProgram()", function () {
     expect(
       generateSerializingProgram({ output: { answer: 42 }, cpu: cpuInfos.avr }),
     ).toEqual(
-      "JsonDocument doc;\n\n" +
-        'doc["answer"] = 42;\n\n' +
-        "serializeJson(doc, output);",
+      `JsonDocument doc;
+
+doc["answer"] = 42;
+
+serializeJson(doc, output);`,
     );
   });
 
   it("null", () => {
     expect(
       generateSerializingProgram({ output: null, cpu: cpuInfos.avr }),
-    ).toEqual("JsonDocument doc;\n\nserializeJson(doc, output);");
+    ).toEqual(
+      `JsonDocument doc;
+
+serializeJson(doc, output);`,
+    );
   });
 
   it("outputType = charPtr", () => {
     expect(
       generateSerializingProgram({ outputType: "charPtr", cpu: cpuInfos.avr }),
     ).toEqual(
-      "// char* output;\n" +
-        "// size_t outputCapacity;\n\n" +
-        "JsonDocument doc;\n\n" +
-        "serializeJson(doc, output, outputCapacity);",
+      `// char* output;
+// size_t outputCapacity;
+
+JsonDocument doc;
+
+serializeJson(doc, output, outputCapacity);`,
     );
   });
 
@@ -216,9 +227,10 @@ describe("generateSerializingProgram()", function () {
         cpu: cpuInfos.avr,
       }),
     ).toEqual(
-      "JsonDocument doc;\n\n" +
-        "char output[MAX_OUTPUT_SIZE];\n" +
-        "serializeJson(doc, output);",
+      `JsonDocument doc;
+
+char output[MAX_OUTPUT_SIZE];
+serializeJson(doc, output);`,
     );
   });
 
@@ -229,9 +241,10 @@ describe("generateSerializingProgram()", function () {
         cpu: cpuInfos.avr,
       }),
     ).toEqual(
-      "JsonDocument doc;\n\n" +
-        "String output;\n" +
-        "serializeJson(doc, output);",
+      `JsonDocument doc;
+
+String output;
+serializeJson(doc, output);`,
     );
   });
 
@@ -242,9 +255,10 @@ describe("generateSerializingProgram()", function () {
         cpu: cpuInfos.avr,
       }),
     ).toEqual(
-      "JsonDocument doc;\n\n" +
-        "std::string output;\n" +
-        "serializeJson(doc, output);",
+      `JsonDocument doc;
+
+std::string output;
+serializeJson(doc, output);`,
     );
   });
 
@@ -255,9 +269,11 @@ describe("generateSerializingProgram()", function () {
         cpu: cpuInfos.avr,
       }),
     ).toEqual(
-      "// Stream& output;\n\n" +
-        "JsonDocument doc;\n\n" +
-        "serializeJson(doc, output);",
+      `// Stream& output;
+
+JsonDocument doc;
+
+serializeJson(doc, output);`,
     );
   });
 
@@ -268,9 +284,11 @@ describe("generateSerializingProgram()", function () {
         cpu: cpuInfos.avr,
       }),
     ).toEqual(
-      "// std::ostream& output;\n\n" +
-        "JsonDocument doc;\n\n" +
-        "serializeJson(doc, output);",
+      `// std::ostream& output;
+
+JsonDocument doc;
+
+serializeJson(doc, output);`,
     );
   });
 });
