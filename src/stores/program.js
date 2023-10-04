@@ -29,21 +29,27 @@ export const useProgramStore = defineStore("program", () => {
   const program = ref("");
 
   async function generate() {
-    const fct = {
-      deserialize: generateParsingProgram,
-      serialize: generateSerializingProgram,
-    }[cfg.mode];
+    switch (cfg.mode) {
+      case "deserialize":
+        program.value = generateParsingProgram({
+          root: cfg.input,
+          filter: cfg.filterEnabled ? cfg.filter : undefined,
+          cpu: {
+            nestingLimit: cpu.nestingLimit,
+            serial: cpu.serial,
+            progmem: cpu.progmem,
+          },
+          inputType: cfg.ioTypeId,
+        });
+        break;
 
-    program.value = fct({
-      root: cfg.input,
-      filter: cfg.filterEnabled ? cfg.filter : undefined,
-      cpu: {
-        nestingLimit: cpu.nestingLimit,
-        serial: cpu.serial,
-        progmem: cpu.progmem,
-      },
-      inputType: cfg.ioTypeId,
-    });
+      case "serialize":
+        program.value = generateSerializingProgram({
+          root: cfg.input,
+          outputType: cfg.ioTypeId,
+        });
+        break;
+    }
 
     await sleep(100);
 
