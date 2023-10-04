@@ -155,6 +155,13 @@ export function generateSerializingProgram(cfg) {
     default:
       args.push("output");
   }
+
+  if (cfg.output) {
+    prg.addEmptyLine();
+    prg.addLine("doc.shrinkToFit();  // optional");
+    prg.addEmptyLine();
+  }
+
   prg.addLine(`serializeJson(${args.join(", ")});`);
 
   return prg.toString();

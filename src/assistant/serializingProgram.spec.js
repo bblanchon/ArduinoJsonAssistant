@@ -193,6 +193,8 @@ describe("generateSerializingProgram()", function () {
 
 doc["answer"] = 42;
 
+doc.shrinkToFit();  // optional
+
 serializeJson(doc, output);`,
     );
   });
