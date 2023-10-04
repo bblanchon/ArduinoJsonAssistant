@@ -19,8 +19,8 @@
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
-    "@rushstack/eslint-patch": "^1.5.0",
-    "@vitejs/plugin-vue": "^4.3.4",
+    "@rushstack/eslint-patch": "^1.5.1",
+    "@vitejs/plugin-vue": "^4.4.0",
     "@vue/eslint-config-prettier": "^8.0.0",
     "bootstrap-icons": "^1.11.1",
     "eslint": "^8.50.0",
@@ -29,8 +29,8 @@
     "prettier": "^3.0.3",
     "sass": "^1.68.0",
     "unplugin-vue-components": "^0.25.2",
-    "vite": "^4.4.9",
+    "vite": "^4.4.10",
     "vite-svg-loader": "^4.0.0",
-    "vitest": "^0.34.5"
+    "vitest": "^0.34.6"
   }
 }
