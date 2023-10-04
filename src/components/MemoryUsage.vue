@@ -1,7 +1,10 @@
 <template>
   <div class="d-md-flex align-items-center">
     <div class="flex-none mr-3">
-      RAM usage: <b>{{ ramUsage }} bytes</b> ({{ peakRamUsage }} peak)
+      RAM usage: <b>{{ formatBytes(ramUsage) }}</b> ({{
+        formatBytes(peakRamUsage)
+      }}
+      peak)
     </div>
     <div class="progress flex-fill">
       <div
@@ -27,6 +30,7 @@
 </template>
 
 <script>
+import bytes from "bytes";
 import { mapState } from "pinia";
 import { useCpuStore } from "@/stores/cpu";
 import { useStatsStore } from "@/stores/stats";
@@ -47,6 +51,11 @@ export default {
       if (this.peakRamUsage > this.ramError) return "danger";
       if (this.peakRamUsage > this.ramWarning) return "warning";
       return "success";
+    },
+  },
+  methods: {
+    formatBytes(values) {
+      return bytes.format(values, { decimalPlaces: 1 });
     },
   },
 };
