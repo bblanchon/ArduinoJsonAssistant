@@ -8,10 +8,10 @@ import {
 } from "./serializingProgram";
 
 describe("writeCompositionCode()", () => {
-  function test(root, expectedOutput) {
+  function test(output, expectedCode) {
     const prg = new ProgramWriter();
-    writeCompositionCode(prg, root, "doc");
-    expect(prg.toString()).toEqual(expectedOutput);
+    writeCompositionCode(prg, output, "doc");
+    expect(prg.toString()).toEqual(expectedCode);
   }
 
   it("null", () => {
@@ -169,13 +169,13 @@ describe("writeCompositionCode()", () => {
 });
 
 describe("generateSerializingProgram", function () {
-  function testSerializingProgram(cfg, expectedOutput) {
-    expect(generateSerializingProgram(cfg)).toEqual(expectedOutput);
+  function testSerializingProgram(cfg, expectedCode) {
+    expect(generateSerializingProgram(cfg)).toEqual(expectedCode);
   }
 
   it('{"answer":42}', () => {
     testSerializingProgram(
-      { root: { answer: 42 }, cpu: cpuInfos.avr },
+      { output: { answer: 42 }, cpu: cpuInfos.avr },
       "JsonDocument doc;\n\n" +
         'doc["answer"] = 42;\n\n' +
         "serializeJson(doc, output);",
@@ -184,7 +184,7 @@ describe("generateSerializingProgram", function () {
 
   it("null", () => {
     testSerializingProgram(
-      { root: null, cpu: cpuInfos.avr },
+      { output: null, cpu: cpuInfos.avr },
       "JsonDocument doc;\n\nserializeJson(doc, output);",
     );
   });

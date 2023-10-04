@@ -34,7 +34,8 @@ export const useProgramStore = defineStore("program", () => {
     switch (cfg.mode) {
       case "deserialize":
         program.value = generateParsingProgram({
-          root: cfg.input,
+          input: cfg.input,
+          inputType: cfg.ioTypeId,
           filter: cfg.filterEnabled ? cfg.filter : undefined,
           nestingLimit:
             stats.nestingLevel > cpu.nestingLimit
@@ -42,13 +43,12 @@ export const useProgramStore = defineStore("program", () => {
               : undefined,
           serial: cpu.serial,
           progmem: cpu.progmem,
-          inputType: cfg.ioTypeId,
         });
         break;
 
       case "serialize":
         program.value = generateSerializingProgram({
-          root: cfg.input,
+          output: cfg.input,
           outputType: cfg.ioTypeId,
         });
         break;

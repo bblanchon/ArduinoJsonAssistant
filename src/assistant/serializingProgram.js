@@ -132,7 +132,7 @@ export function generateSerializingProgram(cfg) {
   prg.addLine("JsonDocument doc;");
 
   prg.addEmptyLine();
-  writeCompositionCode(prg, cfg.root, "doc");
+  writeCompositionCode(prg, cfg.output, "doc");
   prg.addEmptyLine();
 
   const args = ["doc"];

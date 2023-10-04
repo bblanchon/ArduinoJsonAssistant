@@ -115,16 +115,16 @@ function extractValue(prg, cfg) {
   }
 }
 
-export function writeDecompositionCode(prg, root) {
-  switch (typeof root) {
+export function writeDecompositionCode(prg, input) {
+  switch (typeof input) {
     case "object":
       return extractValue(prg, {
-        value: root,
+        value: input,
         parent: "doc",
       });
     default: {
-      const t = getCppTypeFor(root);
-      prg.addLine(t, " root = doc.as<", t, ">(); // ", JSON.stringify(root));
+      const t = getCppTypeFor(input);
+      prg.addLine(t, " root = doc.as<", t, ">(); // ", JSON.stringify(input));
       break;
     }
   }
@@ -223,8 +223,10 @@ export function generateParsingProgram(cfg) {
   writeErrorCheckingCode(prg, cfg);
   prg.addEmptyLine();
 
-  const root = cfg.filter ? applyFilter(cfg.root, cfg.filter) : cfg.root;
-  writeDecompositionCode(prg, root);
+  const filteredInput = cfg.filter
+    ? applyFilter(cfg.input, cfg.filter)
+    : cfg.input;
+  writeDecompositionCode(prg, filteredInput);
 
   return prg.toString();
 }

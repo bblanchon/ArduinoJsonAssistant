@@ -126,7 +126,7 @@ describe("generateParsingProgram", function () {
   it("nesting limit witout filter", () => {
     testParginProgram(
       {
-        root: [[[[[[[[[[[]]]]]]]]]]],
+        input: [[[[[[[[[[[]]]]]]]]]]],
         nestingLimit: 11,
       },
       "JsonDocument doc;\n\n" +
@@ -141,7 +141,7 @@ describe("generateParsingProgram", function () {
   it("nesting limit with filter", () => {
     testParginProgram(
       {
-        root: { ignored: [[[[[[[[[[]]]]]]]]]] },
+        input: { ignored: [[[[[[[[[[]]]]]]]]]] },
         filter: { a: true },
         nestingLimit: 11,
       },
@@ -158,7 +158,7 @@ describe("generateParsingProgram", function () {
 
   it("filter", () => {
     testParginProgram(
-      { root: {}, filter: { a: true } },
+      { input: {}, filter: { a: true } },
       "JsonDocument filter;\n" +
         'filter["a"] = true;\n\n' +
         "JsonDocument doc;\n\n" +
@@ -172,9 +172,9 @@ describe("generateParsingProgram", function () {
 });
 
 describe("writeDecompositionCode", function () {
-  function testDescompositionCode(root, expectedOutput) {
+  function testDescompositionCode(input, expectedOutput) {
     const prg = new ProgramWriter();
-    writeDecompositionCode(prg, root);
+    writeDecompositionCode(prg, input);
     expect(prg.toString()).toEqual(expectedOutput);
   }
 
