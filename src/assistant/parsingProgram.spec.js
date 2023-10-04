@@ -128,7 +128,8 @@ describe("generateParsingProgram", function () {
     testParginProgram(
       {
         root: [[[[[[[[[[[]]]]]]]]]]],
-        cpu: { nestingLimit: 10, slotSize: 8 },
+        nestingLimit: 11,
+        cpu: { slotSize: 8 },
       },
       "JsonDocument doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input, DeserializationOption::NestingLimit(11));\n\n" +
@@ -144,7 +145,8 @@ describe("generateParsingProgram", function () {
       {
         root: { ignored: [[[[[[[[[[]]]]]]]]]] },
         filter: { a: true },
-        cpu: { slotSize: 8, nestingLimit: 10 },
+        nestingLimit: 11,
+        cpu: { slotSize: 8 },
       },
       "JsonDocument filter;\n" +
         'filter["a"] = true;\n\n' +

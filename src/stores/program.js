@@ -9,6 +9,7 @@ import { generateSerializingProgram } from "@/assistant/serializingProgram";
 
 import { useConfigStore } from "./config";
 import { useCpuStore } from "./cpu";
+import { useStatsStore } from "./stats";
 
 hljs.registerLanguage("cpp", (hljs) => {
   const lang = cpp(hljs);
@@ -26,6 +27,7 @@ hljs.registerLanguage("cpp", (hljs) => {
 export const useProgramStore = defineStore("program", () => {
   const cfg = useConfigStore();
   const cpu = useCpuStore();
+  const stats = useStatsStore();
   const program = ref("");
 
   async function generate() {
@@ -34,8 +36,11 @@ export const useProgramStore = defineStore("program", () => {
         program.value = generateParsingProgram({
           root: cfg.input,
           filter: cfg.filterEnabled ? cfg.filter : undefined,
+          nestingLimit:
+            stats.nestingLevel > cpu.nestingLimit
+              ? stats.nestingLevel
+              : undefined,
           cpu: {
-            nestingLimit: cpu.nestingLimit,
             serial: cpu.serial,
             progmem: cpu.progmem,
           },

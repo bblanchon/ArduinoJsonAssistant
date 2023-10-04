@@ -3,7 +3,6 @@ import {
   canLoop,
   getCommonCppTypeFor,
   getCppTypeFor,
-  measureNesting,
 } from "./analyzer";
 import {
   ProgramWriter,
@@ -188,9 +187,8 @@ export function writeDeserializationCode(prg, cfg) {
 
   if (filter) args.push("DeserializationOption::Filter(filter)");
 
-  const nesting = measureNesting(cfg.root);
-  if (nesting > cfg.cpu.nestingLimit)
-    args.push(`DeserializationOption::NestingLimit(${nesting})`);
+  if (cfg.nestingLimit)
+    args.push(`DeserializationOption::NestingLimit(${cfg.nestingLimit})`);
 
   prg.addEmptyLine();
   prg.addLine(
