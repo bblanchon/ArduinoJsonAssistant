@@ -51,17 +51,16 @@ class SlotPoolList {
   }
 }
 
-class SizeAccumulator {
-  constructor(cfg) {
+class JsonDocument {
+  constructor(memory, cfg) {
     this._strings = {};
     this._ignoreKeys = cfg.ignoreKeys;
     this._ignoreValues = cfg.ignoreValues;
     this._deduplicateKeys = cfg.deduplicateKeys;
     this._deduplicateValues = cfg.deduplicateValues;
     this._filteringEnabled = !!cfg.filter;
-    this._slotSize = cfg.slotSize;
 
-    this._memory = new Memory();
+    this._memory = memory;
     this._poolList = new SlotPoolList(cfg, this._memory);
   }
 
@@ -98,22 +97,18 @@ class SizeAccumulator {
     this._memory.free(s.length + 1);
   }
 
-  get results() {
+  shrinkToFit() {
     this._poolList.shrinkToFit();
-    return {
-      memoryUsage: this._memory.memoryUsage,
-      peakMemoryUsage: this._memory.peakMemoryUsage,
-    };
   }
 }
 
-function fillAccumulator(acc, value, filter) {
+function fillDocument(doc, value, filter) {
   switch (getValueType(value)) {
     case "array":
       if (filter.allowsArray) {
-        acc.addArray(value.length);
+        doc.addArray(value.length);
         for (let i = 0; i < value.length; i++)
-          fillAccumulator(acc, value[i], filter.getElementFilter(i));
+          fillDocument(doc, value[i], filter.getElementFilter(i));
       }
       break;
 
@@ -121,24 +116,37 @@ function fillAccumulator(acc, value, filter) {
       if (filter.allowsObject) {
         for (const key in value) {
           const memberFilter = filter.getMemberFilter(key);
-          if (memberFilter.allowsSomething) acc.addObjectMember(key);
-          else acc.addIgnoredKey(key);
-          fillAccumulator(acc, value[key], memberFilter);
+          if (memberFilter.allowsSomething) doc.addObjectMember(key);
+          else doc.addIgnoredKey(key);
+          fillDocument(doc, value[key], memberFilter);
         }
       }
       break;
 
     case "string":
-      if (filter.allowsValue) acc.addString(value);
+      if (filter.allowsValue) doc.addString(value);
       break;
   }
 }
 
 export function measureSize(obj, cfg) {
-  cfg = cfg || {};
-  const acc = new SizeAccumulator(cfg);
-  fillAccumulator(acc, obj, new JsonFilter(cfg.filter ?? true));
-  return acc.results;
+  const memory = new Memory();
+  if (cfg.filter) {
+    const filter = new JsonDocument(memory, cfg);
+    fillDocument(filter, cfg.filter, new JsonFilter(true));
+    filter.shrinkToFit();
+    const doc = new JsonDocument(memory, cfg);
+    fillDocument(doc, obj, new JsonFilter(cfg.filter));
+    doc.shrinkToFit();
+  } else {
+    const doc = new JsonDocument(memory, cfg);
+    fillDocument(doc, obj, new JsonFilter(true));
+    doc.shrinkToFit();
+  }
+  return {
+    memoryUsage: memory.memoryUsage,
+    peakMemoryUsage: memory.peakMemoryUsage,
+  };
 }
 
 export function measureNesting(obj) {

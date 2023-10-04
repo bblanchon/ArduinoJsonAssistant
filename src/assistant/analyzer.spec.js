@@ -114,8 +114,8 @@ describe("measureSize", function () {
         { slotSize: 8, poolCapacity: 16, filter: { hello: true } },
       ),
     ).toEqual({
-      memoryUsage: 14,
-      peakMemoryUsage: 140,
+      memoryUsage: 28,
+      peakMemoryUsage: 154,
     });
   });
 
@@ -135,8 +135,8 @@ describe("measureSize", function () {
         },
       ),
     ).toEqual({
-      memoryUsage: 54,
-      peakMemoryUsage: 145,
+      memoryUsage: 76,
+      peakMemoryUsage: 167,
     });
   });
 
