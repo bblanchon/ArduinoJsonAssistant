@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
 
-import cpuInfos from "./cpus";
 import { ProgramWriter } from "./programWriter";
 import {
   generateSerializingProgram,
@@ -186,9 +185,7 @@ doc_1["b"] = 4;`,
 
 describe("generateSerializingProgram()", function () {
   it('{"answer":42}', () => {
-    expect(
-      generateSerializingProgram({ output: { answer: 42 }, cpu: cpuInfos.avr }),
-    ).toEqual(
+    expect(generateSerializingProgram({ output: { answer: 42 } })).toEqual(
       `JsonDocument doc;
 
 doc["answer"] = 42;
@@ -200,9 +197,7 @@ serializeJson(doc, output);`,
   });
 
   it("null", () => {
-    expect(
-      generateSerializingProgram({ output: null, cpu: cpuInfos.avr }),
-    ).toEqual(
+    expect(generateSerializingProgram({ output: null })).toEqual(
       `JsonDocument doc;
 
 serializeJson(doc, output);`,
@@ -210,9 +205,7 @@ serializeJson(doc, output);`,
   });
 
   it("outputType = charPtr", () => {
-    expect(
-      generateSerializingProgram({ outputType: "charPtr", cpu: cpuInfos.avr }),
-    ).toEqual(
+    expect(generateSerializingProgram({ outputType: "charPtr" })).toEqual(
       `// char* output;
 // size_t outputCapacity;
 
@@ -226,7 +219,6 @@ serializeJson(doc, output, outputCapacity);`,
     expect(
       generateSerializingProgram({
         outputType: "charArray",
-        cpu: cpuInfos.avr,
       }),
     ).toEqual(
       `JsonDocument doc;
@@ -240,7 +232,6 @@ serializeJson(doc, output);`,
     expect(
       generateSerializingProgram({
         outputType: "arduinoString",
-        cpu: cpuInfos.avr,
       }),
     ).toEqual(
       `JsonDocument doc;
@@ -254,7 +245,6 @@ serializeJson(doc, output);`,
     expect(
       generateSerializingProgram({
         outputType: "stdString",
-        cpu: cpuInfos.avr,
       }),
     ).toEqual(
       `JsonDocument doc;
@@ -268,7 +258,6 @@ serializeJson(doc, output);`,
     expect(
       generateSerializingProgram({
         outputType: "arduinoStream",
-        cpu: cpuInfos.avr,
       }),
     ).toEqual(
       `// Stream& output;
@@ -283,7 +272,6 @@ serializeJson(doc, output);`,
     expect(
       generateSerializingProgram({
         outputType: "stdStream",
-        cpu: cpuInfos.avr,
       }),
     ).toEqual(
       `// std::ostream& output;
