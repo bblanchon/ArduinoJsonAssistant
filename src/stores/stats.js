@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { computed } from "vue";
 
 import { measureSize } from "@/assistant/analyzer";
-import cpuInfos from "@/assistant/cpus";
+import cpuInfos from "@/assets/cpus.json";
 import { hasJsonInJsonSyndrome, measureNesting } from "@/assistant/analyzer";
 import { needsDouble, needsLongLong } from "@/assistant/analyzer";
 

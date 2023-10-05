@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { applyFilter } from "@/assistant/filter";
-import cpuInfos from "@/assistant/cpus";
+import cpuInfos from "@/assets/cpus.json";
 
 const defaultInput = {
   sensor: "gps",

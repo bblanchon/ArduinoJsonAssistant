@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { computed } from "vue";
 
-import cpuInfos from "@/assistant/cpus";
+import cpuInfos from "@/assets/cpus.json";
 
 import { useConfigStore } from "./config";
 
