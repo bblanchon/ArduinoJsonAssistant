@@ -116,7 +116,7 @@ import cpuInfos from "@/assets/cpus.json";
 import { useConfigStore } from "@/stores/config";
 
 export default {
-  inject: ["version", "baseUrl", "sponsors"],
+  inject: ["version", "sponsors"],
   data() {
     return {
       cpuInfos,
