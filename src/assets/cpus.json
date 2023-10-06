@@ -13,7 +13,6 @@
   "ameba": {
     "label": "Ameba D",
     "serial": true,
-    "heapThreshold": 2048,
     "ramWarning": 1048576,
     "ramError": 4194304,
     "nestingLimit": 10,
@@ -25,7 +24,6 @@
   "esp32": {
     "label": "ESP32",
     "serial": true,
-    "heapThreshold": 2048,
     "ramWarning": 102400,
     "ramError": 512000,
     "nestingLimit": 10,
@@ -38,7 +36,6 @@
     "label": "ESP8266",
     "serial": true,
     "progmem": true,
-    "heapThreshold": 1024,
     "ramWarning": 30720,
     "ramError": 81920,
     "nestingLimit": 10,
@@ -49,7 +46,6 @@
   },
   "nios2": {
     "label": "Nios II",
-    "heapThreshold": 2048,
     "ramWarning": 1048576,
     "ramError": 16777216,
     "nestingLimit": 10,
@@ -61,7 +57,6 @@
   "samd21": {
     "label": "SAMD21",
     "serial": true,
-    "heapThreshold": 1024,
     "ramWarning": 10240,
     "ramError": 30720,
     "nestingLimit": 10,
@@ -73,7 +68,6 @@
   "stm32": {
     "label": "STM32",
     "serial": true,
-    "heapThreshold": 1024,
     "ramWarning": 10240,
     "ramError": 102400,
     "nestingLimit": 10,
@@ -85,7 +79,6 @@
   "x86": {
     "label": "x86",
     "serial": false,
-    "heapThreshold": 4096,
     "nestingLimit": 10,
     "slotSize": 16,
     "poolCapacity": 64,
@@ -95,7 +88,6 @@
   "x64": {
     "label": "x64",
     "serial": false,
-    "heapThreshold": 4096,
     "nestingLimit": 10,
     "slotSize": 32,
     "poolCapacity": 128,
