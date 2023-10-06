@@ -113,7 +113,7 @@
 <script>
 import { mapState, mapActions } from "pinia";
 import cpuInfos from "@/assets/cpus.json";
-import { useConfigStore } from "@/stores/config";
+import { useSettingsStore } from "@/stores/settings";
 
 export default {
   inject: ["version", "sponsors"],
@@ -134,7 +134,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(useConfigStore, [
+    ...mapState(useSettingsStore, [
       "ioTypes",
       "ioType",
       "cpu",
@@ -156,7 +156,7 @@ export default {
       }[this.mode];
     },
   },
-  methods: mapActions(useConfigStore, [
+  methods: mapActions(useSettingsStore, [
     "selectCpu",
     "selectMode",
     "selectIoType",

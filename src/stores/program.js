@@ -7,7 +7,7 @@ import { sleep } from "@/utils";
 import { generateParsingProgram } from "@/assistant/parsingProgram";
 import { generateSerializingProgram } from "@/assistant/serializingProgram";
 
-import { useConfigStore } from "./config";
+import { useSettingsStore } from "./settings";
 import { useCpuStore } from "./cpu";
 import { useStatsStore } from "./stats";
 
@@ -25,7 +25,7 @@ hljs.registerLanguage("cpp", (hljs) => {
 });
 
 export const useProgramStore = defineStore("program", () => {
-  const cfg = useConfigStore();
+  const cfg = useSettingsStore();
   const cpu = useCpuStore();
   const stats = useStatsStore();
   const program = ref("");

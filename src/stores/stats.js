@@ -6,10 +6,10 @@ import cpuInfos from "@/assets/cpus.json";
 import { hasJsonInJsonSyndrome, measureNesting } from "@/assistant/analyzer";
 import { needsDouble, needsLongLong } from "@/assistant/analyzer";
 
-import { useConfigStore } from "./config";
+import { useSettingsStore } from "./settings";
 
 export const useStatsStore = defineStore("stats", () => {
-  const cfg = useConfigStore();
+  const cfg = useSettingsStore();
 
   const slotSize = computed(() => {
     const cpu = cpuInfos[cfg.cpu];

@@ -16,7 +16,7 @@ function tryParse(input) {
   }
 }
 
-export const useConfigStore = defineStore("config", {
+export const useSettingsStore = defineStore("settings", {
   state() {
     return {
       assumeConstKeys: undefined,

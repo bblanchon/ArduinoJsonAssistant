@@ -3,10 +3,10 @@ import { computed } from "vue";
 
 import cpuInfos from "@/assets/cpus.json";
 
-import { useConfigStore } from "./config";
+import { useSettingsStore } from "./settings";
 
 export const useCpuStore = defineStore("cpu", () => {
-  const cfg = useConfigStore();
+  const cfg = useSettingsStore();
   const cpu = computed(() => cpuInfos[cfg.cpu]);
   return {
     name: computed(() => cpu.value.label),

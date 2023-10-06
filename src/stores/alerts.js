@@ -1,12 +1,12 @@
 import { defineStore } from "pinia";
-import { useConfigStore } from "./config";
+import { useSettingsStore } from "./settings";
 import { useCpuStore } from "./cpu";
 import { computed, inject } from "vue";
 
 import { useStatsStore } from "./stats";
 
 export const useAlertsStore = defineStore("alerts", () => {
-  const cfg = useConfigStore();
+  const cfg = useSettingsStore();
   const cpu = useCpuStore();
   const stats = useStatsStore();
 

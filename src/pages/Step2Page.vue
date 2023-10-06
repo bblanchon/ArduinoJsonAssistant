@@ -83,12 +83,12 @@
 
 <script>
 import { mapActions, mapState, mapWritableState } from "pinia";
-import { useConfigStore } from "@/stores/config";
+import { useSettingsStore } from "@/stores/settings";
 import { useAlertsStore } from "@/stores/alerts";
 
 export default {
   computed: {
-    ...mapState(useConfigStore, [
+    ...mapState(useSettingsStore, [
       "filter",
       "filteredInput",
       "filterJson",
@@ -99,12 +99,12 @@ export default {
       "mode",
     ]),
     ...mapState(useAlertsStore, ["alerts"]),
-    ...mapWritableState(useConfigStore, ["filterEnabled"]),
+    ...mapWritableState(useSettingsStore, ["filterEnabled"]),
     filteredInputJson() {
       return JSON.stringify(this.filteredInput, null, 2);
     },
   },
-  methods: mapActions(useConfigStore, [
+  methods: mapActions(useSettingsStore, [
     "setInputJson",
     "setFilterJson",
     "setSettings",

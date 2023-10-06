@@ -17,11 +17,11 @@
 
 <script>
 import { mapState } from "pinia";
-import { useConfigStore } from "@/stores/config";
+import { useSettingsStore } from "@/stores/settings";
 
 export default {
   computed: {
-    ...mapState(useConfigStore, ["hasErrors"]),
+    ...mapState(useSettingsStore, ["hasErrors"]),
     steps() {
       return [
         {

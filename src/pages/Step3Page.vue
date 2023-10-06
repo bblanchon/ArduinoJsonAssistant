@@ -54,7 +54,7 @@
 import { mapState } from "pinia";
 import "@/assets/highlight.scss";
 
-import { useConfigStore } from "@/stores/config";
+import { useSettingsStore } from "@/stores/settings";
 import { useCpuStore } from "@/stores/cpu";
 import { useProgramStore } from "@/stores/program";
 import { sleep } from "@/utils";
@@ -68,7 +68,7 @@ export default {
   },
   computed: {
     ...mapState(useProgramStore, ["program", "generate"]),
-    ...mapState(useConfigStore, [
+    ...mapState(useSettingsStore, [
       "isDeserializing",
       "isSerializing",
       "useLongLong",

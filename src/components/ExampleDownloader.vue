@@ -16,7 +16,7 @@
 
 <script>
 import { mapActions } from "pinia";
-import { useConfigStore } from "@/stores/config";
+import { useSettingsStore } from "@/stores/settings";
 
 export default {
   inject: ["scriptUrl"],
@@ -26,7 +26,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(useConfigStore, ["setSettings"]),
+    ...mapActions(useSettingsStore, ["setSettings"]),
     async downloadSettings(url) {
       if (this.scriptUrl) url = new URL(url, this.scriptUrl);
       this.isDownloading = true;

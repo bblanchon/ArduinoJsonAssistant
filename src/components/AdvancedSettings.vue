@@ -134,7 +134,7 @@
 
 <script>
 import { mapActions, mapState, mapWritableState } from "pinia";
-import { useConfigStore } from "@/stores/config";
+import { useSettingsStore } from "@/stores/settings";
 import { useCpuStore } from "@/stores/cpu";
 
 const fields = [
@@ -148,7 +148,7 @@ const fields = [
 
 export default {
   computed: {
-    ...mapState(useConfigStore, [
+    ...mapState(useSettingsStore, [
       "ignoreKeys",
       "ignoreValues",
       "isSerializing",
@@ -161,7 +161,7 @@ export default {
       "longLongIsDefault",
       "longLongInconsequential",
     ]),
-    ...mapWritableState(useConfigStore, fields),
+    ...mapWritableState(useSettingsStore, fields),
     defaults() {
       return {
         assumeConstKeys: this.isSerializing ? true : undefined,
@@ -177,7 +177,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(useConfigStore, ["setSettings"]),
+    ...mapActions(useSettingsStore, ["setSettings"]),
     resetTweaks() {
       this.setSettings(this.defaults);
     },
