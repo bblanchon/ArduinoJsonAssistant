@@ -1,6 +1,7 @@
 {
   "8-bit": {
     "slotSize": [8, 12],
+    "stringOverhead": 7,
     "poolCapacity": 16,
     "nestingLimit": 10,
     "doubleSupported": false,
@@ -8,6 +9,7 @@
   },
   "32-bit": {
     "slotSize": [12, 16],
+    "stringOverhead": 9,
     "poolCapacity": 64,
     "nestingLimit": 10,
     "doubleSupported": true,
@@ -16,6 +18,7 @@
   },
   "64-bit": {
     "slotSize": [24, 24],
+    "stringOverhead": 13,
     "poolCapacity": 128,
     "nestingLimit": 10,
     "doubleSupported": true,

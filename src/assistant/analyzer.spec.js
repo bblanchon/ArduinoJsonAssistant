@@ -27,8 +27,8 @@ describe("measureSize", function () {
   it('should return 0+6 for "hello"', () => {
     const result = measureSize("hello", { memoryModel: "8-bit" });
     expect(result).toEqual({
-      memoryUsage: 6,
-      peakMemoryUsage: 6,
+      memoryUsage: 12,
+      peakMemoryUsage: 12,
     });
   });
 
@@ -37,8 +37,8 @@ describe("measureSize", function () {
       memoryModel: "8-bit",
     });
     expect(result).toEqual({
-      memoryUsage: 61,
-      peakMemoryUsage: 149,
+      memoryUsage: 85,
+      peakMemoryUsage: 173,
     });
   });
 
@@ -49,8 +49,8 @@ describe("measureSize", function () {
       useDouble: true,
     });
     expect(result).toEqual({
-      memoryUsage: 101,
-      peakMemoryUsage: 1045,
+      memoryUsage: 133,
+      peakMemoryUsage: 1077,
     });
   });
 
@@ -61,8 +61,8 @@ describe("measureSize", function () {
       memoryModel: "8-bit",
     });
     expect(result).toEqual({
-      memoryUsage: 48,
-      peakMemoryUsage: 144,
+      memoryUsage: 60,
+      peakMemoryUsage: 156,
     });
   });
 
@@ -73,8 +73,8 @@ describe("measureSize", function () {
       memoryModel: "8-bit",
     });
     expect(result).toEqual({
-      memoryUsage: 40,
-      peakMemoryUsage: 136,
+      memoryUsage: 46,
+      peakMemoryUsage: 142,
     });
   });
 
@@ -85,8 +85,8 @@ describe("measureSize", function () {
       memoryModel: "8-bit",
     });
     expect(result).toEqual({
-      memoryUsage: 32,
-      peakMemoryUsage: 144,
+      memoryUsage: 44,
+      peakMemoryUsage: 156,
     });
   });
 
@@ -97,8 +97,8 @@ describe("measureSize", function () {
       memoryModel: "8-bit",
     });
     expect(result).toEqual({
-      memoryUsage: 24,
-      peakMemoryUsage: 136,
+      memoryUsage: 30,
+      peakMemoryUsage: 142,
     });
   });
 
@@ -109,8 +109,8 @@ describe("measureSize", function () {
         { memoryModel: "8-bit", filter: { hello: true } },
       ),
     ).toEqual({
-      memoryUsage: 28,
-      peakMemoryUsage: 154,
+      memoryUsage: 40,
+      peakMemoryUsage: 172,
     });
   });
 
@@ -129,8 +129,8 @@ describe("measureSize", function () {
         },
       ),
     ).toEqual({
-      memoryUsage: 76,
-      peakMemoryUsage: 167,
+      memoryUsage: 88,
+      peakMemoryUsage: 185,
     });
   });
 
@@ -144,8 +144,8 @@ describe("measureSize", function () {
         },
       ),
     ).toEqual({
-      memoryUsage: 17,
-      peakMemoryUsage: 137,
+      memoryUsage: 23,
+      peakMemoryUsage: 143,
     });
   });
 
@@ -159,8 +159,8 @@ describe("measureSize", function () {
         },
       ),
     ).toEqual({
-      memoryUsage: 14,
-      peakMemoryUsage: 134,
+      memoryUsage: 20,
+      peakMemoryUsage: 140,
     });
   });
 });

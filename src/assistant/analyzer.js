@@ -63,6 +63,7 @@ class JsonDocument {
 
     this._memory = memory;
     this._poolList = new SlotPoolList(cfg, this._memory);
+    this._stringOverhead = memoryModels[cfg.memoryModel].stringOverhead;
   }
 
   allocSlots(n) {
@@ -71,7 +72,7 @@ class JsonDocument {
 
   allocString(s) {
     // TODO: alloc for over allocation  in deserialize mode
-    this._memory.alloc(s.length + 1);
+    this._memory.alloc(s.length + this._stringOverhead);
   }
 
   addArray(n) {
@@ -95,7 +96,7 @@ class JsonDocument {
 
   addIgnoredKey(s) {
     this.allocString(s);
-    this._memory.free(s.length + 1);
+    this._memory.free(s.length + this._stringOverhead);
   }
 
   shrinkToFit() {
