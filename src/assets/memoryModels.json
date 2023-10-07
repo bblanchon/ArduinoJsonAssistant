@@ -1,0 +1,25 @@
+{
+  "8-bit": {
+    "slotSize": [8, 12],
+    "poolCapacity": 16,
+    "nestingLimit": 10,
+    "doubleSupported": false,
+    "longLongIsDefault": false
+  },
+  "32-bit": {
+    "slotSize": [12, 16],
+    "poolCapacity": 64,
+    "nestingLimit": 10,
+    "doubleSupported": true,
+    "doubleIsDefault": true,
+    "longLongIsDefault": true
+  },
+  "64-bit": {
+    "slotSize": [24, 24],
+    "poolCapacity": 128,
+    "nestingLimit": 10,
+    "doubleSupported": true,
+    "doubleIsDefault": true,
+    "longLongIsDefault": true
+  }
+}

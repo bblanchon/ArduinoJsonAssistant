@@ -18,7 +18,7 @@ const sample_object = {
 
 describe("measureSize", function () {
   it("should return 0+0 for null", () => {
-    const result = measureSize(null, { slotSize: 8 });
+    const result = measureSize(null, { memoryModel: "8-bit" });
     expect(result).toEqual({
       memoryUsage: 0,
       peakMemoryUsage: 0,
@@ -26,17 +26,16 @@ describe("measureSize", function () {
   });
 
   it('should return 0+6 for "hello"', () => {
-    const result = measureSize("hello", { slotSize: 8 });
+    const result = measureSize("hello", { memoryModel: "8-bit" });
     expect(result).toEqual({
       memoryUsage: 6,
       peakMemoryUsage: 6,
     });
   });
 
-  it("sample object on AVR", () => {
+  it("sample object on 8-bit processor", () => {
     const result = measureSize(sample_object, {
-      slotSize: 8,
-      poolCapacity: 16,
+      memoryModel: "8-bit",
     });
     expect(result).toEqual({
       memoryUsage: 61,
@@ -44,10 +43,11 @@ describe("measureSize", function () {
     });
   });
 
-  it("sample object on ESP", () => {
+  it("sample object on 32-bit processor", () => {
     const result = measureSize(sample_object, {
-      slotSize: 16,
-      poolCapacity: 64,
+      memoryModel: "32-bit",
+      useLongLong: true,
+      useDouble: true,
     });
     expect(result).toEqual({
       memoryUsage: 101,
@@ -59,8 +59,7 @@ describe("measureSize", function () {
     const input = [{ example: 1 }, { example: 2 }];
     const result = measureSize(input, {
       deduplicateKeys: false,
-      slotSize: 8,
-      poolCapacity: 16,
+      memoryModel: "8-bit",
     });
     expect(result).toEqual({
       memoryUsage: 48,
@@ -72,8 +71,7 @@ describe("measureSize", function () {
     const input = [{ example: 1 }, { example: 2 }];
     const result = measureSize(input, {
       deduplicateKeys: true,
-      slotSize: 8,
-      poolCapacity: 16,
+      memoryModel: "8-bit",
     });
     expect(result).toEqual({
       memoryUsage: 40,
@@ -85,8 +83,7 @@ describe("measureSize", function () {
     const input = ["example", "example"];
     const result = measureSize(input, {
       deduplicateValues: false,
-      slotSize: 8,
-      poolCapacity: 16,
+      memoryModel: "8-bit",
     });
     expect(result).toEqual({
       memoryUsage: 32,
@@ -98,8 +95,7 @@ describe("measureSize", function () {
     const input = ["example", "example"];
     const result = measureSize(input, {
       deduplicateValues: true,
-      slotSize: 8,
-      poolCapacity: 16,
+      memoryModel: "8-bit",
     });
     expect(result).toEqual({
       memoryUsage: 24,
@@ -111,7 +107,7 @@ describe("measureSize", function () {
     expect(
       measureSize(
         { hello: 1, world: 2 },
-        { slotSize: 8, poolCapacity: 16, filter: { hello: true } },
+        { memoryModel: "8-bit", filter: { hello: true } },
       ),
     ).toEqual({
       memoryUsage: 28,
@@ -128,8 +124,7 @@ describe("measureSize", function () {
           { hello: 3, x: "what a wonderful day!" },
         ],
         {
-          slotSize: 8,
-          poolCapacity: 16,
+          memoryModel: "8-bit",
           deduplicateKeys: true,
           filter: [{ hello: true }],
         },
@@ -145,8 +140,7 @@ describe("measureSize", function () {
       measureSize(
         { hello: "world!!!" },
         {
-          slotSize: 8,
-          poolCapacity: 16,
+          memoryModel: "8-bit",
           ignoreKeys: true,
         },
       ),
@@ -161,8 +155,7 @@ describe("measureSize", function () {
       measureSize(
         { hello: "world!!!" },
         {
-          slotSize: 8,
-          poolCapacity: 16,
+          memoryModel: "8-bit",
           ignoreValues: true,
         },
       ),

@@ -5,32 +5,21 @@
     "progmem": true,
     "ramWarning": 1024,
     "ramError": 8192,
-    "nestingLimit": 10,
-    "slotSize": 8,
-    "poolCapacity": 16,
-    "useLongLong": { "default": false, "slotSize": 12 }
+    "memoryModel": "8-bit"
   },
   "ameba": {
     "label": "Ameba D",
     "serial": true,
     "ramWarning": 1048576,
     "ramError": 4194304,
-    "nestingLimit": 10,
-    "slotSize": 16,
-    "poolCapacity": 64,
-    "useLongLong": { "default": true, "slotSize": 16 },
-    "useDouble": { "default": true, "slotSize": 16 }
+    "memoryModel": "32-bit"
   },
   "esp32": {
     "label": "ESP32",
     "serial": true,
     "ramWarning": 102400,
     "ramError": 512000,
-    "nestingLimit": 10,
-    "slotSize": 16,
-    "poolCapacity": 64,
-    "useLongLong": { "default": true, "slotSize": 16 },
-    "useDouble": { "default": true, "slotSize": 16 }
+    "memoryModel": "32-bit"
   },
   "esp8266": {
     "label": "ESP8266",
@@ -38,60 +27,36 @@
     "progmem": true,
     "ramWarning": 30720,
     "ramError": 81920,
-    "nestingLimit": 10,
-    "slotSize": 16,
-    "poolCapacity": 64,
-    "useLongLong": { "default": true, "slotSize": 16 },
-    "useDouble": { "default": true, "slotSize": 16 }
+    "memoryModel": "32-bit"
   },
   "nios2": {
     "label": "Nios II",
     "ramWarning": 1048576,
     "ramError": 16777216,
-    "nestingLimit": 10,
-    "slotSize": 16,
-    "poolCapacity": 64,
-    "useLongLong": { "default": true, "slotSize": 16 },
-    "useDouble": { "default": true, "slotSize": 16 }
+    "memoryModel": "32-bit"
   },
   "samd21": {
     "label": "SAMD21",
     "serial": true,
     "ramWarning": 10240,
     "ramError": 30720,
-    "nestingLimit": 10,
-    "slotSize": 16,
-    "poolCapacity": 64,
-    "useLongLong": { "default": true, "slotSize": 16 },
-    "useDouble": { "default": true, "slotSize": 16 }
+    "memoryModel": "32-bit"
   },
   "stm32": {
     "label": "STM32",
     "serial": true,
     "ramWarning": 10240,
     "ramError": 102400,
-    "nestingLimit": 10,
-    "slotSize": 16,
-    "poolCapacity": 64,
-    "useLongLong": { "default": true, "slotSize": 16 },
-    "useDouble": { "default": true, "slotSize": 16 }
+    "memoryModel": "32-bit"
   },
   "x86": {
     "label": "x86",
     "serial": false,
-    "nestingLimit": 10,
-    "slotSize": 16,
-    "poolCapacity": 64,
-    "useDouble": { "default": true, "slotSize": 16 },
-    "useLongLong": { "default": true, "slotSize": 16 }
+    "memoryModel": "32-bit"
   },
   "x64": {
     "label": "x64",
     "serial": false,
-    "nestingLimit": 10,
-    "slotSize": 32,
-    "poolCapacity": 128,
-    "useDouble": { "default": true, "slotSize": 32 },
-    "useLongLong": { "default": true, "slotSize": 32 }
+    "memoryModel": "64-bit"
   }
 }

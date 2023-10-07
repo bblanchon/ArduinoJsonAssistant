@@ -1,4 +1,5 @@
 import { JsonFilter } from "./filter";
+import memoryModels from "@/assets/memoryModels.json";
 
 export function roundCapacity(value) {
   const pow2 = Math.pow(2, Math.max(3, Math.ceil(Math.log2(value) - 2)));
@@ -11,6 +12,11 @@ export function getValueType(value) {
     : value instanceof Array
     ? "array"
     : typeof value;
+}
+
+function getEffectiveSlotSize(cfg) {
+  const isLarge = cfg.useLongLong || cfg.useDouble;
+  return memoryModels[cfg.memoryModel].slotSize[isLarge ? 1 : 0];
 }
 
 class Memory {
@@ -32,8 +38,8 @@ class Memory {
 class SlotPoolList {
   constructor(cfg, memory) {
     this._memory = memory;
-    this._poolCapacity = cfg.poolCapacity;
-    this._slotSize = cfg.slotSize;
+    this._poolCapacity = memoryModels[cfg.memoryModel].poolCapacity;
+    this._slotSize = getEffectiveSlotSize(cfg);
     this._freeSlots = 0;
   }
 
