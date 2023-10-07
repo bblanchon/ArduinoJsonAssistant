@@ -1,11 +1,6 @@
 import { JsonFilter } from "./filter";
 import memoryModels from "@/assets/memoryModels.json";
 
-export function roundCapacity(value) {
-  const pow2 = Math.pow(2, Math.max(3, Math.ceil(Math.log2(value) - 2)));
-  return Math.ceil(value / pow2) * pow2;
-}
-
 export function getValueType(value) {
   return value === null
     ? "null"

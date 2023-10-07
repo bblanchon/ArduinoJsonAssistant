@@ -4,7 +4,6 @@ import {
   measureSize,
   needsLongLong,
   needsDouble,
-  roundCapacity,
   canLoop,
   getCommonCppTypeFor,
   hasJsonInJsonSyndrome,
@@ -190,17 +189,6 @@ describe("hasJsonInJsonSyndrome()", () => {
   it("should return true for a JSON string in an array", () => {
     expect(hasJsonInJsonSyndrome(['{"value":1}'])).toBe(true);
   });
-});
-
-it("roundCapacity", () => {
-  expect(roundCapacity(0)).toBe(0);
-  expect(roundCapacity(1)).toBe(8);
-  expect(roundCapacity(10)).toBe(16);
-  expect(roundCapacity(100)).toBe(128);
-  expect(roundCapacity(127)).toBe(128);
-  expect(roundCapacity(128)).toBe(128);
-  expect(roundCapacity(129)).toBe(192);
-  expect(roundCapacity(199999)).toBe(262144);
 });
 
 describe("canLoop()", () => {
