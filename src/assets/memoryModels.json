@@ -1,7 +1,7 @@
 {
   "8-bit": {
     "slotSize": [8, 12],
-    "stringOverhead": 7,
+    "stringOverhead": 5,
     "poolCapacity": 16,
     "nestingLimit": 10,
     "doubleSupported": false,
