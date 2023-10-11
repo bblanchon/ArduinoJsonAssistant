@@ -7,6 +7,7 @@ import {
   canLoop,
   getCommonCppTypeFor,
   hasJsonInJsonSyndrome,
+  getOverallocatedStringSize,
 } from "./analyzer";
 
 const sample_object = {
@@ -14,6 +15,18 @@ const sample_object = {
   time: 1351824120,
   data: [48.75608, 2.302038],
 };
+
+describe("getOverallocatedStringSize()", () => {
+  it("should return 31 for a length between 0 and 31", () => {
+    expect(getOverallocatedStringSize(0)).toBe(31);
+    expect(getOverallocatedStringSize(31)).toBe(31);
+  });
+
+  it("should return 63 for a length between 32 and 63", () => {
+    expect(getOverallocatedStringSize(32)).toBe(63);
+    expect(getOverallocatedStringSize(63)).toBe(63);
+  });
+});
 
 describe("measureSize", function () {
   it("should return 0+0 for null", () => {
@@ -161,6 +174,21 @@ describe("measureSize", function () {
     ).toEqual({
       memoryUsage: 18,
       peakMemoryUsage: 138,
+    });
+  });
+
+  it("should over allocate string if overAllocateString is true", () => {
+    expect(
+      measureSize(
+        { hello: "world" },
+        {
+          memoryModel: "8-bit",
+          overAllocateStrings: true,
+        },
+      ),
+    ).toEqual({
+      memoryUsage: 28,
+      peakMemoryUsage: 174,
     });
   });
 });

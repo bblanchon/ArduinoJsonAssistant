@@ -22,6 +22,7 @@ export const useStatsStore = defineStore("stats", () => {
       deduplicateValues: cfg.deduplicateValues,
       useLongLong: cfg.useLongLong,
       useDouble: cfg.useDouble,
+      overAllocateStrings: cfg.mode == "deserialize",
     }),
   );
 

@@ -9,6 +9,16 @@ export function getValueType(value) {
     : typeof value;
 }
 
+export function getOverallocatedStringSize(s) {
+  // [0-31] -> 31
+  // [32-63] -> 63
+  // [64-127] -> 127
+  // ...
+  let n = 31;
+  while (n < s) n = n * 2 + 1;
+  return n;
+}
+
 function getEffectiveSlotSize(cfg) {
   const isLarge = cfg.useLongLong || cfg.useDouble;
   return memoryModels[cfg.memoryModel].slotSize[isLarge ? 1 : 0];
@@ -64,6 +74,7 @@ class JsonDocument {
     this._memory = memory;
     this._poolList = new SlotPoolList(cfg, this._memory);
     this._stringOverhead = memoryModels[cfg.memoryModel].stringOverhead;
+    this._overAllocateStrings = cfg.overAllocateStrings;
   }
 
   allocSlots(n) {
@@ -71,7 +82,11 @@ class JsonDocument {
   }
 
   allocString(s) {
-    // TODO: alloc for over allocation  in deserialize mode
+    if (this._overAllocateStrings) {
+      const size = getOverallocatedStringSize(s.length) + this._stringOverhead;
+      this._memory.alloc(size);
+      this._memory.free(size);
+    }
     this._memory.alloc(s.length + this._stringOverhead);
   }
 
