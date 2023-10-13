@@ -13,8 +13,7 @@ export const useCpuStore = defineStore("cpu", () => {
   return {
     name: computed(() => cpu.value.label),
     nestingLimit: computed(() => cpu.value.nestingLimit),
-    ramError: computed(() => cpu.value.ramError),
-    ramWarning: computed(() => cpu.value.ramWarning),
+    ram: computed(() => cpu.value.ram),
     doubleSupported: computed(() => !!memoryModel.value.doubleSupported),
     doubleIsDefault: computed(() => !!memoryModel.value.doubleIsDefault),
     doubleInconsequential: computed(

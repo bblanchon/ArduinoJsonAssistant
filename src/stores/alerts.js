@@ -13,8 +13,8 @@ export const useAlertsStore = defineStore("alerts", () => {
   const baseUrl = inject("baseUrl");
 
   const ramStatus = computed(() => {
-    if (stats.peakRamUsage > cpu.ramError) return "error";
-    if (stats.peakRamUsage > cpu.ramWarning) return "warning";
+    if (stats.peakRamUsage > 0.75 * cpu.ram) return "error";
+    if (stats.peakRamUsage > 0.25 * cpu.ram) return "warning";
     return "success";
   });
 

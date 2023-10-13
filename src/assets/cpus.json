@@ -3,50 +3,43 @@
     "label": "AVR (e.g. UNO, Yùn, Mega)",
     "serial": true,
     "progmem": true,
-    "ramWarning": 1024,
-    "ramError": 8192,
+    "ram": 8192,
     "memoryModel": "8-bit"
   },
   "ameba": {
     "label": "Ameba D",
     "serial": true,
-    "ramWarning": 1048576,
-    "ramError": 4194304,
+    "ram": 4194304,
     "memoryModel": "32-bit"
   },
   "esp32": {
     "label": "ESP32",
     "serial": true,
-    "ramWarning": 102400,
-    "ramError": 512000,
+    "ram": 512000,
     "memoryModel": "32-bit"
   },
   "esp8266": {
     "label": "ESP8266",
     "serial": true,
     "progmem": true,
-    "ramWarning": 30720,
-    "ramError": 81920,
+    "ram": 81920,
     "memoryModel": "32-bit"
   },
   "nios2": {
     "label": "Nios II",
-    "ramWarning": 1048576,
-    "ramError": 16777216,
+    "ram": 16777216,
     "memoryModel": "32-bit"
   },
   "samd21": {
     "label": "SAMD21",
     "serial": true,
-    "ramWarning": 10240,
-    "ramError": 30720,
+    "ram": 30720,
     "memoryModel": "32-bit"
   },
   "stm32": {
     "label": "STM32",
     "serial": true,
-    "ramWarning": 10240,
-    "ramError": 102400,
+    "ram": 102400,
     "memoryModel": "32-bit"
   },
   "x86": {

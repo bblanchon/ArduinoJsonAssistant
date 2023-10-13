@@ -66,7 +66,7 @@
           aria-valuemin="0"
           aria-valuemax="100"
         >
-          Total RAM: {{ formatBytes(ramError) }}
+          Total RAM: {{ formatBytes(ram) }}
         </div>
       </div>
     </div>
@@ -84,15 +84,15 @@ export default {
   inject: ["baseUrl"],
   computed: {
     ...mapState(useStatsStore, ["peakRamUsage", "ramUsage"]),
-    ...mapState(useCpuStore, ["ramError", "ramWarning"]),
+    ...mapState(useCpuStore, ["ram"]),
     ...mapState(useSettingsStore, ["ioTypeId", "input", "mode"]),
     ...mapState(useCpuStore, { cpuName: "name" }),
     ramPercent() {
-      return (this.peakRamUsage / this.ramError) * 100;
+      return (this.peakRamUsage / this.ram) * 100;
     },
     peakRamPercent() {
-      if (this.ramUsage >= this.ramError) return 0;
-      return ((this.peakRamUsage - this.ramUsage) / this.ramError) * 100;
+      if (this.ramUsage >= this.ram) return 0;
+      return ((this.peakRamUsage - this.ramUsage) / this.ram) * 100;
     },
     totalRamPercent() {
       return this.ramPercent + this.peakRamPercent;
@@ -107,7 +107,7 @@ export default {
       return JSON.stringify(this.input).length;
     },
     bufferPercent() {
-      return (this.bufferSize / this.ramError) * 100;
+      return (this.bufferSize / this.ram) * 100;
     },
     bufferLabel() {
       if (this.ioTypeId.endsWith("String"))
