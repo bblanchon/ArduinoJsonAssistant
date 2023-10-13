@@ -1,12 +1,35 @@
 <template>
   <div class="d-md-flex align-items-center">
     <div class="flex-none mr-3">
-      RAM usage: <b>{{ formatBytes(ramUsage) }}</b> ({{
-        formatBytes(peakRamUsage)
-      }}
-      peak)
+      <table>
+        <tr>
+          <td>JsonDocument:&nbsp;</td>
+          <td class="text-right font-weight-bold">
+            {{ formatBytes(ramUsage) }}
+          </td>
+          <td>&nbsp;({{ formatBytes(peakRamUsage) }} peak)</td>
+        </tr>
+        <tr v-if="bufferSize">
+          <td>{{ bufferLabel }}:&nbsp;</td>
+          <td class="text-right font-weight-bold">
+            {{ formatBytes(bufferSize) }}
+          </td>
+          <td>&nbsp;(minified)</td>
+        </tr>
+      </table>
     </div>
-    <div class="progress flex-fill">
+    <div class="progress flex-fill" style="min-height: 2em">
+      <div
+        v-if="bufferSize"
+        class="progress-bar bg-dark"
+        role="progressbar"
+        :style="{ width: bufferPercent + '%' }"
+        :aria-valuenow="bufferPercent"
+        aria-valuemin="0"
+        aria-valuemax="100"
+      >
+        {{ bufferPercent > 10 ? bufferLabel : "" }}
+      </div>
       <div
         class="progress-bar"
         :class="`bg-${ramColor}`"
@@ -15,7 +38,9 @@
         :aria-valuenow="ramPercent"
         aria-valuemin="0"
         aria-valuemax="100"
-      ></div>
+      >
+        {{ ramPercent > 10 ? "JsonDocument" : "" }}
+      </div>
       <div
         class="progress-bar progress-bar-striped"
         :class="`bg-${ramColor}`"
@@ -34,12 +59,14 @@ import bytes from "bytes";
 import { mapState } from "pinia";
 import { useCpuStore } from "@/stores/cpu";
 import { useStatsStore } from "@/stores/stats";
+import { useSettingsStore } from "@/stores/settings";
 
 export default {
   inject: ["baseUrl"],
   computed: {
     ...mapState(useStatsStore, ["peakRamUsage", "ramUsage"]),
     ...mapState(useCpuStore, ["ramError", "ramWarning"]),
+    ...mapState(useSettingsStore, ["ioTypeId", "input", "mode"]),
     ramPercent() {
       return (this.peakRamUsage / this.ramError) * 100;
     },
@@ -48,9 +75,22 @@ export default {
       return ((this.peakRamUsage - this.ramUsage) / this.ramError) * 100;
     },
     ramColor() {
-      if (this.peakRamUsage > this.ramError) return "danger";
-      if (this.peakRamUsage > this.ramWarning) return "warning";
+      const total = this.peakRamPercent + this.bufferSize;
+      if (total > this.ramError) return "danger";
+      if (total > this.ramWarning) return "warning";
       return "success";
+    },
+    bufferSize() {
+      if (this.ioTypeId.endsWith("Stream")) return 0;
+      return JSON.stringify(this.input).length;
+    },
+    bufferPercent() {
+      return (this.bufferSize / this.ramError) * 100;
+    },
+    bufferLabel() {
+      if (this.ioTypeId.endsWith("String"))
+        return this.mode == "serialize" ? "Output string" : "Input string";
+      else return this.mode == "serialize" ? "Output buffer" : "Input buffer";
     },
   },
   methods: {
