@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
+import argparse
 import json
-from collections import Counter, defaultdict
-from platformio.package.manager.platform import PlatformPackageManager
+from collections import defaultdict
 
+from platformio.package.manager.platform import PlatformPackageManager
 
 HARVARD_ARCHS = [
     "8051",
@@ -146,12 +147,27 @@ def get_boards():
         print(f"::warning title={title}::{msg}")
 
 
-with open("src/assets/boards.json", "wt") as f:
+parser = argparse.ArgumentParser(description="Update boards.json")
+parser.add_argument(
+    "--output",
+    type=str,
+    default="src/assets/boards.json",
+    help="output file",
+)
+parser.add_argument(
+    "--all",
+    action="store_true",
+    help="include all boards (not only Arduino)",
+)
+
+args = parser.parse_args()
+
+with open(args.output, "wt") as f:
     json.dump(
         {
             board_id: {key: value for key, value in board.items() if value}
             for board_id, board in get_boards()
-            # if board["label"].startswith("Arduino")
+            if board["label"].startswith("Arduino") or args.all
         },
         f,
         indent=2,
