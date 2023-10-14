@@ -3,13 +3,6 @@
     <h2 class="h4 card-header bg-primary text-white">Step 3: Program</h2>
 
     <div class="card-body">
-      <div class="form-inline mb-3">
-        <label for="io-library" class="sr-only">Name</label>
-        <select id="io-library" v-model="ioLibrary" class="form-control">
-          <option value="serial">Serial</option>
-          <option value="iostream">iostream</option>
-        </select>
-      </div>
       <div class="alert alert-warning" v-if="longLongIsDefault != useLongLong">
         ⚠️ This program assumes you defined
         <a :href="`${baseUrl}/v7/api/config/use_long_long/`"
@@ -23,6 +16,29 @@
           ><code>ARDUINOJSON_USE_DOUBLE</code></a
         >
         to <code>{{ +useDouble }}</code>
+      </div>
+      <div class="form-inline">
+        <label for="io-library" class="sr-only">Name</label>
+        <select
+          id="io-library"
+          v-model="ioLibrary"
+          class="form-control mb-2 mr-sm-2"
+        >
+          <option value="serial">Serial</option>
+          <option value="iostream">iostream</option>
+        </select>
+
+        <div class="custom-control custom-switch mb-2 mr-sm-2">
+          <input
+            class="custom-control-input"
+            type="checkbox"
+            id="progmem"
+            v-model="progmem"
+          />
+          <label class="custom-control-label" for="progmem"
+            >Flash strings</label
+          >
+        </div>
       </div>
       <figure class="position-relative">
         <button
@@ -75,7 +91,7 @@ export default {
   },
   computed: {
     ...mapState(useProgramStore, ["program"]),
-    ...mapWritableState(useProgramStore, ["ioLibrary"]),
+    ...mapWritableState(useProgramStore, ["ioLibrary", "progmem"]),
     ...mapState(useSettingsStore, [
       "isDeserializing",
       "isSerializing",
@@ -126,6 +142,9 @@ export default {
   },
   watch: {
     ioLibrary() {
+      this.generate();
+    },
+    progmem() {
       this.generate();
     },
   },

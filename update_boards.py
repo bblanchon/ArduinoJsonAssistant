@@ -6,24 +6,6 @@ from collections import defaultdict
 
 from platformio.package.manager.platform import PlatformPackageManager
 
-HARVARD_ARCHS = [
-    "8051",
-    "8052",
-    "AT90",
-    "ATMEGA",
-    "ATTINY",
-    "AVR",
-    "ESP8266",
-    "IAP12",
-    "IAP15",
-    "IRC15",
-    "ML5",
-    "MS5",
-    "N7",
-    "STC",
-    "W79",
-    "STM8",
-]
 
 MEMORY_MODELS = {
     "8-bit": [
@@ -108,13 +90,6 @@ def get_memory_model(mcu: str):
                 return model
 
 
-def is_harvard(mcu: str):
-    for prefix in HARVARD_ARCHS:
-        if mcu.startswith(prefix):
-            return True
-    return False
-
-
 def get_boards():
     pm = PlatformPackageManager()
     unknown_mcus = defaultdict(list)
@@ -130,7 +105,6 @@ def get_boards():
             "label": board["name"],
             "ram": board["ram"],
             "memoryModel": memory_model,
-            "progmem": is_harvard(mcu),
         }
 
     for mcu, boards in sorted(
@@ -165,7 +139,7 @@ args = parser.parse_args()
 with open(args.output, "wt") as f:
     json.dump(
         {
-            board_id: {key: value for key, value in board.items() if value}
+            board_id: board
             for board_id, board in get_boards()
             if board["label"].startswith("Arduino") or args.all
         },
