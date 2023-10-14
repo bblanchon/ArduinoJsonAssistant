@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { applyFilter } from "@/assistant/filter";
-import cpuInfos from "@/assets/cpus.json";
+import boards from "@/assets/boards.json";
 
 const defaultInput = {
   sensor: "gps",
@@ -65,10 +65,10 @@ export const useSettingsStore = defineStore("settings", {
         this.deduplicateKeys = deserializing ? true : undefined;
         this.deduplicateValues = deserializing ? false : undefined;
       }
-      if (cfg.cpu && cpuInfos[cfg.cpu]) {
+      if (cfg.cpu && boards[cfg.cpu]) {
         this.cpu = cfg.cpu;
-        this.useDouble = cpuInfos[cfg.cpu].useDouble?.default;
-        this.useLongLong = cpuInfos[cfg.cpu].useLongLong?.default;
+        this.useDouble = boards[cfg.cpu].useDouble?.default;
+        this.useLongLong = boards[cfg.cpu].useLongLong?.default;
       }
       if (cfg.useDouble != undefined) this.useDouble = cfg.useDouble;
       if (cfg.useLongLong != undefined) this.useLongLong = cfg.useLongLong;
@@ -83,8 +83,8 @@ export const useSettingsStore = defineStore("settings", {
     },
     selectCpu(cpu) {
       this.cpu = cpu;
-      this.useDouble = cpuInfos[cpu].useDouble?.default;
-      this.useLongLong = cpuInfos[cpu].useLongLong?.default;
+      this.useDouble = boards[cpu].useDouble?.default;
+      this.useLongLong = boards[cpu].useLongLong?.default;
     },
     selectMode(mode) {
       this.mode = mode;

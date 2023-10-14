@@ -7,7 +7,7 @@
         <form class="col-lg-8 mb-4">
           <div class="form-group row">
             <label for="cpu-selector" class="col-sm-3 col-form-label"
-              >Processor</label
+              >Board</label
             >
             <div class="col-sm-9">
               <select
@@ -16,11 +16,7 @@
                 :value="cpu"
                 @input="selectCpu($event.target.value)"
               >
-                <option
-                  v-for="(value, key) in cpuInfos"
-                  :value="key"
-                  :key="key"
-                >
+                <option v-for="(value, key) in boards" :value="key" :key="key">
                   {{ value.label }}
                 </option>
               </select>
@@ -112,14 +108,14 @@
 
 <script>
 import { mapState, mapActions } from "pinia";
-import cpuInfos from "@/assets/cpus.json";
+import boards from "@/assets/boards.json";
 import { useSettingsStore } from "@/stores/settings";
 
 export default {
   inject: ["version", "sponsors"],
   data() {
     return {
-      cpuInfos,
+      boards,
     };
   },
   beforeRouteLeave(to) {
@@ -127,7 +123,7 @@ export default {
       window.plausible("ArduinoJson Assistant: Configuration", {
         props: {
           mode: this.mode,
-          cpu: this.cpuInfos[this.cpu].label,
+          cpu: this.boards[this.cpu].label,
           type: this.ioTypes[this.ioTypeId].label,
         },
       });

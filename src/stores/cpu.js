@@ -1,14 +1,14 @@
 import { defineStore } from "pinia";
 import { computed } from "vue";
 
-import cpuInfos from "@/assets/cpus.json";
+import boards from "@/assets/boards.json";
 import memoryModels from "@/assets/memoryModels.json";
 
 import { useSettingsStore } from "./settings";
 
 export const useCpuStore = defineStore("cpu", () => {
   const cfg = useSettingsStore();
-  const cpu = computed(() => cpuInfos[cfg.cpu]);
+  const cpu = computed(() => boards[cfg.cpu]);
   const memoryModel = computed(() => memoryModels[cpu.value.memoryModel]);
   return {
     name: computed(() => cpu.value.label),

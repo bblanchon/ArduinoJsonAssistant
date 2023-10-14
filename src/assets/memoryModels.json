@@ -7,6 +7,14 @@
     "doubleSupported": false,
     "longLongIsDefault": false
   },
+  "16-bit": {
+    "slotSize": [8, 12],
+    "stringOverhead": 5,
+    "poolCapacity": 16,
+    "nestingLimit": 10,
+    "doubleSupported": false,
+    "longLongIsDefault": false
+  },
   "32-bit": {
     "slotSize": [12, 16],
     "stringOverhead": 9,

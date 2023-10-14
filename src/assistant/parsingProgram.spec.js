@@ -96,7 +96,7 @@ describe("writeErrorCheckingCode()", () => {
   }
 
   it("should print to Serial when possible", () => {
-    expect(getErrorCheckingCode({ serial: true, cpu: {} })).toEqual(
+    expect(getErrorCheckingCode({ serial: true })).toEqual(
       `if (error) {
   Serial.print("deserializeJson() failed: ");
   Serial.println(error.c_str());

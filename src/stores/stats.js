@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { computed } from "vue";
 
 import { measureSize } from "@/assistant/analyzer";
-import cpuInfos from "@/assets/cpus.json";
+import boards from "@/assets/boards.json";
 import { hasJsonInJsonSyndrome, measureNesting } from "@/assistant/analyzer";
 import { needsDouble, needsLongLong } from "@/assistant/analyzer";
 
@@ -15,7 +15,7 @@ export const useStatsStore = defineStore("stats", () => {
     measureSize(cfg.input, {
       mode: cfg.mode,
       filter: cfg.filterEnabled ? cfg.filter : undefined,
-      memoryModel: cpuInfos[cfg.cpu].memoryModel,
+      memoryModel: boards[cfg.cpu].memoryModel,
       ignoreKeys: cfg.ignoreKeys,
       ignoreValues: cfg.ignoreValues,
       deduplicateKeys: cfg.deduplicateKeys,

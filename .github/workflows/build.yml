@@ -12,6 +12,8 @@ jobs:
         with:
           node-version: '16'
           cache: 'npm'
+      - run: pip install platformio
+      - run: python update_boards.py
       - run: npm install
       - run: npm run lint
       - run: npm run test
