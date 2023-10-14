@@ -17,7 +17,8 @@
         >
         to <code>{{ +useDouble }}</code>
       </div>
-      <div class="form-inline">
+
+      <div class="form-inline" v-if="isDeserializing">
         <label for="io-library" class="sr-only">Name</label>
         <select
           id="io-library"
@@ -28,7 +29,10 @@
           <option value="iostream">iostream</option>
         </select>
 
-        <div class="custom-control custom-switch mb-2 mr-sm-2">
+        <div
+          class="custom-control custom-switch mb-2 mr-sm-2"
+          v-if="ioLibrary == 'serial'"
+        >
           <input
             class="custom-control-input"
             type="checkbox"
@@ -40,6 +44,7 @@
           >
         </div>
       </div>
+
       <figure class="position-relative">
         <button
           class="btn position-absolute"
