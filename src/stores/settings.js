@@ -21,7 +21,7 @@ export const useSettingsStore = defineStore("settings", {
     return {
       assumeConstKeys: undefined,
       assumeConstValues: undefined,
-      cpu: "avr",
+      cpu: "uno",
       deduplicateKeys: undefined,
       deduplicateValues: undefined,
       filter: true,

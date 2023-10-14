@@ -129,7 +129,6 @@ def get_boards():
             "label": board["name"],
             "ram": board["ram"],
             "memoryModel": memory_model,
-            "serial": "arduino" in board["frameworks"],
             "progmem": is_harvard(mcu),
         }
 

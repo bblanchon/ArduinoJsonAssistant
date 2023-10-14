@@ -3,6 +3,13 @@
     <h2 class="h4 card-header bg-primary text-white">Step 3: Program</h2>
 
     <div class="card-body">
+      <div class="form-inline mb-3">
+        <label for="io-library" class="sr-only">Name</label>
+        <select id="io-library" v-model="ioLibrary" class="form-control">
+          <option value="serial">Serial</option>
+          <option value="iostream">iostream</option>
+        </select>
+      </div>
       <div class="alert alert-warning" v-if="longLongIsDefault != useLongLong">
         ⚠️ This program assumes you defined
         <a :href="`${baseUrl}/v7/api/config/use_long_long/`"
@@ -51,7 +58,7 @@
 </template>
 
 <script>
-import { mapState } from "pinia";
+import { mapState, mapActions, mapWritableState } from "pinia";
 import "@/assets/highlight.scss";
 
 import { useSettingsStore } from "@/stores/settings";
@@ -67,7 +74,8 @@ export default {
     };
   },
   computed: {
-    ...mapState(useProgramStore, ["program", "generate"]),
+    ...mapState(useProgramStore, ["program"]),
+    ...mapWritableState(useProgramStore, ["ioLibrary"]),
     ...mapState(useSettingsStore, [
       "isDeserializing",
       "isSerializing",
@@ -113,6 +121,12 @@ export default {
       this.programCopied = true;
       await sleep(500);
       this.programCopied = false;
+    },
+    ...mapActions(useProgramStore, ["generate"]),
+  },
+  watch: {
+    ioLibrary() {
+      this.generate();
     },
   },
 };

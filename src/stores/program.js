@@ -29,6 +29,7 @@ export const useProgramStore = defineStore("program", () => {
   const cpu = useCpuStore();
   const stats = useStatsStore();
   const program = ref("");
+  const ioLibrary = ref("serial");
 
   async function generate() {
     switch (cfg.mode) {
@@ -41,7 +42,7 @@ export const useProgramStore = defineStore("program", () => {
             stats.nestingLevel > cpu.nestingLimit
               ? stats.nestingLevel
               : undefined,
-          serial: cpu.serial,
+          serial: ioLibrary.value == "serial",
           progmem: cpu.progmem,
         });
         break;
@@ -64,5 +65,6 @@ export const useProgramStore = defineStore("program", () => {
   return {
     program,
     generate,
+    ioLibrary,
   };
 });

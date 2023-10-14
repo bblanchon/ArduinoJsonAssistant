@@ -3,425 +3,360 @@
     "label": "Arduino BT ATmega168",
     "ram": 1024,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "btatmega328": {
     "label": "Arduino BT ATmega328",
     "ram": 2048,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "due": {
     "label": "Arduino Due (Programming Port)",
     "ram": 98304,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "dueUSB": {
     "label": "Arduino Due (USB Native Port)",
     "ram": 98304,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "diecimilaatmega168": {
     "label": "Arduino Duemilanove or Diecimila ATmega168",
     "ram": 1024,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "diecimilaatmega328": {
     "label": "Arduino Duemilanove or Diecimila ATmega328",
     "ram": 2048,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "esplora": {
     "label": "Arduino Esplora",
     "ram": 2560,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "ethernet": {
     "label": "Arduino Ethernet",
     "ram": 2048,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "fio": {
     "label": "Arduino Fio",
     "ram": 2048,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "chiwawa": {
     "label": "Arduino Industrial 101",
     "ram": 2560,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "leonardo": {
     "label": "Arduino Leonardo",
     "ram": 2560,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "leonardoeth": {
     "label": "Arduino Leonardo ETH",
     "ram": 2560,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "lilypadatmega168": {
     "label": "Arduino LilyPad ATmega168",
     "ram": 1024,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "lilypadatmega328": {
     "label": "Arduino LilyPad ATmega328",
     "ram": 2048,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "LilyPadUSB": {
     "label": "Arduino LilyPad USB",
     "ram": 2560,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "mzeroUSB": {
     "label": "Arduino M0",
     "ram": 32768,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "mzeroproUSB": {
     "label": "Arduino M0 Pro (Native USB Port)",
     "ram": 32768,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "mzeropro": {
     "label": "Arduino M0 Pro (Programming/Debug Port)",
     "ram": 32768,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "mkrfox1200": {
     "label": "Arduino MKR FOX 1200",
     "ram": 32768,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "mkrgsm1400": {
     "label": "Arduino MKR GSM 1400",
     "ram": 32768,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "mkrnb1500": {
     "label": "Arduino MKR NB 1500",
     "ram": 32768,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "mkrwan1300": {
     "label": "Arduino MKR WAN 1300",
     "ram": 32768,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "mkrwan1310": {
     "label": "Arduino MKR WAN 1310",
     "ram": 32768,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "mkrwifi1010": {
     "label": "Arduino MKR WiFi 1010",
     "ram": 32768,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "mkr1000USB": {
     "label": "Arduino MKR1000",
     "ram": 32768,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "mkrzero": {
     "label": "Arduino MKRZERO",
     "ram": 32768,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "megaADK": {
     "label": "Arduino Mega ADK",
     "ram": 8192,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "megaatmega1280": {
     "label": "Arduino Mega or Mega 2560 ATmega1280",
     "ram": 8192,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "megaatmega2560": {
     "label": "Arduino Mega or Mega 2560 ATmega2560 (Mega 2560)",
     "ram": 8192,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "micro": {
     "label": "Arduino Micro",
     "ram": 2560,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "miniatmega168": {
     "label": "Arduino Mini ATmega168",
     "ram": 1024,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "miniatmega328": {
     "label": "Arduino Mini ATmega328",
     "ram": 2048,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "atmegangatmega168": {
     "label": "Arduino NG or older ATmega168",
     "ram": 1024,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "atmegangatmega8": {
     "label": "Arduino NG or older ATmega8",
     "ram": 1024,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "nano33ble": {
     "label": "Arduino Nano 33 BLE",
     "ram": 262144,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "nanoatmega168": {
     "label": "Arduino Nano ATmega168",
     "ram": 1024,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "nanoatmega328": {
     "label": "Arduino Nano ATmega328",
     "ram": 2048,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "nanoatmega328new": {
     "label": "Arduino Nano ATmega328 (New Bootloader)",
     "ram": 2048,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "arduino_nano_esp32": {
     "label": "Arduino Nano ESP32",
     "ram": 327680,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "nano_every": {
     "label": "Arduino Nano Every",
     "ram": 6144,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "nanorp2040connect": {
     "label": "Arduino Nano RP2040 Connect",
     "ram": 270336,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "nicla_sense_me": {
     "label": "Arduino Nicla Sense ME",
     "ram": 64288,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "nicla_vision": {
     "label": "Arduino Nicla Vision",
     "ram": 523624,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "nicla_vision_m4": {
     "label": "Arduino Nicla Vision (M4 core)",
     "ram": 294248,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "opta": {
     "label": "Arduino Opta",
     "ram": 523624,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "opta_m4": {
     "label": "Arduino Opta (M4 core)",
     "ram": 294248,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "portenta_c33": {
     "label": "Arduino Portenta C33",
     "ram": 523624,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "portenta_h7_m4": {
     "label": "Arduino Portenta H7 (M4 core)",
     "ram": 294248,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "portenta_h7_m7": {
     "label": "Arduino Portenta H7 (M7 core)",
     "ram": 523624,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "pro8MHzatmega168": {
     "label": "Arduino Pro or Pro Mini ATmega168 (3.3V, 8 MHz)",
     "ram": 1024,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "pro16MHzatmega168": {
     "label": "Arduino Pro or Pro Mini ATmega168 (5V, 16 MHz)",
     "ram": 1024,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "pro8MHzatmega328": {
     "label": "Arduino Pro or Pro Mini ATmega328 (3.3V, 8 MHz)",
     "ram": 2048,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "pro16MHzatmega328": {
     "label": "Arduino Pro or Pro Mini ATmega328 (5V, 16 MHz)",
     "ram": 2048,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "robotControl": {
     "label": "Arduino Robot Control",
     "ram": 2560,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "robotMotor": {
     "label": "Arduino Robot Motor",
     "ram": 2560,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "tian": {
     "label": "Arduino Tian",
     "ram": 32768,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "uno": {
     "label": "Arduino Uno",
     "ram": 2048,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "uno_r4_minima": {
     "label": "Arduino Uno R4 Minima",
     "ram": 32768,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "uno_r4_wifi": {
     "label": "Arduino Uno R4 WiFi",
     "ram": 32768,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "uno_wifi_rev2": {
     "label": "Arduino Uno WiFi Rev2",
     "ram": 6144,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "yun": {
     "label": "Arduino Yun",
     "ram": 2560,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "yunmini": {
     "label": "Arduino Yun Mini",
     "ram": 2560,
     "memoryModel": "8-bit",
-    "serial": true,
     "progmem": true
   },
   "zero": {
     "label": "Arduino Zero (Programming/Debug Port)",
     "ram": 32768,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "zeroUSB": {
     "label": "Arduino Zero (USB Native Port)",
     "ram": 32768,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   },
   "genuino101": {
     "label": "Arduino/Genuino 101",
     "ram": 81920,
-    "memoryModel": "32-bit",
-    "serial": true
+    "memoryModel": "32-bit"
   }
 }
