@@ -1,10 +1,12 @@
 import { useSettingsStore } from "@/stores/settings";
 
+const key = "ArduinoJson Assistant 7";
+
 export function persistStore() {
   const store = useSettingsStore();
 
   try {
-    store.setSettings(JSON.parse(localStorage.getItem("assitantConfig")));
+    store.setSettings(JSON.parse(localStorage.getItem(key)));
   } catch (e) {
     console.warn(e);
     store.$reset();
@@ -12,7 +14,7 @@ export function persistStore() {
 
   store.$subscribe((mutation, state) => {
     localStorage.setItem(
-      "assitantConfig",
+      key,
       JSON.stringify({
         mode: state.mode,
         rootJson: state.inputJson,
