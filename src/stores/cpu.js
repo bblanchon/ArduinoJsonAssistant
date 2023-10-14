@@ -11,7 +11,7 @@ export const useCpuStore = defineStore("cpu", () => {
   const cpu = computed(() => boards[cfg.cpu]);
   const memoryModel = computed(() => memoryModels[cpu.value.memoryModel]);
   return {
-    name: computed(() => cpu.value.label),
+    name: computed(() => cpu.value.name),
     nestingLimit: computed(() => cpu.value.nestingLimit),
     ram: computed(() => cpu.value.ram),
     doubleSupported: computed(() => !!memoryModel.value.doubleSupported),

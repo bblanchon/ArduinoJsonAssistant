@@ -102,7 +102,7 @@ def get_boards():
             unknown_mcus[mcu].append(board["name"])
             continue
         yield board["id"], {
-            "label": board["name"],
+            "name": board["name"],
             "ram": board["ram"],
             "memoryModel": memory_model,
         }
@@ -141,7 +141,7 @@ with open(args.output, "wt") as f:
         {
             board_id: board
             for board_id, board in get_boards()
-            if board["label"].startswith("Arduino") or args.all
+            if board["name"].startswith("Arduino") or args.all
         },
         f,
         indent=2,

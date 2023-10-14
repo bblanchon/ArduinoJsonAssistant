@@ -17,7 +17,7 @@
                 @input="selectCpu($event.target.value)"
               >
                 <option v-for="(value, key) in boards" :value="key" :key="key">
-                  {{ value.label }}
+                  {{ value.name }}
                 </option>
               </select>
             </div>
@@ -123,7 +123,7 @@ export default {
       window.plausible("ArduinoJson Assistant: Configuration", {
         props: {
           mode: this.mode,
-          cpu: this.boards[this.cpu].label,
+          board: this.boards[this.cpu].name,
           type: this.ioTypes[this.ioTypeId].label,
         },
       });
