@@ -7,8 +7,8 @@ from collections import defaultdict
 from platformio.package.manager.platform import PlatformPackageManager
 
 
-MEMORY_MODELS = {
-    "8-bit": [
+MCU_BITS = {
+    8: [
         "8051",
         "8052",
         "AT89",
@@ -27,10 +27,10 @@ MEMORY_MODELS = {
         "W79",
         "STM8",
     ],
-    "16-bit": [
+    16: [
         "MSP430",
     ],
-    "32-bit": [
+    32: [
         "32MX",
         "32MZ",
         "AM130",
@@ -76,18 +76,19 @@ MEMORY_MODELS = {
         "STM32",
         "XMC",
     ],
-    "64-bit": [
+    64: [
         "K210",
         "RTL8720CF",
     ],
 }
 
 
-def get_memory_model(mcu: str):
-    for model, prefixes in MEMORY_MODELS.items():
+def get_mpu_bits(mcu: str) -> int:
+    for bits, prefixes in MCU_BITS.items():
         for prefix in prefixes:
             if mcu.startswith(prefix):
-                return model
+                return bits
+    return 0
 
 
 def get_boards():
@@ -97,14 +98,14 @@ def get_boards():
         mcu = board["mcu"]
         if not mcu:
             continue
-        memory_model = get_memory_model(mcu)
-        if not memory_model:
+        bits = get_mpu_bits(mcu)
+        if not bits:
             unknown_mcus[mcu].append(board["name"])
             continue
         yield board["id"], {
             "name": board["name"],
             "ram": board["ram"],
-            "memoryModel": memory_model,
+            "bits": bits,
         }
 
     for mcu, boards in sorted(

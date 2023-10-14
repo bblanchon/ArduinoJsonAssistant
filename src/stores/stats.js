@@ -2,20 +2,21 @@ import { defineStore } from "pinia";
 import { computed } from "vue";
 
 import { measureSize } from "@/assistant/analyzer";
-import boards from "@/assets/boards.json";
 import { hasJsonInJsonSyndrome, measureNesting } from "@/assistant/analyzer";
 import { needsDouble, needsLongLong } from "@/assistant/analyzer";
 
 import { useSettingsStore } from "./settings";
+import { useCpuStore } from "./cpu";
 
 export const useStatsStore = defineStore("stats", () => {
   const cfg = useSettingsStore();
+  const cpu = useCpuStore();
 
   const size = computed(() =>
     measureSize(cfg.input, {
       mode: cfg.mode,
       filter: cfg.filterEnabled ? cfg.filter : undefined,
-      memoryModel: boards[cfg.cpu].memoryModel,
+      memoryModel: cpu.memoryModel,
       ignoreKeys: cfg.ignoreKeys,
       ignoreValues: cfg.ignoreValues,
       deduplicateKeys: cfg.deduplicateKeys,

@@ -2,326 +2,326 @@
   "btatmega168": {
     "name": "Arduino BT ATmega168",
     "ram": 1024,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "btatmega328": {
     "name": "Arduino BT ATmega328",
     "ram": 2048,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "due": {
     "name": "Arduino Due (Programming Port)",
     "ram": 98304,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "dueUSB": {
     "name": "Arduino Due (USB Native Port)",
     "ram": 98304,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "diecimilaatmega168": {
     "name": "Arduino Duemilanove or Diecimila ATmega168",
     "ram": 1024,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "diecimilaatmega328": {
     "name": "Arduino Duemilanove or Diecimila ATmega328",
     "ram": 2048,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "esplora": {
     "name": "Arduino Esplora",
     "ram": 2560,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "ethernet": {
     "name": "Arduino Ethernet",
     "ram": 2048,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "fio": {
     "name": "Arduino Fio",
     "ram": 2048,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "chiwawa": {
     "name": "Arduino Industrial 101",
     "ram": 2560,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "leonardo": {
     "name": "Arduino Leonardo",
     "ram": 2560,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "leonardoeth": {
     "name": "Arduino Leonardo ETH",
     "ram": 2560,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "lilypadatmega168": {
     "name": "Arduino LilyPad ATmega168",
     "ram": 1024,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "lilypadatmega328": {
     "name": "Arduino LilyPad ATmega328",
     "ram": 2048,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "LilyPadUSB": {
     "name": "Arduino LilyPad USB",
     "ram": 2560,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "mzeroUSB": {
     "name": "Arduino M0",
     "ram": 32768,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "mzeroproUSB": {
     "name": "Arduino M0 Pro (Native USB Port)",
     "ram": 32768,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "mzeropro": {
     "name": "Arduino M0 Pro (Programming/Debug Port)",
     "ram": 32768,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "mkrfox1200": {
     "name": "Arduino MKR FOX 1200",
     "ram": 32768,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "mkrgsm1400": {
     "name": "Arduino MKR GSM 1400",
     "ram": 32768,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "mkrnb1500": {
     "name": "Arduino MKR NB 1500",
     "ram": 32768,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "mkrwan1300": {
     "name": "Arduino MKR WAN 1300",
     "ram": 32768,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "mkrwan1310": {
     "name": "Arduino MKR WAN 1310",
     "ram": 32768,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "mkrwifi1010": {
     "name": "Arduino MKR WiFi 1010",
     "ram": 32768,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "mkr1000USB": {
     "name": "Arduino MKR1000",
     "ram": 32768,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "mkrzero": {
     "name": "Arduino MKRZERO",
     "ram": 32768,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "megaADK": {
     "name": "Arduino Mega ADK",
     "ram": 8192,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "megaatmega1280": {
     "name": "Arduino Mega or Mega 2560 ATmega1280",
     "ram": 8192,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "megaatmega2560": {
     "name": "Arduino Mega or Mega 2560 ATmega2560 (Mega 2560)",
     "ram": 8192,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "micro": {
     "name": "Arduino Micro",
     "ram": 2560,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "miniatmega168": {
     "name": "Arduino Mini ATmega168",
     "ram": 1024,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "miniatmega328": {
     "name": "Arduino Mini ATmega328",
     "ram": 2048,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "atmegangatmega168": {
     "name": "Arduino NG or older ATmega168",
     "ram": 1024,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "atmegangatmega8": {
     "name": "Arduino NG or older ATmega8",
     "ram": 1024,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "nano33ble": {
     "name": "Arduino Nano 33 BLE",
     "ram": 262144,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "nanoatmega168": {
     "name": "Arduino Nano ATmega168",
     "ram": 1024,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "nanoatmega328": {
     "name": "Arduino Nano ATmega328",
     "ram": 2048,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "nanoatmega328new": {
     "name": "Arduino Nano ATmega328 (New Bootloader)",
     "ram": 2048,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "arduino_nano_esp32": {
     "name": "Arduino Nano ESP32",
     "ram": 327680,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "nano_every": {
     "name": "Arduino Nano Every",
     "ram": 6144,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "nanorp2040connect": {
     "name": "Arduino Nano RP2040 Connect",
     "ram": 270336,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "nicla_sense_me": {
     "name": "Arduino Nicla Sense ME",
     "ram": 64288,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "nicla_vision": {
     "name": "Arduino Nicla Vision",
     "ram": 523624,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "nicla_vision_m4": {
     "name": "Arduino Nicla Vision (M4 core)",
     "ram": 294248,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "opta": {
     "name": "Arduino Opta",
     "ram": 523624,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "opta_m4": {
     "name": "Arduino Opta (M4 core)",
     "ram": 294248,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "portenta_c33": {
     "name": "Arduino Portenta C33",
     "ram": 523624,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "portenta_h7_m4": {
     "name": "Arduino Portenta H7 (M4 core)",
     "ram": 294248,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "portenta_h7_m7": {
     "name": "Arduino Portenta H7 (M7 core)",
     "ram": 523624,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "pro8MHzatmega168": {
     "name": "Arduino Pro or Pro Mini ATmega168 (3.3V, 8 MHz)",
     "ram": 1024,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "pro16MHzatmega168": {
     "name": "Arduino Pro or Pro Mini ATmega168 (5V, 16 MHz)",
     "ram": 1024,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "pro8MHzatmega328": {
     "name": "Arduino Pro or Pro Mini ATmega328 (3.3V, 8 MHz)",
     "ram": 2048,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "pro16MHzatmega328": {
     "name": "Arduino Pro or Pro Mini ATmega328 (5V, 16 MHz)",
     "ram": 2048,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "robotControl": {
     "name": "Arduino Robot Control",
     "ram": 2560,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "robotMotor": {
     "name": "Arduino Robot Motor",
     "ram": 2560,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "tian": {
     "name": "Arduino Tian",
     "ram": 32768,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "uno": {
     "name": "Arduino Uno",
     "ram": 2048,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "uno_r4_minima": {
     "name": "Arduino Uno R4 Minima",
     "ram": 32768,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "uno_r4_wifi": {
     "name": "Arduino Uno R4 WiFi",
     "ram": 32768,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "uno_wifi_rev2": {
     "name": "Arduino Uno WiFi Rev2",
     "ram": 6144,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "yun": {
     "name": "Arduino Yun",
     "ram": 2560,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "yunmini": {
     "name": "Arduino Yun Mini",
     "ram": 2560,
-    "memoryModel": "8-bit"
+    "bits": 8
   },
   "zero": {
     "name": "Arduino Zero (Programming/Debug Port)",
     "ram": 32768,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "zeroUSB": {
     "name": "Arduino Zero (USB Native Port)",
     "ram": 32768,
-    "memoryModel": "32-bit"
+    "bits": 32
   },
   "genuino101": {
     "name": "Arduino/Genuino 101",
     "ram": 81920,
-    "memoryModel": "32-bit"
+    "bits": 32
   }
 }
