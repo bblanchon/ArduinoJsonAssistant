@@ -10,7 +10,7 @@
     "bits": 8
   },
   "due": {
-    "name": "Arduino Due (Programming Port)",
+    "name": "Arduino Due",
     "ram": 98304,
     "bits": 32
   },
@@ -80,12 +80,7 @@
     "bits": 32
   },
   "mzeroproUSB": {
-    "name": "Arduino M0 Pro (Native USB Port)",
-    "ram": 32768,
-    "bits": 32
-  },
-  "mzeropro": {
-    "name": "Arduino M0 Pro (Programming/Debug Port)",
+    "name": "Arduino M0 Pro",
     "ram": 32768,
     "bits": 32
   },
@@ -184,11 +179,6 @@
     "ram": 2048,
     "bits": 8
   },
-  "nanoatmega328new": {
-    "name": "Arduino Nano ATmega328 (New Bootloader)",
-    "ram": 2048,
-    "bits": 8
-  },
   "arduino_nano_esp32": {
     "name": "Arduino Nano ESP32",
     "ram": 327680,
@@ -245,7 +235,7 @@
     "bits": 32
   },
   "pro8MHzatmega168": {
-    "name": "Arduino Pro or Pro Mini ATmega168 (3.3V, 8 MHz)",
+    "name": "Arduino Pro or Pro Mini ATmega168",
     "ram": 1024,
     "bits": 8
   },
@@ -255,7 +245,7 @@
     "bits": 8
   },
   "pro8MHzatmega328": {
-    "name": "Arduino Pro or Pro Mini ATmega328 (3.3V, 8 MHz)",
+    "name": "Arduino Pro or Pro Mini ATmega328",
     "ram": 2048,
     "bits": 8
   },
@@ -310,7 +300,7 @@
     "bits": 8
   },
   "zero": {
-    "name": "Arduino Zero (Programming/Debug Port)",
+    "name": "Arduino Zero",
     "ram": 32768,
     "bits": 32
   },

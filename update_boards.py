@@ -2,10 +2,10 @@
 
 import argparse
 import json
+import re
 from collections import defaultdict
 
 from platformio.package.manager.platform import PlatformPackageManager
-
 
 MCU_BITS = {
     8: [
@@ -83,6 +83,25 @@ MCU_BITS = {
 }
 
 
+# Clean up board name
+# "Adafruit Pro Trinket 3V/12MHz (FTDI)" => "Adafruit Pro Trinket"
+# "Adafruit Pro Trinket 3V/12MHz (USB)" => "Adafruit Pro Trinket"
+# "Arduino Due (Programming Port)" => "Arduino Due"
+# "Arduino Due (USB Native Port)" => "Arduino Due"
+# "Arduino M0 Pro (Native USB Port)" => "Arduino M0 Pro"
+# "Arduino M0 Pro (Programming/Debug Port)" => "Arduino M0 Pro"
+# "Arduino Nano ATmega328 (New Bootloader)" => "Arduino Nano"
+# "Arduino Pro or Pro Mini ATmega168 (3.3V, 8 MHz)" => "Arduino Pro or Pro Mini"
+# "Sanguino ATmega1284p (16MHz)" => "Sanguino ATmega1284p"
+NAME_REGEX = re.compile(
+    r"(?:\s+\dV/\d+MHz)?\s+\((?:Native USB Port|Programming Port|Debug Port|Programming/Debug Port|FTDI|USB|New Bootloader|3.3V,\s*\d+\s*MHz|\d+\s*MHz)\)$"
+)
+
+
+def clean_name(name: str) -> str:
+    return NAME_REGEX.sub("", name)
+
+
 def get_mpu_bits(mcu: str) -> int:
     for bits, prefixes in MCU_BITS.items():
         for prefix in prefixes:
@@ -94,6 +113,7 @@ def get_mpu_bits(mcu: str) -> int:
 def get_boards():
     pm = PlatformPackageManager()
     unknown_mcus = defaultdict(list)
+    previous_board = None
     for board in pm.get_all_boards():
         mcu = board["mcu"]
         if not mcu:
@@ -102,11 +122,15 @@ def get_boards():
         if not bits:
             unknown_mcus[mcu].append(board["name"])
             continue
-        yield board["id"], {
-            "name": board["name"],
+        cleaned_board = {
+            "name": clean_name(board["name"]),
             "ram": board["ram"],
             "bits": bits,
         }
+        if previous_board == cleaned_board:
+            continue
+        yield board["id"], cleaned_board
+        previous_board = cleaned_board
 
     for mcu, boards in sorted(
         unknown_mcus.items(),
