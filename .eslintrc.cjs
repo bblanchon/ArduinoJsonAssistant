@@ -15,6 +15,13 @@ module.exports = {
   rules: {
     "prefer-const": "warn",
     "no-var": "error",
+    "no-unused-vars": [
+      "error",
+      {
+        varsIgnorePattern: "^_",
+        argsIgnorePattern: "^_",
+      },
+    ],
   },
   ignorePatterns: [".eslintrc.cjs", "vite.config.js", "wallaby.conf.js"],
 };

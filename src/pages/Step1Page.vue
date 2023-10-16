@@ -10,16 +10,7 @@
               >Board</label
             >
             <div class="col-sm-9">
-              <select
-                id="cpu-selector"
-                class="form-control"
-                :value="cpu"
-                @input="selectCpu($event.target.value)"
-              >
-                <option v-for="(value, key) in boards" :value="key" :key="key">
-                  {{ value.name }}
-                </option>
-              </select>
+              <BoardSelector v-model="cpu" id="cpu-selector" />
             </div>
           </div>
           <div class="form-group row">
@@ -110,6 +101,7 @@
 import { mapState, mapActions } from "pinia";
 import boards from "@/assets/boards.json";
 import { useSettingsStore } from "@/stores/settings";
+import BoardSelector from "@/components/BoardSelector.vue";
 
 export default {
   inject: ["version", "sponsors"],
@@ -157,5 +149,6 @@ export default {
     "selectMode",
     "selectIoType",
   ]),
+  components: { BoardSelector },
 };
 </script>
