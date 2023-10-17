@@ -75,6 +75,8 @@ class JsonDocument {
     this._poolList = new SlotPoolList(cfg, this._memory);
     this._stringOverhead = memoryModels[cfg.memoryModel].stringOverhead;
     this._overAllocateStrings = cfg.overAllocateStrings;
+
+    this._memory.alloc(memoryModels[cfg.memoryModel].documentSize);
   }
 
   allocSlots(n) {

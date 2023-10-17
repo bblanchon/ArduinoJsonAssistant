@@ -1,6 +1,7 @@
 {
   "8-bit": {
     "slotSize": [8, 12],
+    "documentSize": 14,
     "stringOverhead": 5,
     "poolCapacity": 16,
     "nestingLimit": 10,
@@ -9,6 +10,7 @@
   },
   "16-bit": {
     "slotSize": [8, 12],
+    "documentSize": 14,
     "stringOverhead": 5,
     "poolCapacity": 16,
     "nestingLimit": 10,
@@ -16,6 +18,7 @@
     "longLongIsDefault": false
   },
   "32-bit": {
+    "documentSize": 40,
     "slotSize": [12, 16],
     "stringOverhead": 9,
     "poolCapacity": 64,
@@ -25,6 +28,7 @@
     "longLongIsDefault": true
   },
   "64-bit": {
+    "documentSize": 128,
     "slotSize": [24, 24],
     "stringOverhead": 13,
     "poolCapacity": 128,
