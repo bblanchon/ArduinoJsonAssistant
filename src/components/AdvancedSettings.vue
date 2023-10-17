@@ -164,8 +164,8 @@ export default {
     ...mapWritableState(useSettingsStore, fields),
     defaults() {
       return {
-        assumeConstKeys: this.isSerializing ? true : undefined,
-        assumeConstValues: this.isSerializing ? false : undefined,
+        assumeConstKeys: true,
+        assumeConstValues: false,
         deduplicateKeys: true,
         deduplicateValues: false,
         useDouble: this.doubleIsDefault,

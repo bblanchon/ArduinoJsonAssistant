@@ -19,11 +19,11 @@ function tryParse(input) {
 export const useSettingsStore = defineStore("settings", {
   state() {
     return {
-      assumeConstKeys: undefined,
-      assumeConstValues: undefined,
+      assumeConstKeys: true,
+      assumeConstValues: false,
       cpu: "uno",
-      deduplicateKeys: undefined,
-      deduplicateValues: undefined,
+      deduplicateKeys: true,
+      deduplicateValues: false,
       filter: true,
       filterJson: "true",
       input: defaultInput,
@@ -58,12 +58,10 @@ export const useSettingsStore = defineStore("settings", {
       }
       if (cfg.mode) {
         this.mode = cfg.mode;
-        const serializing = cfg.mode === "serialize";
-        const deserializing = cfg.mode === "deserialize";
-        this.assumeConstKeys = serializing ? true : undefined;
-        this.assumeConstValues = serializing ? false : undefined;
-        this.deduplicateKeys = deserializing ? true : undefined;
-        this.deduplicateValues = deserializing ? false : undefined;
+        this.assumeConstKeys = true;
+        this.assumeConstValues = false;
+        this.deduplicateKeys = true;
+        this.deduplicateValues = false;
       }
       if (cfg.cpu && boards[cfg.cpu]) {
         this.cpu = cfg.cpu;
@@ -88,12 +86,10 @@ export const useSettingsStore = defineStore("settings", {
     },
     selectMode(mode) {
       this.mode = mode;
-      const serializing = mode === "serialize";
-      const deserializing = mode === "deserialize";
-      this.assumeConstKeys = serializing ? true : undefined;
-      this.assumeConstValues = serializing ? false : undefined;
-      this.deduplicateKeys = deserializing ? true : undefined;
-      this.deduplicateValues = deserializing ? false : undefined;
+      this.assumeConstKeys = true;
+      this.assumeConstValues = false;
+      this.deduplicateKeys = true;
+      this.deduplicateValues = false;
     },
     selectIoType(ioTypeId) {
       this.ioTypeId = ioTypeId;
