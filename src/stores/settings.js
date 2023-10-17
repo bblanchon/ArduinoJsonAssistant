@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { applyFilter } from "@/assistant/filter";
 import boards from "@/assets/boards.json";
+import memoryModels from "@/assets/memoryModels.json";
 
 const defaultInput = {
   sensor: "gps",
@@ -81,8 +82,10 @@ export const useSettingsStore = defineStore("settings", {
     },
     selectCpu(cpu) {
       this.cpu = cpu;
-      this.useDouble = boards[cpu].useDouble?.default;
-      this.useLongLong = boards[cpu].useLongLong?.default;
+      const boardInfo = boards[cpu];
+      const memoryModel = memoryModels[`${boardInfo.bits}-bit`];
+      this.useDouble = !!memoryModel.doubleIsDefault;
+      this.useLongLong = !!memoryModel.longLongIsDefault;
     },
     selectMode(mode) {
       this.mode = mode;
