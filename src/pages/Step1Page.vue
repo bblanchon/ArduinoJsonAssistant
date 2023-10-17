@@ -10,7 +10,11 @@
               >Board</label
             >
             <div class="col-sm-9">
-              <BoardSelector v-model="cpu" id="cpu-selector" />
+              <BoardSelector
+                :model-value="cpu"
+                @update:model-value="selectCpu"
+                id="cpu-selector"
+              />
             </div>
           </div>
           <div class="form-group row">
@@ -101,7 +105,6 @@
 import { mapState, mapActions } from "pinia";
 import boards from "@/assets/boards.json";
 import { useSettingsStore } from "@/stores/settings";
-import BoardSelector from "@/components/BoardSelector.vue";
 
 export default {
   inject: ["version", "sponsors"],
@@ -149,6 +152,5 @@ export default {
     "selectMode",
     "selectIoType",
   ]),
-  components: { BoardSelector },
 };
 </script>

@@ -22,14 +22,15 @@
         </small>
       </div>
       <div class="options">
-        <a
+        <button
           v-for="(board, key) in filteredBoards"
+          type="button"
           :key="key"
           class="dropdown-item"
-          href="#"
+          @click="$emit('update:modelValue', key)"
         >
           <BoardSelectorItem :board="board" />
-        </a>
+        </button>
       </div>
     </div>
   </div>
