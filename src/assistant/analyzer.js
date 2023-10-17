@@ -44,12 +44,23 @@ class SlotPoolList {
   constructor(cfg, memory) {
     this._memory = memory;
     this._poolCapacity = memoryModels[cfg.memoryModel].poolCapacity;
+    this._poolOverhead = memoryModels[cfg.memoryModel].poolOverhead;
+    this._initialPoolListCapacity = 4; // preallacted in JsonDocument, not on the heap
     this._slotSize = getEffectiveSlotSize(cfg);
     this._freeSlots = 0;
+    this._poolCount = 0;
+    this._poolListCapacity = this._initialPoolListCapacity;
   }
 
   allocSlot() {
     if (this._freeSlots == 0) {
+      this._poolCount++;
+      if (this._poolCount > this._poolListCapacity) {
+        if (this._poolListCapacity > this._initialPoolListCapacity)
+          this._memory.free(this._poolOverhead * this._poolListCapacity);
+        this._poolListCapacity *= 2;
+        this._memory.alloc(this._poolOverhead * this._poolListCapacity);
+      }
       this._memory.alloc(this._slotSize * this._poolCapacity);
       this._freeSlots = this._poolCapacity;
     }
@@ -59,6 +70,12 @@ class SlotPoolList {
   shrinkToFit() {
     this._memory.free(this._slotSize * this._freeSlots);
     this._freeSlots = 0;
+    if (this._poolListCapacity > this._initialPoolListCapacity) {
+      this._memory.free(
+        this._poolOverhead * (this._poolListCapacity - this._poolCount),
+      );
+      this._poolListCapacity = this._poolCount;
+    }
   }
 }
 

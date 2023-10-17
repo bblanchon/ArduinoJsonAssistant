@@ -4,6 +4,7 @@
     "documentSize": 14,
     "stringOverhead": 5,
     "poolCapacity": 16,
+    "poolOverhead": 4,
     "nestingLimit": 10,
     "doubleSupported": false,
     "longLongIsDefault": false
@@ -13,6 +14,7 @@
     "documentSize": 14,
     "stringOverhead": 5,
     "poolCapacity": 16,
+    "poolOverhead": 4,
     "nestingLimit": 10,
     "doubleSupported": false,
     "longLongIsDefault": false
@@ -22,6 +24,7 @@
     "slotSize": [12, 16],
     "stringOverhead": 9,
     "poolCapacity": 64,
+    "poolOverhead": 8,
     "nestingLimit": 10,
     "doubleSupported": true,
     "doubleIsDefault": true,
@@ -32,6 +35,7 @@
     "slotSize": [24, 24],
     "stringOverhead": 13,
     "poolCapacity": 128,
+    "poolOverhead": 16,
     "nestingLimit": 10,
     "doubleSupported": true,
     "doubleIsDefault": true,

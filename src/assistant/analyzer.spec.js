@@ -191,6 +191,50 @@ describe("measureSize", function () {
       peakMemoryUsage: 188,
     });
   });
+
+  it("should double pool list's capacity above 64 nodes", () => {
+    expect(
+      measureSize(new Array(64), {
+        memoryModel: "8-bit",
+        overAllocateStrings: true,
+      }),
+    ).toEqual({
+      memoryUsage: 526,
+      peakMemoryUsage: 526,
+    });
+
+    expect(
+      measureSize(new Array(65), {
+        memoryModel: "8-bit",
+        overAllocateStrings: true,
+      }),
+    ).toEqual({
+      memoryUsage: 554, // +28 => 5*4 for the pool list + 8 for the pool
+      peakMemoryUsage: 686, // +160 => 8*4 for the pool list + 16*8 for the pool
+    });
+  });
+
+  it("should quadruple pool list's capacity above 128 nodes", () => {
+    expect(
+      measureSize(new Array(128), {
+        memoryModel: "8-bit",
+        overAllocateStrings: true,
+      }),
+    ).toEqual({
+      memoryUsage: 1070,
+      peakMemoryUsage: 1070,
+    });
+
+    expect(
+      measureSize(new Array(129), {
+        memoryModel: "8-bit",
+        overAllocateStrings: true,
+      }),
+    ).toEqual({
+      memoryUsage: 1082, // +28 => 4 for the pool list + 8 for the pool
+      peakMemoryUsage: 1230, // +160 => 8*4 for the pool list + 16*8 for the pool
+    });
+  });
 });
 
 describe("hasJsonInJsonSyndrome()", () => {
