@@ -17,6 +17,10 @@
       <label for="useDouble" class="col-form-label">
         Store floating point values as
       </label>
+      <ResetTweakButton
+        v-model="useDouble"
+        :default-value="defaults.useDouble"
+      />
       <select id="useDouble" class="form-control" v-model="useDouble">
         <option v-if="doubleIsDefault" :value="true">double (default)</option>
         <option v-else :value="true">
@@ -40,6 +44,10 @@
       <label for="useLongLong" class="col-form-label">
         Store integral values values as
       </label>
+      <ResetTweakButton
+        v-model="useLongLong"
+        :default-value="defaults.useLongLong"
+      />
       <select id="useLongLong" class="form-control" v-model="useLongLong">
         <option v-if="longLongIsDefault" :value="true">
           long long (default)
@@ -71,9 +79,13 @@
         type="checkbox"
         v-model="assumeConstValues"
       />
-      <label for="assume-const-values" class="form-check-label"
-        >Assume values are <code>const char*</code></label
-      >
+      <label for="assume-const-values" class="form-check-label">
+        Assume values are <code>const char*</code>
+      </label>
+      <ResetTweakButton
+        v-model="assumeConstValues"
+        :default-value="defaults.assumeConstValues"
+      />
       <small class="form-text text-muted">
         <code>JsonDocument</code> stores strings differently depending on their
         types. It stores <code>const char*</code> by pointer (which takes no
@@ -92,6 +104,10 @@
       <label for="assume-const-keys" class="form-check-label"
         >Assume keys are <code>const char*</code></label
       >
+      <ResetTweakButton
+        v-model="assumeConstKeys"
+        :default-value="defaults.assumeConstKeys"
+      />
       <small class="form-text text-muted">
         Same as above but for keys.<br />
         Uncheck this box if your program generates keys at runtime.
@@ -107,6 +123,10 @@
       <label for="deduplicate-values" class="form-check-label">
         Deduplicate values when measuring the capacity
       </label>
+      <ResetTweakButton
+        v-model="deduplicateValues"
+        :default-value="defaults.deduplicateValues"
+      />
       <small class="form-text text-muted">
         ArduinoJson detects duplicate strings to store only one copy, but you
         can tell the Assistant to include all strings.<br />
@@ -124,6 +144,10 @@
       <label for="deduplicate-keys" class="form-check-label">
         Deduplicate keys when measuring the capacity
       </label>
+      <ResetTweakButton
+        v-model="deduplicateKeys"
+        :default-value="defaults.deduplicateKeys"
+      />
       <small class="form-text text-muted">
         Same as above, but for keys instead of values.<br />
         You should check this box unless you know what you're doing.
