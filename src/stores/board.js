@@ -15,6 +15,12 @@ export const useBoardStore = defineStore("board", () => {
     nestingLimit: computed(() => memoryModels[memoryModel.value].nestingLimit),
     ram: computed(() => board.value.ram),
     memoryModel,
+    stdStringOverhead: computed(
+      () => memoryModels[memoryModel.value].stdStringOverhead,
+    ),
+    arduinoStringOverhead: computed(
+      () => memoryModels[memoryModel.value].arduinoStringOverhead,
+    ),
     doubleSupported: computed(
       () => !!memoryModels[memoryModel.value].doubleSupported,
     ),

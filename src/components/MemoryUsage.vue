@@ -84,7 +84,11 @@ export default {
   inject: ["baseUrl"],
   computed: {
     ...mapState(useStatsStore, ["peakRamUsage", "ramUsage"]),
-    ...mapState(useBoardStore, ["ram"]),
+    ...mapState(useBoardStore, [
+      "ram",
+      "arduinoStringOverhead",
+      "stdStringOverhead",
+    ]),
     ...mapState(useSettingsStore, ["ioTypeId", "input", "mode"]),
     ramPercent() {
       return (this.peakRamUsage / this.ram) * 100;
@@ -102,8 +106,19 @@ export default {
       return "success";
     },
     bufferSize() {
-      if (this.ioTypeId.endsWith("Stream")) return 0;
-      return JSON.stringify(this.input).length;
+      let size = JSON.stringify(this.input).length + 1;
+      switch (this.ioTypeId) {
+        case "arduinoStream":
+        case "stdStream":
+          return 0;
+        case "arduinoString":
+          size += this.arduinoStringOverhead;
+          break;
+        case "stdString":
+          size += this.stdStringOverhead;
+          break;
+      }
+      return size;
     },
     bufferPercent() {
       return (this.bufferSize / this.ram) * 100;

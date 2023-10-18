@@ -7,7 +7,9 @@
     "poolOverhead": 4,
     "nestingLimit": 10,
     "doubleSupported": false,
-    "longLongIsDefault": false
+    "longLongIsDefault": false,
+    "arduinoStringOverhead": 6,
+    "stdStringOverhead": 12
   },
   "16-bit": {
     "slotSize": [8, 12],
@@ -17,7 +19,9 @@
     "poolOverhead": 4,
     "nestingLimit": 10,
     "doubleSupported": false,
-    "longLongIsDefault": false
+    "longLongIsDefault": false,
+    "arduinoStringOverhead": 6,
+    "stdStringOverhead": 12
   },
   "32-bit": {
     "documentSize": 40,
@@ -28,7 +32,9 @@
     "nestingLimit": 10,
     "doubleSupported": true,
     "doubleIsDefault": true,
-    "longLongIsDefault": true
+    "longLongIsDefault": true,
+    "arduinoStringOverhead": 12,
+    "stdStringOverhead": 24
   },
   "64-bit": {
     "documentSize": 128,
@@ -39,6 +45,8 @@
     "nestingLimit": 10,
     "doubleSupported": true,
     "doubleIsDefault": true,
-    "longLongIsDefault": true
+    "longLongIsDefault": true,
+    "arduinoStringOverhead": 24,
+    "stdStringOverhead": 48
   }
 }
