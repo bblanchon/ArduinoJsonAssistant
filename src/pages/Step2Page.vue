@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <h2 class="h4 card-header bg-primary text-white">Step 2: JSON</h2>
-    <div class="card-body resize-lg-vertical d-flex flex-column">
+    <div class="card-body d-flex flex-column">
       <div class="d-flex justify-content-between">
         <ExampleDownloader />
         <div class="custom-control custom-switch" v-if="isDeserializing">
