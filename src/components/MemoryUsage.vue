@@ -97,8 +97,8 @@ export default {
       return this.ramPercent + this.peakRamPercent;
     },
     ramColor() {
-      if (this.totalRamPercent > 75) return "danger";
-      if (this.totalRamPercent > 25) return "warning";
+      if (this.totalRamPercent > 60) return "danger";
+      if (this.totalRamPercent > 40) return "warning";
       return "success";
     },
     bufferSize() {
