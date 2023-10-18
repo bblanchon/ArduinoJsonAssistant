@@ -12,7 +12,7 @@ export const useBoardStore = defineStore("board", () => {
   const memoryModel = computed(() => `${board.value.bits}-bit`);
   return {
     name: computed(() => board.value.name),
-    nestingLimit: computed(() => board.value.nestingLimit),
+    nestingLimit: computed(() => memoryModels[memoryModel.value].nestingLimit),
     ram: computed(() => board.value.ram),
     memoryModel,
     doubleSupported: computed(
