@@ -58,7 +58,7 @@
         >
           {{ programCopied ? "✓ Copied" : "Copy" }}
         </button>
-        <div class="highlight p-3">
+        <div class="highlight p-3 program">
           <pre><code class="hljs" v-html="program"></code></pre>
         </div>
       </figure>
@@ -155,3 +155,10 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.program {
+  max-height: 30em;
+  overflow-y: auto;
+}
+</style>
