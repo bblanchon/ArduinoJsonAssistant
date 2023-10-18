@@ -17,6 +17,11 @@ describe("makeVariableName()", function () {
     expect(makeVariableName('obj["key"]["key"]')).toBe("obj_key_key");
   });
 
+  it("should support progmem object keys", () => {
+    expect(makeVariableName('obj[F("key")]')).toBe("obj_key");
+    expect(makeVariableName('obj[F("key")][F("key")]')).toBe("obj_key_key");
+  });
+
   it("should support array index", () => {
     expect(makeVariableName("obj[0]")).toBe("obj_0");
     expect(makeVariableName("obj[0][1]")).toBe("obj_0_1");

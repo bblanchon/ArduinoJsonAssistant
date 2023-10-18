@@ -184,12 +184,35 @@ if (error) {
 `,
     );
   });
+
+  it("serial and progmem", () => {
+    expect(
+      generateParsingProgram({
+        input: { hello: "world" },
+        serial: true,
+        progmem: true,
+      }),
+    ).toEqual(
+      `JsonDocument doc;
+
+DeserializationError error = deserializeJson(doc, input);
+
+if (error) {
+  Serial.print(F("deserializeJson() failed: "));
+  Serial.println(error.f_str());
+  return;
+}
+
+const char* hello = doc[F("hello")]; // "world"
+`,
+    );
+  });
 });
 
 describe("writeDecompositionCode", function () {
-  function getDecompositionCode(input) {
+  function getDecompositionCode(input, cfg) {
     const prg = new ProgramWriter();
-    writeDecompositionCode(prg, input);
+    writeDecompositionCode(prg, input, cfg);
     return prg.toString();
   }
 
@@ -233,6 +256,12 @@ int root_2 = doc[2]; // 3
     );
   });
 
+  it('{"hello":true} with progmem', () => {
+    expect(getDecompositionCode({ hello: true }, { progmem: true })).toEqual(
+      'bool hello = doc[F("hello")]; // true\n',
+    );
+  });
+
   it('{"hello":null}', () => {
     expect(getDecompositionCode({ hello: null })).toEqual(
       '// doc["hello"] is null\n',
@@ -242,6 +271,12 @@ int root_2 = doc[2]; // 3
   it('{"hello":"world"}', () => {
     expect(getDecompositionCode({ hello: "world" })).toEqual(
       'const char* hello = doc["hello"]; // "world"\n',
+    );
+  });
+
+  it('{"hello":"world"} with progmem', () => {
+    expect(getDecompositionCode({ hello: "world" }, { progmem: true })).toEqual(
+      'const char* hello = doc[F("hello")]; // "world"\n',
     );
   });
 

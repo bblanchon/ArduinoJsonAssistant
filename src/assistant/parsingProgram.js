@@ -29,6 +29,7 @@ function extractValue(prg, cfg) {
           value: value[0],
           parent: item,
           siblings: value,
+          progmem: cfg.progmem,
         });
         prg.unindent();
         prg.addLine("}");
@@ -45,6 +46,7 @@ function extractValue(prg, cfg) {
             parent: elementExpression,
             name: makeVariableName(elementExpression),
             siblings: cfg.siblings?.map((x) => (x ? x[i] : null)),
+            progmem: cfg.progmem,
           });
         }
       }
@@ -62,11 +64,13 @@ function extractValue(prg, cfg) {
           name: item + "_key",
           parent: item + ".key().c_str()",
           siblings: Object.keys(value),
+          progmem: cfg.progmem,
         });
         extractValue(prg, {
           value: Object.values(value)[0],
           parent: item + ".value()",
           siblings: Object.values(value),
+          progmem: cfg.progmem,
         });
         prg.unindent();
         prg.addLine("}");
@@ -77,12 +81,15 @@ function extractValue(prg, cfg) {
           prg.addLine(`JsonObject ${objName} = ${parent};`);
         }
         for (const key in value) {
-          const memberExpression = `${objName}["${key}"]`;
+          const memberExpression = cfg.progmem
+            ? `${objName}[F("${key}")]`
+            : `${objName}["${key}"]`;
           extractValue(prg, {
             value: value[key],
             parent: memberExpression,
             name: makeVariableName(memberExpression),
             siblings: cfg.siblings?.map((x) => (x ? x[key] : null)),
+            progmem: cfg.progmem,
           });
         }
       }
@@ -115,10 +122,11 @@ function extractValue(prg, cfg) {
   }
 }
 
-export function writeDecompositionCode(prg, input) {
+export function writeDecompositionCode(prg, input, cfg = {}) {
   switch (typeof input) {
     case "object":
       return extractValue(prg, {
+        ...cfg,
         value: input,
         parent: "doc",
       });
@@ -226,7 +234,7 @@ export function generateParsingProgram(cfg) {
   const filteredInput = cfg.filter
     ? applyFilter(cfg.input, cfg.filter)
     : cfg.input;
-  writeDecompositionCode(prg, filteredInput);
+  writeDecompositionCode(prg, filteredInput, cfg);
 
   return prg.toString();
 }

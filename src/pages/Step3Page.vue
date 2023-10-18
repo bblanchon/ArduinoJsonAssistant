@@ -29,10 +29,7 @@
           <option value="iostream">iostream</option>
         </select>
 
-        <div
-          class="custom-control custom-switch mb-2 mr-sm-2"
-          v-if="ioLibrary == 'serial'"
-        >
+        <div class="custom-control custom-switch mb-2 mr-sm-2">
           <input
             class="custom-control-input"
             type="checkbox"

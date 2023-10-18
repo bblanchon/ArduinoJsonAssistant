@@ -34,6 +34,7 @@ export function sanitizeName(name) {
 
 export function makeVariableName(expression) {
   return expression
+    .replace(/F\("([^"]+)"\)]/g, "$1")
     .replace(/["\]]/g, "")
     .replace(/[^a-z0-9]+/gi, "_")
     .replace(/^doc_(?=\d)/, "root_")
