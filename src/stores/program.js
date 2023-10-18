@@ -24,6 +24,10 @@ hljs.registerLanguage("cpp", (hljs) => {
   return lang;
 });
 
+function escapeHtmlTags(str) {
+  return str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
 export const useProgramStore = defineStore("program", () => {
   const cfg = useSettingsStore();
   const board = useBoardStore();
@@ -33,9 +37,11 @@ export const useProgramStore = defineStore("program", () => {
   const progmem = ref(false);
 
   async function generate() {
+    let code;
+
     switch (cfg.mode) {
       case "deserialize":
-        program.value = generateParsingProgram({
+        code = generateParsingProgram({
           input: cfg.input,
           inputType: cfg.ioTypeId,
           filter: cfg.filterEnabled ? cfg.filter : undefined,
@@ -49,18 +55,16 @@ export const useProgramStore = defineStore("program", () => {
         break;
 
       case "serialize":
-        program.value = generateSerializingProgram({
+        code = generateSerializingProgram({
           output: cfg.input,
           outputType: cfg.ioTypeId,
         });
         break;
     }
 
+    program.value = escapeHtmlTags(code);
     await sleep(100);
-
-    program.value = hljs.highlight(program.value, {
-      language: "cpp",
-    }).value;
+    program.value = hljs.highlight(code, { language: "cpp" }).value;
   }
 
   return {
