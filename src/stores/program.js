@@ -8,7 +8,7 @@ import { generateParsingProgram } from "@/assistant/parsingProgram";
 import { generateSerializingProgram } from "@/assistant/serializingProgram";
 
 import { useSettingsStore } from "./settings";
-import { useCpuStore } from "./cpu";
+import { useBoardStore } from "./board";
 import { useStatsStore } from "./stats";
 
 hljs.registerLanguage("cpp", (hljs) => {
@@ -26,7 +26,7 @@ hljs.registerLanguage("cpp", (hljs) => {
 
 export const useProgramStore = defineStore("program", () => {
   const cfg = useSettingsStore();
-  const cpu = useCpuStore();
+  const board = useBoardStore();
   const stats = useStatsStore();
   const program = ref("");
   const ioLibrary = ref("serial");
@@ -40,7 +40,7 @@ export const useProgramStore = defineStore("program", () => {
           inputType: cfg.ioTypeId,
           filter: cfg.filterEnabled ? cfg.filter : undefined,
           nestingLimit:
-            stats.nestingLevel > cpu.nestingLimit
+            stats.nestingLevel > board.nestingLimit
               ? stats.nestingLevel
               : undefined,
           serial: ioLibrary.value == "serial",

@@ -76,7 +76,7 @@
 <script>
 import bytes from "bytes";
 import { mapState } from "pinia";
-import { useCpuStore } from "@/stores/cpu";
+import { useBoardStore } from "@/stores/board";
 import { useStatsStore } from "@/stores/stats";
 import { useSettingsStore } from "@/stores/settings";
 
@@ -84,9 +84,8 @@ export default {
   inject: ["baseUrl"],
   computed: {
     ...mapState(useStatsStore, ["peakRamUsage", "ramUsage"]),
-    ...mapState(useCpuStore, ["ram"]),
+    ...mapState(useBoardStore, ["ram"]),
     ...mapState(useSettingsStore, ["ioTypeId", "input", "mode"]),
-    ...mapState(useCpuStore, { cpuName: "name" }),
     ramPercent() {
       return (this.peakRamUsage / this.ram) * 100;
     },

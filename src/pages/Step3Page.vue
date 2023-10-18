@@ -83,7 +83,7 @@ import { mapState, mapActions, mapWritableState } from "pinia";
 import "@/assets/highlight.scss";
 
 import { useSettingsStore } from "@/stores/settings";
-import { useCpuStore } from "@/stores/cpu";
+import { useBoardStore } from "@/stores/board";
 import { useProgramStore } from "@/stores/program";
 import { sleep } from "@/utils";
 
@@ -103,7 +103,7 @@ export default {
       "useLongLong",
       "useDouble",
     ]),
-    ...mapState(useCpuStore, ["longLongIsDefault", "doubleIsDefault"]),
+    ...mapState(useBoardStore, ["longLongIsDefault", "doubleIsDefault"]),
     links() {
       return [
         {

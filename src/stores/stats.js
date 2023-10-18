@@ -6,17 +6,17 @@ import { hasJsonInJsonSyndrome, measureNesting } from "@/assistant/analyzer";
 import { needsDouble, needsLongLong } from "@/assistant/analyzer";
 
 import { useSettingsStore } from "./settings";
-import { useCpuStore } from "./cpu";
+import { useBoardStore } from "./board";
 
 export const useStatsStore = defineStore("stats", () => {
   const cfg = useSettingsStore();
-  const cpu = useCpuStore();
+  const board = useBoardStore();
 
   const size = computed(() =>
     measureSize(cfg.input, {
       mode: cfg.mode,
       filter: cfg.filterEnabled ? cfg.filter : undefined,
-      memoryModel: cpu.memoryModel,
+      memoryModel: board.memoryModel,
       ignoreKeys: cfg.ignoreKeys,
       ignoreValues: cfg.ignoreValues,
       deduplicateKeys: cfg.deduplicateKeys,

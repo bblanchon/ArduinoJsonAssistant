@@ -6,14 +6,14 @@ import memoryModels from "@/assets/memoryModels.json";
 
 import { useSettingsStore } from "./settings";
 
-export const useCpuStore = defineStore("cpu", () => {
+export const useBoardStore = defineStore("board", () => {
   const cfg = useSettingsStore();
-  const cpu = computed(() => boards[cfg.cpu]);
-  const memoryModel = computed(() => `${cpu.value.bits}-bit`);
+  const board = computed(() => boards[cfg.cpu]);
+  const memoryModel = computed(() => `${board.value.bits}-bit`);
   return {
-    name: computed(() => cpu.value.name),
-    nestingLimit: computed(() => cpu.value.nestingLimit),
-    ram: computed(() => cpu.value.ram),
+    name: computed(() => board.value.name),
+    nestingLimit: computed(() => board.value.nestingLimit),
+    ram: computed(() => board.value.ram),
     memoryModel,
     doubleSupported: computed(
       () => !!memoryModels[memoryModel.value].doubleSupported,

@@ -159,7 +159,7 @@
 <script>
 import { mapActions, mapState, mapWritableState } from "pinia";
 import { useSettingsStore } from "@/stores/settings";
-import { useCpuStore } from "@/stores/cpu";
+import { useBoardStore } from "@/stores/board";
 
 const fields = [
   "assumeConstKeys",
@@ -177,7 +177,7 @@ export default {
       "ignoreValues",
       "isSerializing",
     ]),
-    ...mapState(useCpuStore, [
+    ...mapState(useBoardStore, [
       "doubleSupported",
       "doubleIsDefault",
       "doubleInconsequential",
