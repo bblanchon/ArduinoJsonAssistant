@@ -142,8 +142,8 @@ export default {
     },
     inputTypeLabel() {
       return {
-        serialize: "Input",
-        deserialize: "Output",
+        serialize: "Output",
+        deserialize: "Input",
       }[this.mode];
     },
   },
