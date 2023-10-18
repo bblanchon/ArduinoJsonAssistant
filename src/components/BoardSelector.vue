@@ -8,7 +8,7 @@
     >
       <BoardSelectorItem class="flex-fill" :board="selectedBoard" />
     </button>
-    <div class="dropdown-menu" style="min-width: 100%">
+    <div class="dropdown-menu w-100">
       <div class="mx-2 mb-1">
         <input
           type="search"
