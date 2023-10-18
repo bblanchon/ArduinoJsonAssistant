@@ -46,7 +46,7 @@ export const useProgramStore = defineStore("program", () => {
           inputType: cfg.ioTypeId,
           filter: cfg.filterEnabled ? cfg.filter : undefined,
           nestingLimit:
-            stats.nestingLevel > board.nestingLimit
+            stats.nestingLevel > board.memoryModel.nestingLimit
               ? stats.nestingLevel
               : undefined,
           serial: ioLibrary.value == "serial",

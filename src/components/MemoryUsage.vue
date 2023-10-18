@@ -84,11 +84,7 @@ export default {
   inject: ["baseUrl"],
   computed: {
     ...mapState(useStatsStore, ["peakRamUsage", "ramUsage"]),
-    ...mapState(useBoardStore, [
-      "ram",
-      "arduinoStringOverhead",
-      "stdStringOverhead",
-    ]),
+    ...mapState(useBoardStore, ["ram", "memoryModel"]),
     ...mapState(useSettingsStore, ["ioTypeId", "input", "mode"]),
     ramPercent() {
       return (this.peakRamUsage / this.ram) * 100;
@@ -112,10 +108,10 @@ export default {
         case "stdStream":
           return 0;
         case "arduinoString":
-          size += this.arduinoStringOverhead;
+          size += this.memoryModel.arduinoStringOverhead;
           break;
         case "stdString":
-          size += this.stdStringOverhead;
+          size += this.memoryModel.stdStringOverhead;
           break;
       }
       return size;

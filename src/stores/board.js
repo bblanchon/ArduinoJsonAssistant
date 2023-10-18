@@ -13,13 +13,9 @@ export const useBoardStore = defineStore("board", () => {
   const memoryModel = computed(() => memoryModels[arch.value]);
   return {
     name: computed(() => board.value.name),
-    nestingLimit: computed(() => memoryModel.value.nestingLimit),
     ram: computed(() => board.value.ram),
     arch,
-    stdStringOverhead: computed(() => memoryModel.value.stdStringOverhead),
-    arduinoStringOverhead: computed(
-      () => memoryModel.value.arduinoStringOverhead,
-    ),
+    memoryModel,
     doubleSupported: computed(() => !!memoryModel.value.doubleSupported),
     doubleIsDefault: computed(() => !!memoryModel.value.doubleIsDefault),
     doubleInconsequential: computed(

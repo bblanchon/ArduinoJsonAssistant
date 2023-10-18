@@ -21,7 +21,9 @@ export const useAlertsStore = defineStore("alerts", () => {
   const alerts = computed(() => {
     return [
       {
-        if: cfg.isDeserializing && stats.nestingLevel > board.nestingLimit,
+        if:
+          cfg.isDeserializing &&
+          stats.nestingLevel > board.memoryModel.nestingLimit,
         id: "too-deep",
         type: "warning",
         message: `This document is deeply nested; don't forget to pass <a href="${baseUrl}/v7/api/json/deserializejson/#nesting-limit"><code>DeserializationOption::NestingLimit(${stats.nestingLevel})</code></a>`,
