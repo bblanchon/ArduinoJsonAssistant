@@ -21,7 +21,7 @@ export function getOverallocatedStringSize(s) {
 
 function getEffectiveSlotSize(cfg) {
   const isLarge = cfg.useLongLong || cfg.useDouble;
-  return memoryModels[cfg.memoryModel].slotSize[isLarge ? 1 : 0];
+  return memoryModels[cfg.arch].slotSize[isLarge ? 1 : 0];
 }
 
 class Memory {
@@ -43,8 +43,8 @@ class Memory {
 class SlotPoolList {
   constructor(cfg, memory) {
     this._memory = memory;
-    this._poolCapacity = memoryModels[cfg.memoryModel].poolCapacity;
-    this._poolOverhead = memoryModels[cfg.memoryModel].poolOverhead;
+    this._poolCapacity = memoryModels[cfg.arch].poolCapacity;
+    this._poolOverhead = memoryModels[cfg.arch].poolOverhead;
     this._initialPoolListCapacity = 4; // preallacted in JsonDocument, not on the heap
     this._slotSize = getEffectiveSlotSize(cfg);
     this._freeSlots = 0;
@@ -90,10 +90,10 @@ class JsonDocument {
 
     this._memory = memory;
     this._poolList = new SlotPoolList(cfg, this._memory);
-    this._stringOverhead = memoryModels[cfg.memoryModel].stringOverhead;
+    this._stringOverhead = memoryModels[cfg.arch].stringOverhead;
     this._overAllocateStrings = cfg.overAllocateStrings;
 
-    this._memory.alloc(memoryModels[cfg.memoryModel].documentSize);
+    this._memory.alloc(memoryModels[cfg.arch].documentSize);
   }
 
   allocSlots(n) {

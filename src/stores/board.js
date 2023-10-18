@@ -9,37 +9,26 @@ import { useSettingsStore } from "./settings";
 export const useBoardStore = defineStore("board", () => {
   const cfg = useSettingsStore();
   const board = computed(() => boards[cfg.cpu]);
-  const memoryModel = computed(() => `${board.value.bits}-bit`);
+  const arch = computed(() => `${board.value.bits}-bit`);
+  const memoryModel = computed(() => memoryModels[arch.value]);
   return {
     name: computed(() => board.value.name),
-    nestingLimit: computed(() => memoryModels[memoryModel.value].nestingLimit),
+    nestingLimit: computed(() => memoryModel.value.nestingLimit),
     ram: computed(() => board.value.ram),
-    memoryModel,
-    stdStringOverhead: computed(
-      () => memoryModels[memoryModel.value].stdStringOverhead,
-    ),
+    arch,
+    stdStringOverhead: computed(() => memoryModel.value.stdStringOverhead),
     arduinoStringOverhead: computed(
-      () => memoryModels[memoryModel.value].arduinoStringOverhead,
+      () => memoryModel.value.arduinoStringOverhead,
     ),
-    doubleSupported: computed(
-      () => !!memoryModels[memoryModel.value].doubleSupported,
-    ),
-    doubleIsDefault: computed(
-      () => !!memoryModels[memoryModel.value].doubleIsDefault,
-    ),
+    doubleSupported: computed(() => !!memoryModel.value.doubleSupported),
+    doubleIsDefault: computed(() => !!memoryModel.value.doubleIsDefault),
     doubleInconsequential: computed(
-      () =>
-        memoryModels[memoryModel.value].slotSize[0] ==
-        memoryModels[memoryModel.value].slotSize[1],
+      () => memoryModel.value.slotSize[0] == memoryModel.value.slotSize[1],
     ),
     longLongSupported: true,
-    longLongIsDefault: computed(
-      () => !!memoryModels[memoryModel.value].longLongIsDefault,
-    ),
+    longLongIsDefault: computed(() => !!memoryModel.value.longLongIsDefault),
     longLongInconsequential: computed(
-      () =>
-        memoryModels[memoryModel.value].slotSize[0] ==
-        memoryModels[memoryModel.value].slotSize[1],
+      () => memoryModel.value.slotSize[0] == memoryModel.value.slotSize[1],
     ),
     psram: computed(() => cfg.cpu === "esp32"),
   };

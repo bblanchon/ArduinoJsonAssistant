@@ -30,7 +30,7 @@ describe("getOverallocatedStringSize()", () => {
 
 describe("measureSize", function () {
   it("should return 0+0 for null", () => {
-    const result = measureSize(null, { memoryModel: "8-bit" });
+    const result = measureSize(null, { arch: "8-bit" });
     expect(result).toEqual({
       memoryUsage: 14,
       peakMemoryUsage: 14,
@@ -38,7 +38,7 @@ describe("measureSize", function () {
   });
 
   it('should return 0+6 for "hello"', () => {
-    const result = measureSize("hello", { memoryModel: "8-bit" });
+    const result = measureSize("hello", { arch: "8-bit" });
     expect(result).toEqual({
       memoryUsage: 24,
       peakMemoryUsage: 24,
@@ -47,7 +47,7 @@ describe("measureSize", function () {
 
   it("sample object on 8-bit processor", () => {
     const result = measureSize(sample_object, {
-      memoryModel: "8-bit",
+      arch: "8-bit",
     });
     expect(result).toEqual({
       memoryUsage: 91,
@@ -57,7 +57,7 @@ describe("measureSize", function () {
 
   it("sample object on 32-bit processor", () => {
     const result = measureSize(sample_object, {
-      memoryModel: "32-bit",
+      arch: "32-bit",
       useLongLong: true,
       useDouble: true,
     });
@@ -71,7 +71,7 @@ describe("measureSize", function () {
     const input = [{ example: 1 }, { example: 2 }];
     const result = measureSize(input, {
       deduplicateKeys: false,
-      memoryModel: "8-bit",
+      arch: "8-bit",
     });
     expect(result).toEqual({
       memoryUsage: 70,
@@ -83,7 +83,7 @@ describe("measureSize", function () {
     const input = [{ example: 1 }, { example: 2 }];
     const result = measureSize(input, {
       deduplicateKeys: true,
-      memoryModel: "8-bit",
+      arch: "8-bit",
     });
     expect(result).toEqual({
       memoryUsage: 58,
@@ -95,7 +95,7 @@ describe("measureSize", function () {
     const input = ["example", "example"];
     const result = measureSize(input, {
       deduplicateValues: false,
-      memoryModel: "8-bit",
+      arch: "8-bit",
     });
     expect(result).toEqual({
       memoryUsage: 54,
@@ -107,7 +107,7 @@ describe("measureSize", function () {
     const input = ["example", "example"];
     const result = measureSize(input, {
       deduplicateValues: true,
-      memoryModel: "8-bit",
+      arch: "8-bit",
     });
     expect(result).toEqual({
       memoryUsage: 42,
@@ -119,7 +119,7 @@ describe("measureSize", function () {
     expect(
       measureSize(
         { hello: 1, world: 2 },
-        { memoryModel: "8-bit", filter: { hello: true } },
+        { arch: "8-bit", filter: { hello: true } },
       ),
     ).toEqual({
       memoryUsage: 64,
@@ -136,7 +136,7 @@ describe("measureSize", function () {
           { hello: 3, x: "what a wonderful day!" },
         ],
         {
-          memoryModel: "8-bit",
+          arch: "8-bit",
           deduplicateKeys: true,
           filter: [{ hello: true }],
         },
@@ -152,7 +152,7 @@ describe("measureSize", function () {
       measureSize(
         { hello: "world!!!" },
         {
-          memoryModel: "8-bit",
+          arch: "8-bit",
           ignoreKeys: true,
         },
       ),
@@ -167,7 +167,7 @@ describe("measureSize", function () {
       measureSize(
         { hello: "world!!!" },
         {
-          memoryModel: "8-bit",
+          arch: "8-bit",
           ignoreValues: true,
         },
       ),
@@ -182,7 +182,7 @@ describe("measureSize", function () {
       measureSize(
         { hello: "world" },
         {
-          memoryModel: "8-bit",
+          arch: "8-bit",
           overAllocateStrings: true,
         },
       ),
@@ -195,7 +195,7 @@ describe("measureSize", function () {
   it("should double pool list's capacity above 64 nodes", () => {
     expect(
       measureSize(new Array(64), {
-        memoryModel: "8-bit",
+        arch: "8-bit",
         overAllocateStrings: true,
       }),
     ).toEqual({
@@ -205,7 +205,7 @@ describe("measureSize", function () {
 
     expect(
       measureSize(new Array(65), {
-        memoryModel: "8-bit",
+        arch: "8-bit",
         overAllocateStrings: true,
       }),
     ).toEqual({
@@ -217,7 +217,7 @@ describe("measureSize", function () {
   it("should quadruple pool list's capacity above 128 nodes", () => {
     expect(
       measureSize(new Array(128), {
-        memoryModel: "8-bit",
+        arch: "8-bit",
         overAllocateStrings: true,
       }),
     ).toEqual({
@@ -227,7 +227,7 @@ describe("measureSize", function () {
 
     expect(
       measureSize(new Array(129), {
-        memoryModel: "8-bit",
+        arch: "8-bit",
         overAllocateStrings: true,
       }),
     ).toEqual({
