@@ -175,7 +175,7 @@ export function writeDeserializationCode(prg, cfg) {
   const filter = cfg.filter;
   if (filter) {
     prg.addLine("JsonDocument filter;");
-    writeCompositionCode(prg, filter, "filter");
+    writeCompositionCode(prg, { value: filter, name: "filter" });
     prg.addEmptyLine();
   }
 

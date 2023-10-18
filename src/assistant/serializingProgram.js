@@ -108,7 +108,7 @@ function assignVariant(prg, { value, name, parent, key }) {
   }
 }
 
-export function writeCompositionCode(prg, value, name) {
+export function writeCompositionCode(prg, { value, name }) {
   assignVariant(prg, { name, value });
 }
 
@@ -132,7 +132,10 @@ export function generateSerializingProgram(cfg) {
   prg.addLine("JsonDocument doc;");
 
   prg.addEmptyLine();
-  writeCompositionCode(prg, cfg.output, "doc");
+  writeCompositionCode(prg, {
+    value: cfg.output,
+    name: "doc",
+  });
   prg.addEmptyLine();
 
   const args = ["doc"];

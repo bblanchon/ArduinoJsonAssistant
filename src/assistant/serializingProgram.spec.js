@@ -9,7 +9,7 @@ import {
 describe("writeCompositionCode()", () => {
   function getCompositionCode(output) {
     const prg = new ProgramWriter();
-    writeCompositionCode(prg, output, "doc");
+    writeCompositionCode(prg, { value: output, name: "doc" });
     return prg.toString();
   }
 
