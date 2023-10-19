@@ -41,21 +41,11 @@ export const useSettingsStore = defineStore("settings", {
       if (!cfg) return;
       if (cfg.rootJson) {
         this.inputJson = cfg.rootJson;
-        try {
-          this.input = JSON.parse(this.inputJson);
-        } catch {
-          this.input = undefined;
-        }
-      } else if (cfg.root) {
-        this.input = cfg.root;
-        this.inputJson = JSON.stringify(cfg.root, null, 2);
+        this.input = tryParse(this.inputJson);
       }
       if (cfg.filterJson) {
         this.filterJson = cfg.filterJson;
         this.filter = tryParse(cfg.filterJson);
-      } else if (cfg.filter) {
-        this.filter = cfg.filter;
-        this.filterJson = JSON.stringify(cfg.filter, null, 2);
       }
       if (cfg.mode) {
         this.mode = cfg.mode;

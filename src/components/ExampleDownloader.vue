@@ -14,29 +14,27 @@
   </p>
 </template>
 
-<script>
-import { mapActions } from "pinia";
+<script setup>
 import { useSettingsStore } from "@/stores/settings";
+import { inject, ref } from "vue";
 
-export default {
-  inject: ["scriptUrl"],
-  data() {
-    return {
-      isDownloading: false,
-    };
-  },
-  methods: {
-    ...mapActions(useSettingsStore, ["setSettings"]),
-    async downloadSettings(url) {
-      if (this.scriptUrl) url = new URL(url, this.scriptUrl);
-      this.isDownloading = true;
-      try {
-        const res = await fetch(url);
-        this.setSettings(await res.json());
-      } finally {
-        this.isDownloading = false;
-      }
-    },
-  },
-};
+const scriptUrl = inject("scriptUrl");
+const isDownloading = ref(false);
+const settings = useSettingsStore();
+
+async function downloadSettings(url) {
+  if (scriptUrl) url = new URL(url, scriptUrl);
+  isDownloading.value = true;
+  try {
+    const response = await fetch(url);
+    const cfg = await response.json();
+    cfg.filter ??= true;
+    settings.input = cfg.root;
+    settings.inputJson = JSON.stringify(cfg.root, null, 2);
+    settings.filter = cfg.filter;
+    settings.filterJson = JSON.stringify(cfg.filter, null, 2);
+  } finally {
+    isDownloading.value = false;
+  }
+}
 </script>

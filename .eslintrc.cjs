@@ -24,4 +24,7 @@ module.exports = {
     ],
   },
   ignorePatterns: [".eslintrc.cjs", "vite.config.js", "wallaby.conf.js"],
+  parserOptions: {
+    ecmaVersion: "latest",
+  },
 };
