@@ -13,25 +13,27 @@
       </button>
       <span v-else>(advanced users only)</span>
     </summary>
-    <div v-if="doubleSupported" class="form-group">
+    <div v-if="board.doubleSupported" class="form-group">
       <label for="useDouble" class="col-form-label">
         Store floating point values as
       </label>
       <ResetTweakButton
-        v-model="useDouble"
+        v-model="settings.useDouble"
         :default-value="defaults.useDouble"
       />
-      <select id="useDouble" class="form-control" v-model="useDouble">
-        <option v-if="doubleIsDefault" :value="true">double (default)</option>
+      <select id="useDouble" class="form-control" v-model="settings.useDouble">
+        <option v-if="defaults.useDouble" :value="true">
+          double (default)
+        </option>
         <option v-else :value="true">
           double (#define ARDUINOJSON_USE_DOUBLE 1)
         </option>
-        <option v-if="doubleIsDefault" :value="false">
+        <option v-if="defaults.useDouble" :value="false">
           float (#define ARDUINOJSON_USE_DOUBLE 0)
         </option>
         <option v-else :value="false">float (default)</option>
       </select>
-      <small v-if="doubleInconsequential" class="form-text text-muted">
+      <small v-if="board.doubleInconsequential" class="form-text text-muted">
         This setting doesn't affect the document size of this platform, so you
         won't see any change in the table above.
       </small>
@@ -40,27 +42,31 @@
         <code>double</code> if you need the increased precision and range.
       </small>
     </div>
-    <div v-if="longLongSupported" class="form-group">
+    <div v-if="board.longLongSupported" class="form-group">
       <label for="useLongLong" class="col-form-label">
         Store integral values values as
       </label>
       <ResetTweakButton
-        v-model="useLongLong"
+        v-model="settings.useLongLong"
         :default-value="defaults.useLongLong"
       />
-      <select id="useLongLong" class="form-control" v-model="useLongLong">
-        <option v-if="longLongIsDefault" :value="true">
+      <select
+        id="useLongLong"
+        class="form-control"
+        v-model="settings.useLongLong"
+      >
+        <option v-if="defaults.useLongLong" :value="true">
           long long (default)
         </option>
         <option v-else :value="true">
           long long (#define ARDUINOJSON_USE_LONG_LONG 1)
         </option>
-        <option v-if="longLongIsDefault" :value="false">
+        <option v-if="defaults.useLongLong" :value="false">
           long (#define ARDUINOJSON_USE_LONG_LONG 0)
         </option>
         <option v-else :value="false">long (default)</option>
       </select>
-      <small v-if="longLongInconsequential" class="form-text text-muted">
+      <small v-if="board.longLongInconsequential" class="form-text text-muted">
         This setting doesn't affect the document size of this platform, so you
         won't see any change in the table above.
       </small>
@@ -68,22 +74,22 @@
         Choose <code>long</code> to reduce the document size; choose
         <code>long long</code> if you need the increased range.<br />
         In both cases, out-of-range values will be promoted to
-        <code>{{ useDouble ? "double" : "float" }}</code
+        <code>{{ settings.useDouble ? "double" : "float" }}</code
         >.
       </small>
     </div>
-    <div class="form-group form-check" v-if="isSerializing">
+    <div class="form-group form-check" v-if="settings.isSerializing">
       <input
         id="assume-const-values"
         class="form-check-input"
         type="checkbox"
-        v-model="assumeConstValues"
+        v-model="settings.assumeConstValues"
       />
       <label for="assume-const-values" class="form-check-label">
         Assume values are <code>const char*</code>
       </label>
       <ResetTweakButton
-        v-model="assumeConstValues"
+        v-model="settings.assumeConstValues"
         :default-value="defaults.assumeConstValues"
       />
       <small class="form-text text-muted">
@@ -94,18 +100,18 @@
         <code>const char*</code> values.
       </small>
     </div>
-    <div class="form-group form-check" v-if="isSerializing">
+    <div class="form-group form-check" v-if="settings.isSerializing">
       <input
         id="assume-const-keys"
         class="form-check-input"
         type="checkbox"
-        v-model="assumeConstKeys"
+        v-model="settings.assumeConstKeys"
       />
       <label for="assume-const-keys" class="form-check-label"
         >Assume keys are <code>const char*</code></label
       >
       <ResetTweakButton
-        v-model="assumeConstKeys"
+        v-model="settings.assumeConstKeys"
         :default-value="defaults.assumeConstKeys"
       />
       <small class="form-text text-muted">
@@ -113,18 +119,18 @@
         Uncheck this box if your program generates keys at runtime.
       </small>
     </div>
-    <div class="form-group form-check" v-if="!ignoreValues">
+    <div class="form-group form-check" v-if="!settings.ignoreValues">
       <input
         id="deduplicate-values"
         class="form-check-input"
         type="checkbox"
-        v-model="deduplicateValues"
+        v-model="settings.deduplicateValues"
       />
       <label for="deduplicate-values" class="form-check-label">
         Deduplicate values when measuring the capacity
       </label>
       <ResetTweakButton
-        v-model="deduplicateValues"
+        v-model="settings.deduplicateValues"
         :default-value="defaults.deduplicateValues"
       />
       <small class="form-text text-muted">
@@ -134,18 +140,18 @@
         <code>XXXX</code>) in step 2.
       </small>
     </div>
-    <div class="form-group form-check mb-0" v-if="!ignoreKeys">
+    <div class="form-group form-check mb-0" v-if="!settings.ignoreKeys">
       <input
         id="deduplicate-keys"
         class="form-check-input"
         type="checkbox"
-        v-model="deduplicateKeys"
+        v-model="settings.deduplicateKeys"
       />
       <label for="deduplicate-keys" class="form-check-label">
         Deduplicate keys when measuring the capacity
       </label>
       <ResetTweakButton
-        v-model="deduplicateKeys"
+        v-model="settings.deduplicateKeys"
         :default-value="defaults.deduplicateKeys"
       />
       <small class="form-text text-muted">
@@ -156,10 +162,10 @@
   </details>
 </template>
 
-<script>
-import { mapActions, mapState, mapWritableState } from "pinia";
+<script setup>
 import { useSettingsStore } from "@/stores/settings";
 import { useBoardStore } from "@/stores/board";
+import { computed } from "vue";
 
 const fields = [
   "assumeConstKeys",
@@ -170,41 +176,23 @@ const fields = [
   "useLongLong",
 ];
 
-export default {
-  computed: {
-    ...mapState(useSettingsStore, [
-      "ignoreKeys",
-      "ignoreValues",
-      "isSerializing",
-    ]),
-    ...mapState(useBoardStore, [
-      "doubleSupported",
-      "doubleIsDefault",
-      "doubleInconsequential",
-      "longLongSupported",
-      "longLongIsDefault",
-      "longLongInconsequential",
-    ]),
-    ...mapWritableState(useSettingsStore, fields),
-    defaults() {
-      return {
-        assumeConstKeys: true,
-        assumeConstValues: false,
-        deduplicateKeys: true,
-        deduplicateValues: false,
-        useDouble: this.doubleIsDefault,
-        useLongLong: this.longLongIsDefault,
-      };
-    },
-    tweakCount() {
-      return fields.filter((key) => this.defaults[key] !== this[key]).length;
-    },
-  },
-  methods: {
-    ...mapActions(useSettingsStore, ["setSettings"]),
-    resetTweaks() {
-      this.setSettings(this.defaults);
-    },
-  },
-};
+const settings = useSettingsStore();
+const board = useBoardStore();
+
+const defaults = computed(() => ({
+  assumeConstKeys: true,
+  assumeConstValues: false,
+  deduplicateKeys: true,
+  deduplicateValues: false,
+  useDouble: board.doubleIsDefault,
+  useLongLong: board.longLongIsDefault,
+}));
+
+const tweakCount = computed(
+  () => fields.filter((key) => defaults.value[key] !== settings[key]).length,
+);
+
+function resetTweaks() {
+  fields.forEach((key) => (settings[key] = defaults.value[key]));
+}
 </script>
