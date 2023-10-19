@@ -104,10 +104,6 @@ export default {
       return JSON.stringify(this.filteredInput, null, 2);
     },
   },
-  methods: mapActions(useSettingsStore, [
-    "setInputJson",
-    "setFilterJson",
-    "setSettings",
-  ]),
+  methods: mapActions(useSettingsStore, ["setInputJson", "setFilterJson"]),
 };
 </script>
