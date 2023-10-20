@@ -44,13 +44,6 @@ export const useSettingsStore = defineStore("settings", {
       this.useDouble = !!memoryModel.doubleIsDefault;
       this.useLongLong = !!memoryModel.longLongIsDefault;
     },
-    selectMode(mode) {
-      this.mode = mode;
-      this.assumeConstKeys = true;
-      this.assumeConstValues = false;
-      this.deduplicateKeys = true;
-      this.deduplicateValues = false;
-    },
     setFilterJson(val) {
       this.filterJson = val;
       this.filter = tryParse(val);

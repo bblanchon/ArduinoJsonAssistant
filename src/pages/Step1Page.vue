@@ -100,12 +100,13 @@
 </template>
 
 <script setup>
-import boards from "@/assets/boards.json";
+import { useBoardStore } from "@/stores/board";
 import { useSettingsStore } from "@/stores/settings";
 import { inject, computed } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
 const settings = useSettingsStore();
+const board = useBoardStore();
 const version = inject("version");
 const sponsors = inject("sponsors");
 
@@ -114,7 +115,7 @@ onBeforeRouteLeave((to) => {
     window.plausible("ArduinoJson Assistant: Configuration", {
       props: {
         mode: settings.mode,
-        board: boards[settings.cpu].name,
+        board: board.name,
         type: settings.ioTypeNames[settings.ioType],
       },
     });
@@ -126,7 +127,11 @@ const selectedMode = computed({
     return settings.mode;
   },
   set(value) {
-    settings.selectMode(value);
+    settings.mode = value;
+    settings.assumeConstKeys = true;
+    settings.assumeConstValues = false;
+    settings.deduplicateKeys = true;
+    settings.deduplicateValues = false;
   },
 });
 </script>
