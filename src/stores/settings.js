@@ -37,39 +37,6 @@ export const useSettingsStore = defineStore("settings", {
     };
   },
   actions: {
-    setSettings(cfg) {
-      if (!cfg) return;
-      if (cfg.rootJson) {
-        this.inputJson = cfg.rootJson;
-        this.input = tryParse(this.inputJson);
-      }
-      if (cfg.filterJson) {
-        this.filterJson = cfg.filterJson;
-        this.filter = tryParse(cfg.filterJson);
-      }
-      if (cfg.mode) {
-        this.mode = cfg.mode;
-        this.assumeConstKeys = true;
-        this.assumeConstValues = false;
-        this.deduplicateKeys = true;
-        this.deduplicateValues = false;
-      }
-      if (cfg.cpu && boards[cfg.cpu]) {
-        this.cpu = cfg.cpu;
-        this.useDouble = boards[cfg.cpu].useDouble?.default;
-        this.useLongLong = boards[cfg.cpu].useLongLong?.default;
-      }
-      if (cfg.useDouble != undefined) this.useDouble = cfg.useDouble;
-      if (cfg.useLongLong != undefined) this.useLongLong = cfg.useLongLong;
-      if (cfg.assumeConstKeys != undefined)
-        this.assumeConstKeys = cfg.assumeConstKeys;
-      if (cfg.assumeConstValues != undefined)
-        this.assumeConstValues = cfg.assumeConstValues;
-      if (cfg.deduplicateKeys != undefined)
-        this.deduplicateKeys = cfg.deduplicateKeys;
-      if (cfg.deduplicateValues != undefined)
-        this.deduplicateValues = cfg.deduplicateValues;
-    },
     selectCpu(cpu) {
       this.cpu = cpu;
       const boardInfo = boards[cpu];
