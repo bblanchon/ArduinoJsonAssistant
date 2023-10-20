@@ -11,8 +11,8 @@
             >
             <div class="col-sm-9">
               <BoardSelector
-                :model-value="cpu"
-                @update:model-value="selectCpu"
+                :model-value="settings.cpu"
+                @update:model-value="settings.selectCpu"
                 id="cpu-selector"
               />
             </div>
@@ -49,11 +49,19 @@
           </div>
           <div class="form-group row">
             <label for="io-type" class="col-sm-3 col-form-label">
-              {{ ioLabel }}
+              {{ settings.isSerializing ? "Output" : "Input" }}
             </label>
             <div class="col-sm-9">
-              <select id="io-type" class="form-control" v-model="ioType">
-                <option v-for="(name, id) in ioTypeNames" :key="id" :value="id">
+              <select
+                id="io-type"
+                class="form-control"
+                v-model="settings.ioType"
+              >
+                <option
+                  v-for="(name, id) in settings.ioTypeNames"
+                  :key="id"
+                  :value="id"
+                >
                   {{ name }}
                 </option>
               </select>
@@ -91,47 +99,34 @@
   </div>
 </template>
 
-<script>
-import { mapState, mapActions, mapWritableState } from "pinia";
+<script setup>
 import boards from "@/assets/boards.json";
 import { useSettingsStore } from "@/stores/settings";
+import { inject, computed } from "vue";
+import { onBeforeRouteLeave } from "vue-router";
 
-export default {
-  inject: ["version", "sponsors"],
-  data() {
-    return {
-      boards,
-    };
-  },
-  beforeRouteLeave(to) {
-    if (to.name == "step2") {
-      window.plausible("ArduinoJson Assistant: Configuration", {
-        props: {
-          mode: this.mode,
-          board: this.boards[this.cpu].name,
-          type: this.ioTypeNames[this.ioType],
-        },
-      });
-    }
-  },
-  computed: {
-    ...mapState(useSettingsStore, ["ioTypeNames", "cpu", "mode"]),
-    ...mapWritableState(useSettingsStore, ["ioType"]),
-    selectedMode: {
-      get() {
-        return this.mode;
+const settings = useSettingsStore();
+const version = inject("version");
+const sponsors = inject("sponsors");
+
+onBeforeRouteLeave((to) => {
+  if (to.name == "step2") {
+    window.plausible("ArduinoJson Assistant: Configuration", {
+      props: {
+        mode: settings.mode,
+        board: boards[settings.cpu].name,
+        type: settings.ioTypeNames[settings.ioType],
       },
-      set(value) {
-        this.selectMode(value);
-      },
-    },
-    ioLabel() {
-      return {
-        serialize: "Output",
-        deserialize: "Input",
-      }[this.mode];
-    },
+    });
+  }
+});
+
+const selectedMode = computed({
+  get() {
+    return settings.mode;
   },
-  methods: mapActions(useSettingsStore, ["selectCpu", "selectMode"]),
-};
+  set(value) {
+    settings.selectMode(value);
+  },
+});
 </script>
