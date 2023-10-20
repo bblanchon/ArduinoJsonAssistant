@@ -12,7 +12,7 @@
             <div class="col-sm-9">
               <BoardSelector
                 :model-value="settings.cpu"
-                @update:model-value="settings.selectCpu"
+                @update:model-value="selectCpu"
                 id="cpu-selector"
               />
             </div>
@@ -134,4 +134,10 @@ const selectedMode = computed({
     settings.deduplicateValues = false;
   },
 });
+
+function selectCpu(cpu) {
+  settings.cpu = cpu;
+  settings.useDouble = board.doubleIsDefault;
+  settings.useLongLong = board.longLongIsDefault;
+}
 </script>
