@@ -29,7 +29,7 @@ export const useSettingsStore = defineStore("settings", {
       filterJson: "true",
       input: defaultInput,
       inputJson: JSON.stringify(defaultInput, null, 2),
-      ioTypeId: "arduinoStream",
+      ioType: "arduinoStream",
       mode: "deserialize",
       filterEnabled: false,
       useDouble: false,
@@ -50,9 +50,6 @@ export const useSettingsStore = defineStore("settings", {
       this.assumeConstValues = false;
       this.deduplicateKeys = true;
       this.deduplicateValues = false;
-    },
-    selectIoType(ioTypeId) {
-      this.ioTypeId = ioTypeId;
     },
     setFilterJson(val) {
       this.filterJson = val;
@@ -82,37 +79,14 @@ export const useSettingsStore = defineStore("settings", {
       if (this.isSerializing) return this.assumeConstValues;
       else return false;
     },
-    ioType() {
-      return this.ioTypes[this.ioTypeId];
-    },
-    ioTypes() {
+    ioTypeNames() {
       return {
-        charPtr: {
-          label: "char*",
-        },
-        charArray: {
-          label: "char[N]",
-        },
-        constCharPtr: {
-          label: "const char*",
-          disabled: this.isSerializing,
-        },
-        arduinoString: {
-          label: "String",
-          disabled: this.cpu[0] == "x",
-        },
-        stdString: {
-          label: "std::string",
-          disabled: this.cpu == "avr",
-        },
-        arduinoStream: {
-          label: "Stream",
-          disabled: this.cpu[0] == "x",
-        },
-        stdStream: {
-          label: this.isSerializing ? "std::ostream" : "std::istream",
-          disabled: this.cpu == "avr",
-        },
+        charPtr: this.isSerializing ? "char*" : "const char*",
+        charArray: "char[N]",
+        arduinoString: "String",
+        stdString: "std::string",
+        arduinoStream: "Stream",
+        stdStream: this.isSerializing ? "std::ostream" : "std::istream",
       };
     },
     hasErrors() {

@@ -85,7 +85,7 @@ export default {
   computed: {
     ...mapState(useStatsStore, ["peakRamUsage", "ramUsage"]),
     ...mapState(useBoardStore, ["ram", "memoryModel"]),
-    ...mapState(useSettingsStore, ["ioTypeId", "input", "mode"]),
+    ...mapState(useSettingsStore, ["ioType", "input", "mode"]),
     ramPercent() {
       return (this.peakRamUsage / this.ram) * 100;
     },
@@ -103,7 +103,7 @@ export default {
     },
     bufferSize() {
       let size = JSON.stringify(this.input).length + 1;
-      switch (this.ioTypeId) {
+      switch (this.ioType) {
         case "arduinoStream":
         case "stdStream":
           return 0;
@@ -120,7 +120,7 @@ export default {
       return (this.bufferSize / this.ram) * 100;
     },
     bufferLabel() {
-      if (this.ioTypeId.endsWith("String"))
+      if (this.ioType.endsWith("String"))
         return this.mode == "serialize" ? "Output string" : "Input string";
       else return this.mode == "serialize" ? "Output buffer" : "Input buffer";
     },

@@ -49,22 +49,12 @@
           </div>
           <div class="form-group row">
             <label for="io-type" class="col-sm-3 col-form-label">
-              {{ inputTypeLabel }}
+              {{ ioLabel }}
             </label>
             <div class="col-sm-9">
-              <select
-                id="io-type"
-                class="form-control"
-                :value="ioTypeId"
-                @input="selectIoType($event.target.value)"
-              >
-                <option
-                  v-for="(type, key) in ioTypes"
-                  :key="key"
-                  :value="key"
-                  :disabled="type.disabled"
-                >
-                  {{ type.label }}
+              <select id="io-type" class="form-control" v-model="ioType">
+                <option v-for="(name, id) in ioTypeNames" :key="id" :value="id">
+                  {{ name }}
                 </option>
               </select>
             </div>
@@ -102,7 +92,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "pinia";
+import { mapState, mapActions, mapWritableState } from "pinia";
 import boards from "@/assets/boards.json";
 import { useSettingsStore } from "@/stores/settings";
 
@@ -119,19 +109,14 @@ export default {
         props: {
           mode: this.mode,
           board: this.boards[this.cpu].name,
-          type: this.ioTypes[this.ioTypeId].label,
+          type: this.ioTypeNames[this.ioType],
         },
       });
     }
   },
   computed: {
-    ...mapState(useSettingsStore, [
-      "ioTypes",
-      "ioType",
-      "cpu",
-      "mode",
-      "ioTypeId",
-    ]),
+    ...mapState(useSettingsStore, ["ioTypeNames", "cpu", "mode"]),
+    ...mapWritableState(useSettingsStore, ["ioType"]),
     selectedMode: {
       get() {
         return this.mode;
@@ -140,17 +125,13 @@ export default {
         this.selectMode(value);
       },
     },
-    inputTypeLabel() {
+    ioLabel() {
       return {
         serialize: "Output",
         deserialize: "Input",
       }[this.mode];
     },
   },
-  methods: mapActions(useSettingsStore, [
-    "selectCpu",
-    "selectMode",
-    "selectIoType",
-  ]),
+  methods: mapActions(useSettingsStore, ["selectCpu", "selectMode"]),
 };
 </script>

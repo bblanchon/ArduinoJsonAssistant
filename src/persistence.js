@@ -11,7 +11,7 @@ export function persistStore() {
     settings.setFilterJson(cfg.filterJson);
     settings.cpu = cfg.cpu;
     settings.mode = cfg.mode;
-    settings.ioTypeId = cfg.io;
+    settings.ioType = cfg.ioType;
     settings.useDouble = cfg.useDouble;
     settings.useLongLong = cfg.useLongLong;
     settings.assumeConstKeys = cfg.assumeConstKeys;
@@ -32,7 +32,7 @@ export function persistStore() {
         rootJson: state.inputJson,
         filterJson: state.filterJson,
         cpu: state.cpu,
-        io: state.ioTypeId,
+        ioType: state.ioType,
         filterEnabled: state.filterEnabled,
         useDouble: state.useDouble,
         useLongLong: state.useLongLong,
