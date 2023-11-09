@@ -9,14 +9,7 @@ export const useAlertsStore = defineStore("alerts", () => {
   const cfg = useSettingsStore();
   const board = useBoardStore();
   const stats = useStatsStore();
-
   const baseUrl = inject("baseUrl");
-
-  const ramStatus = computed(() => {
-    if (stats.peakRamUsage > 0.75 * board.ram) return "error";
-    if (stats.peakRamUsage > 0.25 * board.ram) return "warning";
-    return "success";
-  });
 
   const alerts = computed(() => {
     return [
@@ -54,19 +47,19 @@ export const useAlertsStore = defineStore("alerts", () => {
         message: `This document suffers from the <q>JSON in JSON</q> syndrome, so you may need to call <a href="${baseUrl}/v7/api/json/deserializejson/"><code>deserializeJson()</code></a> multiple times. <strong>The ArduinoJson Assistant doesn't support cfg scenario.</strong>`,
       },
       {
-        if: ramStatus.value === "warning",
+        if: stats.ramStatus === "warning",
         id: "size-warning",
         type: "warning",
         message: `This may not fit in the RAM. Make sure there is enough free space.`,
       },
       {
-        if: ramStatus.value === "error" && !board.psram,
+        if: stats.ramStatus === "error" && !board.psram,
         id: "size-error",
         type: "danger",
         message: `This is too big to fit in the RAM. See <a href="${baseUrl}/v7/how-to/deserialize-a-very-large-document/">How to deserialize a very large document?</a>`,
       },
       {
-        if: ramStatus.value === "error" && board.psram,
+        if: stats.ramStatus === "error" && board.psram,
         id: "esp32-psram",
         type: "tip",
         message: `This is too big to fit in the RAM. See <a href="${baseUrl}/v7/how-to/use-external-ram-on-esp32/">How to use external RAM on an ESP32?</a>`,

@@ -34,7 +34,7 @@
         </div>
         <div
           class="progress-bar"
-          :class="`bg-${ramColor}`"
+          :class="`bg-${docColor}`"
           role="progressbar"
           :style="{ width: finalDocPercent + '%' }"
           :aria-valuenow="finalDocPercent"
@@ -46,7 +46,7 @@
         </div>
         <div
           class="progress-bar progress-bar-striped"
-          :class="`bg-${ramColor}`"
+          :class="`bg-${docColor}`"
           role="progressbar"
           :style="{ width: peakDocDiffPercent + '%' }"
           :aria-valuenow="peakDocDiffPercent"
@@ -88,6 +88,7 @@ export default {
       "finalDocSize",
       "peakDocSize",
       "peakRamUsage",
+      "ramStatus",
     ]),
     ...mapState(useBoardStore, ["ram"]),
     ...mapState(useSettingsStore, ["ioType", "mode"]),
@@ -101,10 +102,8 @@ export default {
     totalRamPercent() {
       return (this.peakRamUsage / this.ram) * 100;
     },
-    ramColor() {
-      if (this.totalRamPercent > 60) return "danger";
-      if (this.totalRamPercent > 40) return "warning";
-      return "success";
+    docColor() {
+      return this.ramStatus;
     },
     bufferPercent() {
       return (this.bufferSize / this.ram) * 100;

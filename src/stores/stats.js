@@ -43,6 +43,10 @@ export const useStatsStore = defineStore("stats", () => {
     return size;
   });
 
+  const peakRamUsage = computed(
+    () => size.value.peakMemoryUsage + bufferSize.value,
+  );
+
   return {
     nestingLevel: computed(() => measureNesting(cfg.input)),
     finalDocSize: computed(() => size.value.memoryUsage),
@@ -51,6 +55,10 @@ export const useStatsStore = defineStore("stats", () => {
     longLongNeeded: computed(() => needsLongLong(cfg.filteredInput)),
     jsonInJson: computed(() => hasJsonInJsonSyndrome(cfg.filteredInput)),
     bufferSize,
-    peakRamUsage: computed(() => size.value.peakMemoryUsage + bufferSize.value),
+    peakRamUsage,
+    ramStatus: computed(() => {
+      const ratio = peakRamUsage.value / board.ram;
+      return ratio > 0.75 ? "error" : ratio > 0.5 ? "warning" : "success";
+    }),
   };
 });
