@@ -94,7 +94,7 @@ MCU_BITS = {
 # "Arduino Pro or Pro Mini ATmega168 (3.3V, 8 MHz)" => "Arduino Pro or Pro Mini"
 # "Sanguino ATmega1284p (16MHz)" => "Sanguino ATmega1284p"
 NAME_REGEX = re.compile(
-    r"(?:\s+\dV/\d+MHz)?\s+\((?:Native USB Port|Programming Port|Debug Port|Programming/Debug Port|FTDI|USB|New Bootloader|3.3V,\s*\d+\s*MHz|\d+\s*MHz)\)$"
+    r"(?:\s+\dV/\d+MHz)?\s+\((?:Native USB Port|USB Native Port|Programming Port|Debug Port|Programming/Debug Port|FTDI|USB|New Bootloader|3.3V,\s*\d+\s*MHz|\d+\s*MHz)\)$"
 )
 
 

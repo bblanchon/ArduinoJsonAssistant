@@ -14,11 +14,6 @@
     "ram": 98304,
     "bits": 32
   },
-  "dueUSB": {
-    "name": "Arduino Due (USB Native Port)",
-    "ram": 98304,
-    "bits": 32
-  },
   "diecimilaatmega168": {
     "name": "Arduino Duemilanove or Diecimila ATmega168",
     "ram": 1024,
@@ -301,11 +296,6 @@
   },
   "zero": {
     "name": "Arduino Zero",
-    "ram": 32768,
-    "bits": 32
-  },
-  "zeroUSB": {
-    "name": "Arduino Zero (USB Native Port)",
     "ram": 32768,
     "bits": 32
   },
