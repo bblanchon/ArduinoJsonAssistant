@@ -45,8 +45,8 @@ export const useStatsStore = defineStore("stats", () => {
 
   return {
     nestingLevel: computed(() => measureNesting(cfg.input)),
-    ramUsage: computed(() => size.value.memoryUsage),
-    peakRamUsage: computed(() => size.value.peakMemoryUsage),
+    finalDocSize: computed(() => size.value.memoryUsage),
+    peakDocSize: computed(() => size.value.peakMemoryUsage),
     doubleNeeded: computed(() => needsDouble(cfg.filteredInput)),
     longLongNeeded: computed(() => needsLongLong(cfg.filteredInput)),
     jsonInJson: computed(() => hasJsonInJsonSyndrome(cfg.filteredInput)),

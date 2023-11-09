@@ -5,9 +5,9 @@
         <tr>
           <td>JsonDocument:&nbsp;</td>
           <td class="text-right font-weight-bold">
-            {{ formatBytes(ramUsage) }}
+            {{ formatBytes(finalDocSize) }}
           </td>
-          <td>&nbsp;({{ formatBytes(peakRamUsage) }} peak)</td>
+          <td>&nbsp;({{ formatBytes(peakDocSize) }} peak)</td>
         </tr>
         <tr v-if="bufferSize">
           <td>{{ bufferLabel }}:&nbsp;</td>
@@ -36,20 +36,20 @@
           class="progress-bar"
           :class="`bg-${ramColor}`"
           role="progressbar"
-          :style="{ width: ramPercent + '%' }"
-          :aria-valuenow="ramPercent"
+          :style="{ width: finalDocPercent + '%' }"
+          :aria-valuenow="finalDocPercent"
           aria-valuemin="0"
           aria-valuemax="100"
         >
-          {{ ramPercent > 20 ? "JsonDocument" : "" }}
-          {{ ramPercent > 10 ? formatBytes(ramUsage) : "" }}
+          {{ finalDocPercent > 20 ? "JsonDocument" : "" }}
+          {{ finalDocPercent > 10 ? formatBytes(finalDocSize) : "" }}
         </div>
         <div
           class="progress-bar progress-bar-striped"
           :class="`bg-${ramColor}`"
           role="progressbar"
-          :style="{ width: peakRamPercent + '%' }"
-          :aria-valuenow="peakRamPercent"
+          :style="{ width: peakDocDiffPercent + '%' }"
+          :aria-valuenow="peakDocDiffPercent"
           aria-valuemin="0"
           aria-valuemax="100"
         ></div>
@@ -83,18 +83,18 @@ import { useSettingsStore } from "@/stores/settings";
 export default {
   inject: ["baseUrl"],
   computed: {
-    ...mapState(useStatsStore, ["peakRamUsage", "ramUsage", "bufferSize"]),
+    ...mapState(useStatsStore, ["peakDocSize", "finalDocSize", "bufferSize"]),
     ...mapState(useBoardStore, ["ram"]),
     ...mapState(useSettingsStore, ["ioType", "mode"]),
-    ramPercent() {
-      return (this.peakRamUsage / this.ram) * 100;
+    finalDocPercent() {
+      return (this.finalDocSize / this.ram) * 100;
     },
-    peakRamPercent() {
-      if (this.ramUsage >= this.ram) return 0;
-      return ((this.peakRamUsage - this.ramUsage) / this.ram) * 100;
+    peakDocDiffPercent() {
+      if (this.finalDocSize >= this.ram) return 0;
+      return ((this.peakDocSize - this.finalDocSize) / this.ram) * 100;
     },
     totalRamPercent() {
-      return this.ramPercent + this.peakRamPercent;
+      return ((this.peakDocSize + this.bufferSize) / this.ram) * 100;
     },
     ramColor() {
       if (this.totalRamPercent > 60) return "danger";
