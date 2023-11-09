@@ -83,9 +83,9 @@ import { useSettingsStore } from "@/stores/settings";
 export default {
   inject: ["baseUrl"],
   computed: {
-    ...mapState(useStatsStore, ["peakRamUsage", "ramUsage"]),
-    ...mapState(useBoardStore, ["ram", "memoryModel"]),
-    ...mapState(useSettingsStore, ["ioType", "input", "mode"]),
+    ...mapState(useStatsStore, ["peakRamUsage", "ramUsage", "bufferSize"]),
+    ...mapState(useBoardStore, ["ram"]),
+    ...mapState(useSettingsStore, ["ioType", "mode"]),
     ramPercent() {
       return (this.peakRamUsage / this.ram) * 100;
     },
@@ -100,21 +100,6 @@ export default {
       if (this.totalRamPercent > 60) return "danger";
       if (this.totalRamPercent > 40) return "warning";
       return "success";
-    },
-    bufferSize() {
-      let size = JSON.stringify(this.input).length + 1;
-      switch (this.ioType) {
-        case "arduinoStream":
-        case "stdStream":
-          return 0;
-        case "arduinoString":
-          size += this.memoryModel.arduinoStringOverhead;
-          break;
-        case "stdString":
-          size += this.memoryModel.stdStringOverhead;
-          break;
-      }
-      return size;
     },
     bufferPercent() {
       return (this.bufferSize / this.ram) * 100;

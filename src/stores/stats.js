@@ -27,6 +27,22 @@ export const useStatsStore = defineStore("stats", () => {
     }),
   );
 
+  const bufferSize = computed(() => {
+    let size = JSON.stringify(cfg.input).length + 1;
+    switch (cfg.ioType) {
+      case "arduinoStream":
+      case "stdStream":
+        return 0;
+      case "arduinoString":
+        size += board.memoryModel.arduinoStringOverhead;
+        break;
+      case "stdString":
+        size += board.memoryModel.stdStringOverhead;
+        break;
+    }
+    return size;
+  });
+
   return {
     nestingLevel: computed(() => measureNesting(cfg.input)),
     ramUsage: computed(() => size.value.memoryUsage),
@@ -34,5 +50,6 @@ export const useStatsStore = defineStore("stats", () => {
     doubleNeeded: computed(() => needsDouble(cfg.filteredInput)),
     longLongNeeded: computed(() => needsLongLong(cfg.filteredInput)),
     jsonInJson: computed(() => hasJsonInJsonSyndrome(cfg.filteredInput)),
+    bufferSize,
   };
 });

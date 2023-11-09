@@ -13,8 +13,9 @@ export const useAlertsStore = defineStore("alerts", () => {
   const baseUrl = inject("baseUrl");
 
   const ramStatus = computed(() => {
-    if (stats.peakRamUsage > 0.75 * board.ram) return "error";
-    if (stats.peakRamUsage > 0.25 * board.ram) return "warning";
+    const totalUsage = stats.peakRamUsage + stats.bufferSize;
+    if (totalUsage > 0.75 * board.ram) return "error";
+    if (totalUsage > 0.25 * board.ram) return "warning";
     return "success";
   });
 
