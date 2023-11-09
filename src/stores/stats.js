@@ -51,5 +51,6 @@ export const useStatsStore = defineStore("stats", () => {
     longLongNeeded: computed(() => needsLongLong(cfg.filteredInput)),
     jsonInJson: computed(() => hasJsonInJsonSyndrome(cfg.filteredInput)),
     bufferSize,
+    peakRamUsage: computed(() => size.value.peakMemoryUsage + bufferSize.value),
   };
 });

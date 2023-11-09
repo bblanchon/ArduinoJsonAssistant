@@ -83,7 +83,12 @@ import { useSettingsStore } from "@/stores/settings";
 export default {
   inject: ["baseUrl"],
   computed: {
-    ...mapState(useStatsStore, ["peakDocSize", "finalDocSize", "bufferSize"]),
+    ...mapState(useStatsStore, [
+      "bufferSize",
+      "finalDocSize",
+      "peakDocSize",
+      "peakRamUsage",
+    ]),
     ...mapState(useBoardStore, ["ram"]),
     ...mapState(useSettingsStore, ["ioType", "mode"]),
     finalDocPercent() {
@@ -94,7 +99,7 @@ export default {
       return ((this.peakDocSize - this.finalDocSize) / this.ram) * 100;
     },
     totalRamPercent() {
-      return ((this.peakDocSize + this.bufferSize) / this.ram) * 100;
+      return (this.peakRamUsage / this.ram) * 100;
     },
     ramColor() {
       if (this.totalRamPercent > 60) return "danger";
