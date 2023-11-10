@@ -137,7 +137,7 @@
         ArduinoJson detects duplicate strings to store only one copy, but you
         can tell the Assistant to include all strings.<br />
         You should uncheck this box if you used placeholders values (like
-        <code>XXXX</code>) in step 2.
+        <code>XXXX</code>) in step&nbsp;2.
       </small>
     </div>
     <div class="form-group form-check mb-0" v-if="!settings.ignoreKeys">
