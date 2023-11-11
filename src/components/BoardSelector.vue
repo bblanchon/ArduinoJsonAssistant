@@ -6,7 +6,14 @@
       data-toggle="dropdown"
       aria-expanded="false"
     >
-      <BoardSelectorItem class="flex-fill" :board="selectedBoard" />
+      <BoardSelectorItem
+        v-if="selectedBoard"
+        class="flex-fill"
+        :board="selectedBoard"
+      />
+      <span v-else class="flex-fill text-left text-truncate text-muted">
+        Select a board
+      </span>
     </button>
     <div class="dropdown-menu w-100">
       <div class="mx-2 mb-1">
