@@ -14,8 +14,8 @@ export const useStatsStore = defineStore("stats", () => {
 
   const size = computed(() =>
     measureSize(cfg.input, {
-      mode: cfg.mode,
-      filter: cfg.filterEnabled ? cfg.filter : undefined,
+      filter:
+        cfg.mode == "deserialize" && cfg.filterEnabled ? cfg.filter : undefined,
       arch: board.arch,
       ignoreKeys: cfg.ignoreKeys,
       ignoreValues: cfg.ignoreValues,
