@@ -183,7 +183,7 @@ const defaults = computed(() => ({
   assumeConstKeys: true,
   assumeConstValues: false,
   deduplicateKeys: true,
-  deduplicateValues: false,
+  deduplicateValues: true,
   useDouble: board.doubleIsDefault,
   useLongLong: board.longLongIsDefault,
 }));

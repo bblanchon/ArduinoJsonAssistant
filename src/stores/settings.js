@@ -22,7 +22,7 @@ export const useSettingsStore = defineStore("settings", {
       assumeConstValues: false,
       cpu: "uno",
       deduplicateKeys: true,
-      deduplicateValues: false,
+      deduplicateValues: true,
       filter: true,
       filterJson: "true",
       input: defaultInput,

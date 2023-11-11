@@ -131,7 +131,7 @@ const selectedMode = computed({
     settings.assumeConstKeys = true;
     settings.assumeConstValues = false;
     settings.deduplicateKeys = true;
-    settings.deduplicateValues = false;
+    settings.deduplicateValues = true;
   },
 });
 
