@@ -28,6 +28,7 @@ export const useStatsStore = defineStore("stats", () => {
   );
 
   const bufferSize = computed(() => {
+    if (cfg.input === undefined) return 0;
     let size = JSON.stringify(cfg.input).length + 1;
     switch (cfg.ioType) {
       case "arduinoStream":
