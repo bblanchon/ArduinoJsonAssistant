@@ -127,7 +127,7 @@
         v-model="settings.deduplicateValues"
       />
       <label for="deduplicate-values" class="form-check-label">
-        Deduplicate values when measuring the capacity
+        Deduplicate values when measuring the size
       </label>
       <ResetTweakButton
         v-model="settings.deduplicateValues"
@@ -148,7 +148,7 @@
         v-model="settings.deduplicateKeys"
       />
       <label for="deduplicate-keys" class="form-check-label">
-        Deduplicate keys when measuring the capacity
+        Deduplicate keys when measuring the size
       </label>
       <ResetTweakButton
         v-model="settings.deduplicateKeys"
