@@ -5,10 +5,10 @@ export class JsonFilter {
       value instanceof Array
         ? "array"
         : value instanceof Object
-        ? "object"
-        : value === true
-        ? "accept"
-        : "reject";
+          ? "object"
+          : value === true
+            ? "accept"
+            : "reject";
     this.allowsArray = this.mode == "array" || this.mode == "accept";
     this.allowsObject = this.mode == "object" || this.mode == "accept";
     this.allowsValue = this.mode == "accept";

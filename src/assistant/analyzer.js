@@ -5,8 +5,8 @@ export function getValueType(value) {
   return value === null
     ? "null"
     : value instanceof Array
-    ? "array"
-    : typeof value;
+      ? "array"
+      : typeof value;
 }
 
 export function getOverallocatedStringSize(s) {
