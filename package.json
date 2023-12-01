@@ -1,6 +1,7 @@
 {
   "name": "@bblanchon/arduinojson-assistant",
   "version": "7.0.0",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/bblanchon/ArduinoJsonAssistant"
