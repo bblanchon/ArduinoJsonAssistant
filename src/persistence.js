@@ -25,22 +25,26 @@ export function persistStore() {
   }
 
   settings.$subscribe((mutation, state) => {
-    localStorage.setItem(
-      key,
-      JSON.stringify({
-        mode: state.mode,
-        rootJson: state.inputJson,
-        filterJson: state.filterJson,
-        cpu: state.cpu,
-        ioType: state.ioType,
-        filterEnabled: state.filterEnabled,
-        useDouble: state.useDouble,
-        useLongLong: state.useLongLong,
-        deduplicateKeys: state.deduplicateKeys,
-        deduplicateValues: state.deduplicateValues,
-        assumeConstKeys: state.assumeConstKeys,
-        assumeConstValues: state.assumeConstValues,
-      }),
-    );
+    try {
+      localStorage.setItem(
+        key,
+        JSON.stringify({
+          mode: state.mode,
+          rootJson: state.inputJson,
+          filterJson: state.filterJson,
+          cpu: state.cpu,
+          ioType: state.ioType,
+          filterEnabled: state.filterEnabled,
+          useDouble: state.useDouble,
+          useLongLong: state.useLongLong,
+          deduplicateKeys: state.deduplicateKeys,
+          deduplicateValues: state.deduplicateValues,
+          assumeConstKeys: state.assumeConstKeys,
+          assumeConstValues: state.assumeConstValues,
+        }),
+      );
+    } catch (e) {
+      console.warn(e);
+    }
   });
 }
