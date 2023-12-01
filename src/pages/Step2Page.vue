@@ -116,6 +116,28 @@
         >
         to <code>1</code>
       </p>
+      <p v-if="slotCount > cpuInfo.maxSlots" class="short-danger mt-4">
+        <b>This document contains too many values.</b><br />
+        Because of an optimization, <code>JsonDocument</code> can only contain a
+        limited number of values. You could overpass this limit by changing
+        <code>ARDUINOJSON_SLOT_OFFSET_SIZE</code>, but it would increase the
+        memory usage, and I won't be able to compute the correct capacity
+        anymore.
+        <br />
+        At this point, you should consider using a different library.
+      </p>
+      <p
+        v-if="
+          needsLongLong && cpuInfo.useLongLong && !cpuInfo.useLongLong.default
+        "
+        class="short-warning mt-4"
+      >
+        This document contains <code>long&nbsp;long</code>; you should define
+        <a :href="`${baseUrl}/v6/api/config/use_long_long/`"
+          ><code>ARDUINOJSON_USE_LONG_LONG</code></a
+        >
+        to <code>1</code>
+      </p>
       <p
         v-if="needsDouble && cpuInfo.useDouble && !cpuInfo.useDouble.default"
         class="short-warning mt-4"
@@ -175,6 +197,7 @@ import { mapActions, mapState } from "pinia";
 import { hasJsonInJsonSyndrome, measureNesting } from "@/assistant/analyzer";
 import { needsDouble, needsLongLong } from "@/assistant/analyzer";
 import { useStore } from "@/store";
+import { countSlots } from "../assistant/analyzer";
 
 export default {
   components: { RouterLink },
@@ -214,6 +237,9 @@ export default {
     },
     nestingLevel() {
       return measureNesting(this.input);
+    },
+    slotCount() {
+      return countSlots(this.input);
     },
   },
   methods: {

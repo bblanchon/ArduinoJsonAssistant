@@ -234,3 +234,10 @@ export function hasJsonInJsonSyndrome(val) {
 
 export const needsLongLong = (val) => needsCppType("long long", val);
 export const needsDouble = (val) => needsCppType("double", val);
+
+export function countSlots(input) {
+  const type = getValueType(input);
+  const values =
+    type === "array" ? input : type === "object" ? Object.values(input) : [];
+  return values.length + values.map(countSlots).reduce((a, b) => a + b, 0);
+}

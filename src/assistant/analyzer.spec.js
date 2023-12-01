@@ -8,6 +8,7 @@ import {
   canLoop,
   getCommonCppTypeFor,
   hasJsonInJsonSyndrome,
+  countSlots,
 } from "./analyzer";
 import cpuInfos from "./cpus";
 
@@ -410,5 +411,30 @@ describe("needsDouble()", () => {
 
   it("object with double", () => {
     expect(needsDouble({ x: 2e38 })).toBe(true);
+  });
+});
+
+describe("countSlots", () => {
+  it("should return 0 for simple values", () => {
+    expect(countSlots(null)).toBe(0);
+    expect(countSlots(true)).toBe(0);
+    expect(countSlots(42)).toBe(0);
+    expect(countSlots(42.0)).toBe(0);
+  });
+
+  it("should return N for an object of N members", () => {
+    expect(countSlots({})).toBe(0);
+    expect(countSlots({ a: 1 })).toBe(1);
+    expect(countSlots({ a: 1, b: 2 })).toBe(2);
+  });
+
+  it("should return N for an array of N elements", () => {
+    expect(countSlots([])).toBe(0);
+    expect(countSlots([1])).toBe(1);
+    expect(countSlots([1, 2])).toBe(2);
+  });
+
+  it("should recursively count slots", () => {
+    expect(countSlots([{ a: 1 }, { a: 2 }])).toBe(4);
   });
 });

@@ -8,6 +8,7 @@ export default {
     nestingLimit: 10,
     slotSize: 8,
     useLongLong: { default: false, slotSize: 12 },
+    maxSlots: 127,
   },
   ameba: {
     label: "Ameba D",
@@ -19,6 +20,7 @@ export default {
     slotSize: 16,
     useLongLong: { default: true, slotSize: 16 },
     useDouble: { default: true, slotSize: 16 },
+    maxSlots: 32767,
   },
   esp32: {
     label: "ESP32",
@@ -30,6 +32,7 @@ export default {
     slotSize: 16,
     useLongLong: { default: true, slotSize: 16 },
     useDouble: { default: true, slotSize: 16 },
+    maxSlots: 32767,
   },
   esp8266: {
     label: "ESP8266",
@@ -42,6 +45,7 @@ export default {
     slotSize: 16,
     useLongLong: { default: true, slotSize: 16 },
     useDouble: { default: true, slotSize: 16 },
+    maxSlots: 32767,
   },
   nios2: {
     label: "Nios II",
@@ -52,6 +56,7 @@ export default {
     slotSize: 16,
     useLongLong: { default: true, slotSize: 16 },
     useDouble: { default: true, slotSize: 16 },
+    maxSlots: 32767,
   },
   samd21: {
     label: "SAMD21",
@@ -63,6 +68,7 @@ export default {
     slotSize: 16,
     useLongLong: { default: true, slotSize: 16 },
     useDouble: { default: true, slotSize: 16 },
+    maxSlots: 32767,
   },
   stm32: {
     label: "STM32",
@@ -74,6 +80,7 @@ export default {
     slotSize: 16,
     useLongLong: { default: true, slotSize: 16 },
     useDouble: { default: true, slotSize: 16 },
+    maxSlots: 32767,
   },
   x86: {
     label: "x86",
@@ -83,6 +90,7 @@ export default {
     slotSize: 16,
     useDouble: { default: true, slotSize: 16 },
     useLongLong: { default: true, slotSize: 16 },
+    maxSlots: 32767,
   },
   x64: {
     label: "x64",
@@ -92,5 +100,6 @@ export default {
     slotSize: 32,
     useDouble: { default: true, slotSize: 32 },
     useLongLong: { default: true, slotSize: 32 },
+    maxSlots: 2147483647,
   },
 };
