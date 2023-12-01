@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { computed } from "vue";
 
-import { measureSize } from "@/assistant/analyzer";
+import { countSlots, measureSize } from "@/assistant/analyzer";
 import { hasJsonInJsonSyndrome, measureNesting } from "@/assistant/analyzer";
 import { needsDouble, needsLongLong } from "@/assistant/analyzer";
 
@@ -55,6 +55,7 @@ export const useStatsStore = defineStore("stats", () => {
     doubleNeeded: computed(() => needsDouble(cfg.filteredInput)),
     longLongNeeded: computed(() => needsLongLong(cfg.filteredInput)),
     jsonInJson: computed(() => hasJsonInJsonSyndrome(cfg.filteredInput)),
+    slotCount: computed(() => countSlots(cfg.filteredInput)),
     bufferSize,
     peakRamUsage,
     ramStatus: computed(() => {

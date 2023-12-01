@@ -14,6 +14,12 @@ export const useAlertsStore = defineStore("alerts", () => {
   const alerts = computed(() => {
     return [
       {
+        if: stats.slotCount > board.memoryModel.maxSlots,
+        id: "too-many-slots",
+        type: "danger",
+        message: "<b>This document contains too many values.</b><br>Because of an optimization, <code>JsonDocument</code> can only contain a limited number of values. You could overpass this limit by changing <code>ARDUINOJSON_SLOT_ID_SIZE</code>, but it would increase the memory usage, and I won't be able to compute it anymore.<br>At this point, you should consider using a different library.",
+      },
+      {
         if:
           cfg.isDeserializing &&
           stats.nestingLevel > board.memoryModel.nestingLimit,

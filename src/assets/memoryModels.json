@@ -9,7 +9,8 @@
     "doubleSupported": false,
     "longLongIsDefault": false,
     "arduinoStringOverhead": 6,
-    "stdStringOverhead": 12
+    "stdStringOverhead": 12,
+    "maxSlots": 255
   },
   "16-bit": {
     "slotSize": [8, 12],
@@ -21,7 +22,8 @@
     "doubleSupported": false,
     "longLongIsDefault": false,
     "arduinoStringOverhead": 6,
-    "stdStringOverhead": 12
+    "stdStringOverhead": 12,
+    "maxSlots": 255
   },
   "32-bit": {
     "documentSize": 40,
@@ -34,7 +36,8 @@
     "doubleIsDefault": true,
     "longLongIsDefault": true,
     "arduinoStringOverhead": 12,
-    "stdStringOverhead": 24
+    "stdStringOverhead": 24,
+    "maxSlots": 65535
   },
   "64-bit": {
     "documentSize": 128,
@@ -47,6 +50,7 @@
     "doubleIsDefault": true,
     "longLongIsDefault": true,
     "arduinoStringOverhead": 24,
-    "stdStringOverhead": 48
+    "stdStringOverhead": 48,
+    "maxSlots": 4294967295
   }
 }
