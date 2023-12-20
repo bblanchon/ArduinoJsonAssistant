@@ -38,6 +38,7 @@
             spellcheck="false"
             :value="inputJson"
             @input="setInputJson($event.target.value)"
+            data-gramm="false"
           ></textarea>
           <div v-if="inputError" class="invalid-feedback">
             {{ inputError }}
@@ -66,6 +67,7 @@
             rows="10"
             @input="setFilterJson($event.target.value)"
             :value="filterJson"
+            data-gramm="false"
           ></textarea>
           <div v-if="filterError" class="invalid-feedback">
             {{ filterError }}
