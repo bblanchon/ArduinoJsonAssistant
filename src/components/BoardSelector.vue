@@ -23,6 +23,7 @@
           ref="input"
           :placeholder="`Search among ${Object.values(boards).length} boards`"
           v-model="search"
+          spellcheck="false"
         />
         <small class="form-text text-muted" v-if="search.trim()">
           {{ Object.values(filteredBoards).length }} boards found
