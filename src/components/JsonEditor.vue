@@ -8,6 +8,7 @@
       v-model="text"
       :readonly="readonly"
       v-bind="$attrs"
+      data-gramm="false"
     ></textarea>
     <button
       v-if="!readonly"
