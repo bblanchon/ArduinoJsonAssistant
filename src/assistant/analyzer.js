@@ -9,8 +9,8 @@ export function getValueType(value) {
   return value === null
     ? "null"
     : value instanceof Array
-    ? "array"
-    : typeof value;
+      ? "array"
+      : typeof value;
 }
 
 function getEffectiveSlotSize(cfg) {
@@ -148,7 +148,7 @@ export function canLoop(input) {
       if (input.length < 2) return false;
       return input.every(
         (value) =>
-          getValueType(value) === "object" && areSimilar(input[0], value)
+          getValueType(value) === "object" && areSimilar(input[0], value),
       );
 
     case "object":
@@ -205,8 +205,8 @@ function needsCppType(cpptype, value, siblings) {
         needsCppType(
           cpptype,
           value[key],
-          siblings?.filter((x) => !!x).map((x) => x[key])
-        )
+          siblings?.filter((x) => !!x).map((x) => x[key]),
+        ),
       );
 
     default:

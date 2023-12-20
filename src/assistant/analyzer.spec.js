@@ -119,8 +119,8 @@ describe("measureSize", function () {
     expect(
       measureSize(
         { hello: 1, world: 2 },
-        { cpu: { slotSize: 8 }, filter: { hello: true } }
-      )
+        { cpu: { slotSize: 8 }, filter: { hello: true } },
+      ),
     ).toEqual({
       filter: 6,
       slots: 8,
@@ -142,8 +142,8 @@ describe("measureSize", function () {
           cpu: { slotSize: 8 },
           deduplicateKeys: true,
           filter: [{ hello: true }],
-        }
-      )
+        },
+      ),
     ).toEqual({
       filter: 11,
       slots: 48,
@@ -160,8 +160,8 @@ describe("measureSize", function () {
         {
           cpu: { slotSize: 8 },
           ignoreKeys: true,
-        }
-      )
+        },
+      ),
     ).toEqual({
       slots: 8,
       strings: 9,
@@ -177,8 +177,8 @@ describe("measureSize", function () {
         {
           cpu: { slotSize: 8 },
           ignoreValues: true,
-        }
-      )
+        },
+      ),
     ).toEqual({
       slots: 8,
       strings: 6,
@@ -295,7 +295,7 @@ describe("canLoop()", () => {
           main: { temp: 3.2 },
           weather: [{ description: "light rain" }],
         },
-      ])
+      ]),
     ).toBe(true);
   });
 
@@ -305,7 +305,7 @@ describe("canLoop()", () => {
         batt: { unit: "%", name: "battery" },
         tempc: { unit: "°C", name: "temperature" },
         hum: { unit: "%", name: "humidity" },
-      })
+      }),
     ).toBe(true);
   });
 });
@@ -370,7 +370,7 @@ describe("needsLongLong()", () => {
 
   it("loop with mixed integer and long-longs", () => {
     expect(
-      needsLongLong([{ x: 10000 }, { x: 10000000 }, { x: 10000000000 }])
+      needsLongLong([{ x: 10000 }, { x: 10000000 }, { x: 10000000000 }]),
     ).toBe(true);
   });
 

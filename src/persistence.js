@@ -25,7 +25,7 @@ export function persistStore() {
         deduplicateValues: state.deduplicateValues,
         assumeConstKeys: state.assumeConstKeys,
         assumeConstValues: state.assumeConstValues,
-      })
+      }),
     );
   });
 }

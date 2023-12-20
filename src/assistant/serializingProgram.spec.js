@@ -41,7 +41,7 @@ describe("writeCompositionCode()", () => {
   it('["hello","world",null]', () => {
     test(
       ["hello", "world", null],
-      'doc.add("hello");\ndoc.add("world");\ndoc.add(nullptr);'
+      'doc.add("hello");\ndoc.add("world");\ndoc.add(nullptr);',
     );
   });
 
@@ -76,7 +76,7 @@ describe("writeCompositionCode()", () => {
         "doc_0.add(2);\n\n" +
         "JsonArray doc_1 = doc.createNestedArray();\n" +
         "doc_1.add(3);\n" +
-        "doc_1.add(4);"
+        "doc_1.add(4);",
     );
   });
 
@@ -85,7 +85,7 @@ describe("writeCompositionCode()", () => {
       { A: { B: { C: "D" }, E: { F: "G" } } },
       'JsonObject A = doc.createNestedObject("A");\n' +
         'A["B"]["C"] = "D";\n' +
-        'A["E"]["F"] = "G";'
+        'A["E"]["F"] = "G";',
     );
   });
 
@@ -107,7 +107,7 @@ describe("writeCompositionCode()", () => {
         "doc_0_0.add(43);\n\n" +
         "JsonArray doc_0_1 = doc_0.createNestedArray();\n" +
         "doc_0_1.add(44);\n" +
-        "doc_0_1.add(45);"
+        "doc_0_1.add(45);",
     );
   });
 
@@ -116,7 +116,7 @@ describe("writeCompositionCode()", () => {
       { "hello world": [42, 43] },
       'JsonArray hello_world = doc.createNestedArray("hello world");\n' +
         "hello_world.add(42);\n" +
-        "hello_world.add(43);"
+        "hello_world.add(43);",
     );
   });
 
@@ -125,7 +125,7 @@ describe("writeCompositionCode()", () => {
       { list: [{ dt: true, main: true }] },
       'JsonObject list_0 = doc["list"].createNestedObject();\n' +
         'list_0["dt"] = true;\n' +
-        'list_0["main"] = true;'
+        'list_0["main"] = true;',
     );
   });
 
@@ -134,7 +134,7 @@ describe("writeCompositionCode()", () => {
       { list: [{ dt: true, main: true }] },
       'JsonObject list_0 = doc["list"].createNestedObject();\n' +
         'list_0["dt"] = true;\n' +
-        'list_0["main"] = true;'
+        'list_0["main"] = true;',
     );
   });
 
@@ -143,7 +143,7 @@ describe("writeCompositionCode()", () => {
       { data: { children: [{ data: { title: true, ups: true } }] } },
       'JsonObject data_children_0_data = doc["data"]["children"][0].createNestedObject("data");\n' +
         'data_children_0_data["title"] = true;\n' +
-        'data_children_0_data["ups"] = true;'
+        'data_children_0_data["ups"] = true;',
     );
   });
 
@@ -163,7 +163,7 @@ describe("writeCompositionCode()", () => {
         "\n" +
         "JsonObject doc_1 = doc.createNestedObject();\n" +
         'doc_1["a"] = 3;\n' +
-        'doc_1["b"] = 4;'
+        'doc_1["b"] = 4;',
     );
   });
 });
@@ -178,14 +178,14 @@ describe("generateSerializingProgram", function () {
       { root: { answer: 42 }, cpu: cpuInfos.avr },
       "StaticJsonDocument<32> doc;\n\n" +
         'doc["answer"] = 42;\n\n' +
-        "serializeJson(doc, output);"
+        "serializeJson(doc, output);",
     );
   });
 
   it("null", () => {
     testSerializingProgram(
       { root: null, cpu: cpuInfos.avr },
-      "StaticJsonDocument<0> doc;\n\nserializeJson(doc, output);"
+      "StaticJsonDocument<0> doc;\n\nserializeJson(doc, output);",
     );
   });
 
@@ -195,7 +195,7 @@ describe("generateSerializingProgram", function () {
       "// char* output;\n" +
         "// size_t outputCapacity;\n\n" +
         "StaticJsonDocument<0> doc;\n\n" +
-        "serializeJson(doc, output, outputCapacity);"
+        "serializeJson(doc, output, outputCapacity);",
     );
   });
 
@@ -204,7 +204,7 @@ describe("generateSerializingProgram", function () {
       { outputType: "charArray", cpu: cpuInfos.avr },
       "StaticJsonDocument<0> doc;\n\n" +
         "char output[MAX_OUTPUT_SIZE];\n" +
-        "serializeJson(doc, output);"
+        "serializeJson(doc, output);",
     );
   });
 
@@ -213,7 +213,7 @@ describe("generateSerializingProgram", function () {
       { outputType: "arduinoString", cpu: cpuInfos.avr },
       "StaticJsonDocument<0> doc;\n\n" +
         "String output;\n" +
-        "serializeJson(doc, output);"
+        "serializeJson(doc, output);",
     );
   });
 
@@ -222,7 +222,7 @@ describe("generateSerializingProgram", function () {
       { outputType: "stdString", cpu: cpuInfos.avr },
       "StaticJsonDocument<0> doc;\n\n" +
         "std::string output;\n" +
-        "serializeJson(doc, output);"
+        "serializeJson(doc, output);",
     );
   });
 
@@ -231,7 +231,7 @@ describe("generateSerializingProgram", function () {
       { outputType: "arduinoStream", cpu: cpuInfos.avr },
       "// Stream& output;\n\n" +
         "StaticJsonDocument<0> doc;\n\n" +
-        "serializeJson(doc, output);"
+        "serializeJson(doc, output);",
     );
   });
 
@@ -240,7 +240,7 @@ describe("generateSerializingProgram", function () {
       { outputType: "stdStream", cpu: cpuInfos.avr },
       "// std::ostream& output;\n\n" +
         "StaticJsonDocument<0> doc;\n\n" +
-        "serializeJson(doc, output);"
+        "serializeJson(doc, output);",
     );
   });
 
@@ -249,7 +249,7 @@ describe("generateSerializingProgram", function () {
       { root: "abcdef", cpu: { heapThreshold: 23 } },
       "DynamicJsonDocument doc(24);\n\n" +
         'doc.set("abcdef");\n\n' +
-        "serializeJson(doc, output);"
+        "serializeJson(doc, output);",
     );
   });
 });

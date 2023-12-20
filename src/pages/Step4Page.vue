@@ -97,7 +97,7 @@ hljs.registerLanguage("cpp", (hljs) => {
     "StaticJsonDocument",
     "DynamicJsonDocument",
     "DeserializationError",
-    "DeserializationOption"
+    "DeserializationOption",
   );
   return lang;
 });

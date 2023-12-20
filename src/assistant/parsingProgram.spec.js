@@ -22,7 +22,7 @@ describe("writeDeserializationCode()", () => {
       "// char* input;\n" +
         "// size_t inputLength; (optional)\n\n" +
         "StaticJsonDocument<0> doc;\n\n" +
-        "DeserializationError error = deserializeJson(doc, input, inputLength);"
+        "DeserializationError error = deserializeJson(doc, input, inputLength);",
     );
   });
 
@@ -31,7 +31,7 @@ describe("writeDeserializationCode()", () => {
       { inputType: "charArray", cpu: cpuInfos.avr },
       "// char input[MAX_INPUT_LENGTH];\n\n" +
         "StaticJsonDocument<0> doc;\n\n" +
-        "DeserializationError error = deserializeJson(doc, input, MAX_INPUT_LENGTH);"
+        "DeserializationError error = deserializeJson(doc, input, MAX_INPUT_LENGTH);",
     );
   });
 
@@ -41,7 +41,7 @@ describe("writeDeserializationCode()", () => {
       "// const char* input;\n" +
         "// size_t inputLength; (optional)\n\n" +
         "StaticJsonDocument<0> doc;\n\n" +
-        "DeserializationError error = deserializeJson(doc, input, inputLength);"
+        "DeserializationError error = deserializeJson(doc, input, inputLength);",
     );
   });
 
@@ -50,7 +50,7 @@ describe("writeDeserializationCode()", () => {
       { inputType: "arduinoString", cpu: cpuInfos.avr },
       "// String input;\n\n" +
         "StaticJsonDocument<0> doc;\n\n" +
-        "DeserializationError error = deserializeJson(doc, input);"
+        "DeserializationError error = deserializeJson(doc, input);",
     );
   });
 
@@ -59,7 +59,7 @@ describe("writeDeserializationCode()", () => {
       { inputType: "arduinoStream", cpu: cpuInfos.avr },
       "// Stream& input;\n\n" +
         "StaticJsonDocument<0> doc;\n\n" +
-        "DeserializationError error = deserializeJson(doc, input);"
+        "DeserializationError error = deserializeJson(doc, input);",
     );
   });
 
@@ -68,7 +68,7 @@ describe("writeDeserializationCode()", () => {
       { inputType: "stdString", cpu: cpuInfos.avr },
       "// std::string input;\n\n" +
         "StaticJsonDocument<0> doc;\n\n" +
-        "DeserializationError error = deserializeJson(doc, input);"
+        "DeserializationError error = deserializeJson(doc, input);",
     );
   });
 
@@ -77,7 +77,7 @@ describe("writeDeserializationCode()", () => {
       { inputType: "stdStream", cpu: cpuInfos.avr },
       "// std::istream& input;\n\n" +
         "StaticJsonDocument<0> doc;\n\n" +
-        "DeserializationError error = deserializeJson(doc, input);"
+        "DeserializationError error = deserializeJson(doc, input);",
     );
   });
 });
@@ -91,7 +91,7 @@ describe("writeErrorCheckingCode()", () => {
         '  Serial.print("deserializeJson() failed: ");\n' +
         "  Serial.println(error.c_str());\n" +
         "  return;\n" +
-        "}"
+        "}",
     );
   });
 
@@ -103,7 +103,7 @@ describe("writeErrorCheckingCode()", () => {
         '  Serial.print(F("deserializeJson() failed: "));\n' +
         "  Serial.println(error.f_str());\n" +
         "  return;\n" +
-        "}"
+        "}",
     );
   });
 
@@ -114,7 +114,7 @@ describe("writeErrorCheckingCode()", () => {
       "if (error) {\n" +
         '  std::cerr << "deserializeJson() failed: " << error.c_str() << std::endl;\n' +
         "  return;\n" +
-        "}"
+        "}",
     );
   });
 });
@@ -135,7 +135,7 @@ describe("generateParsingProgram", function () {
         "if (error) {\n" +
         '  std::cerr << "deserializeJson() failed: " << error.c_str() << std::endl;\n' +
         "  return;\n" +
-        "}\n"
+        "}\n",
     );
   });
 
@@ -153,7 +153,7 @@ describe("generateParsingProgram", function () {
         "if (error) {\n" +
         '  std::cerr << "deserializeJson() failed: " << error.c_str() << std::endl;\n' +
         "  return;\n" +
-        "}\n"
+        "}\n",
     );
   });
 
@@ -167,7 +167,7 @@ describe("generateParsingProgram", function () {
         "if (error) {\n" +
         '  std::cerr << "deserializeJson() failed: " << error.c_str() << std::endl;\n' +
         "  return;\n" +
-        "}\n"
+        "}\n",
     );
   });
 
@@ -180,7 +180,7 @@ describe("generateParsingProgram", function () {
         '  std::cerr << "deserializeJson() failed: " << error.c_str() << std::endl;\n' +
         "  return;\n" +
         "}\n\n" +
-        'const char* root = doc.as<const char*>(); // "abcdef"'
+        'const char* root = doc.as<const char*>(); // "abcdef"',
     );
   });
 });
@@ -218,14 +218,14 @@ describe("writeDecompositionCode", function () {
       [1, 2, 3],
       "int root_0 = doc[0]; // 1\n" +
         "int root_1 = doc[1]; // 2\n" +
-        "int root_2 = doc[2]; // 3\n"
+        "int root_2 = doc[2]; // 3\n",
     );
   });
 
   it('{"hello":true}', () => {
     testDescompositionCode(
       { hello: true },
-      'bool hello = doc["hello"]; // true\n'
+      'bool hello = doc["hello"]; // true\n',
     );
   });
 
@@ -236,7 +236,7 @@ describe("writeDecompositionCode", function () {
   it('{"hello":"world"}', () => {
     testDescompositionCode(
       { hello: "world" },
-      'const char* hello = doc["hello"]; // "world"\n'
+      'const char* hello = doc["hello"]; // "world"\n',
     );
   });
 
@@ -246,14 +246,14 @@ describe("writeDecompositionCode", function () {
       "JsonObject root_0 = doc[0];\n" +
         'int root_0_a = root_0["a"]; // 1\n' +
         'int root_0_b = root_0["b"]; // 2\n' +
-        'int root_0_c = root_0["c"]; // 3\n'
+        'int root_0_c = root_0["c"]; // 3\n',
     );
   });
 
   it("[[[[[[[[[[[42]]]]]]]]]]]", () => {
     testDescompositionCode(
       [[[[[[[[[[[42]]]]]]]]]]],
-      "int root_0_0_0_0_0_0_0_0_0_0_0 = doc[0][0][0][0][0][0][0][0][0][0][0]; // 42\n"
+      "int root_0_0_0_0_0_0_0_0_0_0_0 = doc[0][0][0][0][0][0][0][0][0][0][0]; // 42\n",
     );
   });
 
@@ -262,7 +262,7 @@ describe("writeDecompositionCode", function () {
       [10000, 10000000, 10000000000],
       "int root_0 = doc[0]; // 10000\n" +
         "long root_1 = doc[1]; // 10000000\n" +
-        "long long root_2 = doc[2]; // 10000000000\n"
+        "long long root_2 = doc[2]; // 10000000000\n",
     );
   });
 
@@ -288,7 +288,7 @@ describe("writeDecompositionCode", function () {
         '  long dt = item["dt"]; // 1511978400, 1511989200\n\n' +
         '  float main_temp = item["main"]["temp"]; // 3.95, 3.2\n\n' +
         '  const char* weather_0_description = item["weather"][0]["description"]; // "light rain", "clear sky"\n\n' +
-        "}\n"
+        "}\n",
     );
   });
 
@@ -317,7 +317,7 @@ describe("writeDecompositionCode", function () {
         '  long list_item_dt = list_item["dt"]; // 1511978400, 1511989200, 1512000000\n\n' +
         '  float list_item_main_temp = list_item["main"]["temp"]; // 3.95, 3.2, 3.25\n\n' +
         '  const char* list_item_weather_0_description = list_item["weather"][0]["description"]; // "light rain", ...\n\n' +
-        "}\n"
+        "}\n",
     );
   });
 
@@ -343,7 +343,7 @@ describe("writeDecompositionCode", function () {
         '  const char* property_key = property.key().c_str(); // "batt", "tempc", "hum"\n\n' +
         '  const char* property_value_unit = property.value()["unit"]; // "%", "°C", "%"\n' +
         '  const char* property_value_name = property.value()["name"]; // "battery", "temperature", "humidity"\n\n' +
-        "}\n"
+        "}\n",
     );
   });
 
@@ -352,7 +352,7 @@ describe("writeDecompositionCode", function () {
       [{ x: 10000 }, { x: 10000000 }, { x: 10000000000 }],
       "for (JsonObject item : doc.as<JsonArray>()) {\n\n" +
         '  long long x = item["x"]; // 10000, 10000000, 10000000000\n\n' +
-        "}\n"
+        "}\n",
     );
   });
 
@@ -361,7 +361,7 @@ describe("writeDecompositionCode", function () {
       [{ x: 10000 }, { x: 1.4 }],
       "for (JsonObject item : doc.as<JsonArray>()) {\n\n" +
         '  float x = item["x"]; // 10000, 1.4\n\n' +
-        "}\n"
+        "}\n",
     );
   });
 
@@ -370,7 +370,7 @@ describe("writeDecompositionCode", function () {
       [{ x: null }, { x: 42 }],
       "for (JsonObject item : doc.as<JsonArray>()) {\n\n" +
         '  int x = item["x"]; // 0, 42\n\n' +
-        "}\n"
+        "}\n",
     );
   });
 
@@ -384,7 +384,7 @@ describe("writeDecompositionCode", function () {
       ],
       "for (JsonObject item : doc.as<JsonArray>()) {\n\n" +
         '  const char* very_long_name = item["very_long_name"]; // "long value", "another long value", "yes another ...\n\n' +
-        "}\n"
+        "}\n",
     );
   });
 
@@ -393,7 +393,7 @@ describe("writeDecompositionCode", function () {
       [{ x: { id: 10 } }, { x: null }],
       "for (JsonObject item : doc.as<JsonArray>()) {\n\n" +
         '  int x_id = item["x"]["id"]; // 10, 0\n\n' +
-        "}\n"
+        "}\n",
     );
   });
 
@@ -407,7 +407,7 @@ describe("writeDecompositionCode", function () {
         '  for (JsonObject data_item : item["data"].as<JsonArray>()) {\n\n' +
         '    int data_item_time = data_item["time"]; // 1, 2\n\n' +
         "  }\n\n" +
-        "}\n"
+        "}\n",
     );
   });
 
@@ -420,7 +420,7 @@ describe("writeDecompositionCode", function () {
   int data_1 = item["data"][1]; // 3, 4, 0
 
 }
-`
+`,
     );
   });
 });

@@ -28,7 +28,7 @@ describe("buildExpression", () => {
       buildExpression({
         a: [1, 2],
         b: [1, 2],
-      })
+      }),
     ).toBe("2*JSON_ARRAY_SIZE(2) + JSON_OBJECT_SIZE(2)");
   });
 });
