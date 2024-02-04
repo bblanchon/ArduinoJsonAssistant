@@ -56,7 +56,7 @@
           {{ programCopied ? "✓ Copied" : "Copy" }}
         </button>
         <div class="highlight p-3 program">
-          <pre><code class="hljs" v-html="program"></code></pre>
+          <pre><code class="hljs" v-html="programHtml"></code></pre>
         </div>
       </figure>
       <ul class="list-inline card-text">
@@ -92,7 +92,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useProgramStore, ["program"]),
+    ...mapState(useProgramStore, ["programHtml", "programText"]),
     ...mapWritableState(useProgramStore, ["ioLibrary", "progmem"]),
     ...mapState(useSettingsStore, [
       "isDeserializing",
@@ -135,7 +135,7 @@ export default {
   },
   methods: {
     async copyProgram() {
-      await navigator.clipboard.writeText(this.program);
+      await navigator.clipboard.writeText(this.programText);
       this.programCopied = true;
       await sleep(500);
       this.programCopied = false;

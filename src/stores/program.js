@@ -32,7 +32,8 @@ export const useProgramStore = defineStore("program", () => {
   const cfg = useSettingsStore();
   const board = useBoardStore();
   const stats = useStatsStore();
-  const program = ref("");
+  const programText = ref("");
+  const programHtml = ref("");
   const ioLibrary = ref("serial");
   const progmem = ref(false);
 
@@ -62,13 +63,15 @@ export const useProgramStore = defineStore("program", () => {
         break;
     }
 
-    program.value = escapeHtmlTags(code);
+    programText.value = code;
+    programHtml.value = escapeHtmlTags(code);
     await sleep(100);
-    program.value = hljs.highlight(code, { language: "cpp" }).value;
+    programHtml.value = hljs.highlight(code, { language: "cpp" }).value;
   }
 
   return {
-    program,
+    programHtml,
+    programText,
     generate,
     ioLibrary,
     progmem,
