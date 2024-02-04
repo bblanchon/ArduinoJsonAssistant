@@ -181,6 +181,12 @@ doc_1["a"] = 3;
 doc_1["b"] = 4;`,
     );
   });
+
+  it("{ if: {} }", () => {
+    expect(getCompositionCode({ if: {} })).toEqual(
+      'JsonObject if_ = doc["if"].to<JsonObject>();',
+    );
+  });
 });
 
 describe("generateSerializingProgram()", function () {

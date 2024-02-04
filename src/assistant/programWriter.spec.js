@@ -31,6 +31,14 @@ describe("makeVariableName()", function () {
     // we could remove this in the future
     expect(makeVariableName("doc[0]")).toBe("root_0");
   });
+
+  it("should avoid reserved keywords", () => {
+    // we could remove this in the future
+    expect(makeVariableName('doc["if"]')).toBe("if_");
+    expect(makeVariableName('doc["new"]')).toBe("new_");
+    expect(makeVariableName('doc["delete"]')).toBe("delete_");
+    expect(makeVariableName('doc["operator"]')).toBe("operator_");
+  });
 });
 
 describe("makeItemName()", function () {

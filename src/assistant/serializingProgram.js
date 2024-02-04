@@ -1,4 +1,4 @@
-import { ProgramWriter, sanitizeName } from "./programWriter";
+import { ProgramWriter, makeVariableName } from "./programWriter";
 
 function stringifyValue(value) {
   return value === null ? "nullptr" : JSON.stringify(value);
@@ -62,12 +62,10 @@ function addObject(prg, { parent, key, name, value }) {
     else prg.addLine(`JsonObject ${name} = ${parent}.add<JsonObject>();`);
   }
 
-  const memberPrefix = name !== "doc" ? name + "_" : "";
-
   for (const key in value) {
     addObjectMember(prg, {
       object: objectName,
-      name: memberPrefix + sanitizeName(key),
+      name: makeVariableName(`${name}[${key}]`),
       key: key,
       value: value[key],
     });
