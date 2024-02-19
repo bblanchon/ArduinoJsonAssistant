@@ -8,6 +8,7 @@ import {
   getCommonCppTypeFor,
   hasJsonInJsonSyndrome,
   getOverallocatedStringSize,
+  getEffectiveSlotSize,
   countSlots,
 } from "./analyzer";
 
@@ -16,6 +17,60 @@ const sample_object = {
   time: 1351824120,
   data: [48.75608, 2.302038],
 };
+
+describe("getEffectiveSlotSize()", () => {
+  describe("on an 8-bit processor", () => {
+    it("should return 8 with default configuration", () => {
+      expect(getEffectiveSlotSize({ arch: "8-bit" })).toBe(8);
+    });
+    it("should return 8 if double is enabled", () => {
+      expect(
+        getEffectiveSlotSize({
+          arch: "8-bit",
+          useDouble: true,
+        }),
+      ).toBe(8);
+    });
+    it("should return 12 if long long is enabled", () => {
+      expect(
+        getEffectiveSlotSize({
+          arch: "8-bit",
+          useLongLong: true,
+        }),
+      ).toBe(12);
+    });
+  });
+
+  describe("on a 32-bit processor", () => {
+    it("should return 16 with default configuration", () => {
+      expect(getEffectiveSlotSize({ arch: "32-bit" })).toBe(16);
+    });
+    it("should return 12 if double and long long are disabled", () => {
+      expect(
+        getEffectiveSlotSize({
+          arch: "32-bit",
+          useDouble: false,
+          useLongLong: false,
+        }),
+      ).toBe(12);
+    });
+  });
+
+  describe("on a 64-bit processor", () => {
+    it("should return 24 with default configuration", () => {
+      expect(getEffectiveSlotSize({ arch: "64-bit" })).toBe(24);
+    });
+    it("should return 24 if double and long long are disabled", () => {
+      expect(
+        getEffectiveSlotSize({
+          arch: "64-bit",
+          useDouble: false,
+          useLongLong: false,
+        }),
+      ).toBe(24);
+    });
+  });
+});
 
 describe("getOverallocatedStringSize()", () => {
   it("should return 31 for a length between 0 and 31", () => {

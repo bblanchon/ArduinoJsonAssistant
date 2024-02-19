@@ -19,9 +19,13 @@ export function getOverallocatedStringSize(s) {
   return n;
 }
 
-function getEffectiveSlotSize(cfg) {
-  const isLarge = cfg.useLongLong || cfg.useDouble;
-  return memoryModels[cfg.arch].slotSize[isLarge ? 1 : 0];
+export function getEffectiveSlotSize(cfg) {
+  const arch = memoryModels[cfg.arch];
+  const flags = [
+    cfg.useDouble ?? true ? "1" : "0",
+    cfg.useLongLong ?? arch.longLongIsDefault ? "1" : "0",
+  ];
+  return arch.slotSize[flags.join("")];
 }
 
 class Memory {
