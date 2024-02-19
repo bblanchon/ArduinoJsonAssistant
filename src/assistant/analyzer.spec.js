@@ -39,6 +39,22 @@ describe("getEffectiveSlotSize()", () => {
         }),
       ).toBe(12);
     });
+    it("should return 9 if slot id size is 2", () => {
+      expect(
+        getEffectiveSlotSize({
+          arch: "8-bit",
+          slotIdSize: 2,
+        }),
+      ).toBe(9);
+    });
+    it("should return 15 if slot id size is 4", () => {
+      expect(
+        getEffectiveSlotSize({
+          arch: "8-bit",
+          slotIdSize: 4,
+        }),
+      ).toBe(15);
+    });
   });
 
   describe("on a 32-bit processor", () => {
@@ -53,6 +69,14 @@ describe("getEffectiveSlotSize()", () => {
           useLongLong: false,
         }),
       ).toBe(12);
+    });
+    it("should return 24 if slot id size is 4", () => {
+      expect(
+        getEffectiveSlotSize({
+          arch: "32-bit",
+          slotIdSize: 4,
+        }),
+      ).toBe(24);
     });
   });
 

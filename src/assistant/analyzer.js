@@ -24,6 +24,7 @@ export function getEffectiveSlotSize(cfg) {
   const flags = [
     cfg.useDouble ?? true ? "1" : "0",
     cfg.useLongLong ?? arch.longLongIsDefault ? "1" : "0",
+    cfg.slotIdSize || arch.slotIdSize,
   ];
   return arch.slotSize[flags.join("")];
 }

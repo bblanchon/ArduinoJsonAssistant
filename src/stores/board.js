@@ -27,6 +27,5 @@ export const useBoardStore = defineStore("board", () => {
       () => memoryModel.value.slotSize[0] == memoryModel.value.slotSize[1],
     ),
     psram: computed(() => cfg.cpu === "esp32"),
-    maxSlots: computed(() => (1 << (memoryModel.value.slotIdSize * 8)) - 1),
   };
 });

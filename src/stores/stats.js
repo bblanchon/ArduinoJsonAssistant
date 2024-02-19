@@ -24,6 +24,7 @@ export const useStatsStore = defineStore("stats", () => {
       useLongLong: cfg.useLongLong,
       useDouble: cfg.useDouble,
       overAllocateStrings: cfg.mode == "deserialize",
+      slotIdSize: cfg.slotIdSize,
     }),
   );
 
@@ -48,6 +49,12 @@ export const useStatsStore = defineStore("stats", () => {
     () => size.value.peakMemoryUsage + bufferSize.value,
   );
 
+  const maxSlotsMapping = {
+    1: 255,
+    2: 65535,
+    4: 4294967295,
+  };
+
   return {
     nestingLevel: computed(() => measureNesting(cfg.input)),
     finalDocSize: computed(() => size.value.memoryUsage),
@@ -56,6 +63,7 @@ export const useStatsStore = defineStore("stats", () => {
     longLongNeeded: computed(() => needsLongLong(cfg.filteredInput)),
     jsonInJson: computed(() => hasJsonInJsonSyndrome(cfg.filteredInput)),
     slotCount: computed(() => countSlots(cfg.filteredInput)),
+    maxSlots: computed(() => maxSlotsMapping[cfg.slotIdSize]),
     bufferSize,
     peakRamUsage,
     ramStatus: computed(() => {

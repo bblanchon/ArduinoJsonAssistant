@@ -78,6 +78,38 @@
         >.
       </small>
     </div>
+    <div v-if="board.longLongSupported" class="form-group">
+      <label for="slotIdSize" class="col-form-label">
+        <code>ARDUINOJSON_SLOT_ID_SIZE</code>
+      </label>
+      <ResetTweakButton
+        v-model="settings.slotIdSize"
+        :default-value="defaults.slotIdSize"
+      />
+      <select
+        id="slotIdSize"
+        class="form-control"
+        v-model="settings.slotIdSize"
+      >
+        <option value="1">
+          1 (up to 255 slots{{ defaults.slotIdSize == 1 ? ", default" : "" }})
+        </option>
+        <option value="2">
+          2 (up to 65,635 slots{{
+            defaults.slotIdSize == 2 ? ", default" : ""
+          }})
+        </option>
+        <option value="4">
+          4 (up to 4 million slots{{
+            defaults.slotIdSize == 4 ? ", default" : ""
+          }})
+        </option>
+      </select>
+      <small class="form-text text-muted">
+        This setting defines the number of bytes used to store a slot
+        identifier.
+      </small>
+    </div>
     <div class="form-group form-check" v-if="settings.isSerializing">
       <input
         id="assume-const-values"
@@ -174,6 +206,7 @@ const fields = [
   "deduplicateValues",
   "useDouble",
   "useLongLong",
+  "slotIdSize",
 ];
 
 const settings = useSettingsStore();
@@ -186,6 +219,7 @@ const defaults = computed(() => ({
   deduplicateValues: true,
   useDouble: board.doubleIsDefault,
   useLongLong: board.longLongIsDefault,
+  slotIdSize: board.memoryModel.slotIdSize,
 }));
 
 const tweakCount = computed(

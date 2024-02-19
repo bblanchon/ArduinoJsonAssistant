@@ -19,6 +19,7 @@ export function persistStore() {
     settings.deduplicateKeys = cfg.deduplicateKeys;
     settings.deduplicateValues = cfg.deduplicateValues;
     settings.filterEnabled = cfg.filterEnabled;
+    settings.slotIdSize = cfg.slotIdSize;
   } catch (e) {
     console.warn(e);
     settings.$reset();
@@ -41,6 +42,7 @@ export function persistStore() {
           deduplicateValues: state.deduplicateValues,
           assumeConstKeys: state.assumeConstKeys,
           assumeConstValues: state.assumeConstValues,
+          slotIdSize: state.slotIdSize,
         }),
       );
     } catch (e) {

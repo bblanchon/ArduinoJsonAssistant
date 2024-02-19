@@ -32,6 +32,7 @@ export const useSettingsStore = defineStore("settings", {
       filterEnabled: false,
       useDouble: false,
       useLongLong: false,
+      slotIdSize: 1,
     };
   },
   actions: {
