@@ -14,7 +14,7 @@ export const useAlertsStore = defineStore("alerts", () => {
   const alerts = computed(() => {
     return [
       {
-        if: stats.slotCount > board.memoryModel.maxSlots,
+        if: board.maxSlots && stats.slotCount > board.maxSlots,
         id: "too-many-slots",
         type: "danger",
         message:
