@@ -60,13 +60,13 @@ export const useAlertsStore = defineStore("alerts", () => {
         message: `This may not fit in the RAM. Make sure there is enough free space.`,
       },
       {
-        if: stats.ramStatus === "error" && !board.psram,
+        if: stats.ramStatus === "danger" && !board.psram,
         id: "size-error",
         type: "danger",
         message: `This is too big to fit in the RAM. See <a href="${baseUrl}/v7/how-to/deserialize-a-very-large-document/">How to deserialize a very large document?</a>`,
       },
       {
-        if: stats.ramStatus === "error" && board.psram,
+        if: stats.ramStatus === "danger" && board.psram,
         id: "esp32-psram",
         type: "tip",
         message: `This is too big to fit in the RAM. See <a href="${baseUrl}/v7/how-to/use-external-ram-on-esp32/">How to use external RAM on an ESP32?</a>`,

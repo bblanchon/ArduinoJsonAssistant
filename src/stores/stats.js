@@ -68,7 +68,7 @@ export const useStatsStore = defineStore("stats", () => {
     peakRamUsage,
     ramStatus: computed(() => {
       const ratio = peakRamUsage.value / board.ram;
-      return ratio > 0.75 ? "error" : ratio > 0.5 ? "warning" : "success";
+      return ratio > 0.75 ? "danger" : ratio > 0.5 ? "warning" : "success";
     }),
   };
 });
