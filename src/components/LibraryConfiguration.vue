@@ -88,6 +88,9 @@
       <small class="form-text text-muted">
         Defines the number of bytes used to store a slot identifier.
       </small>
+      <small class="form-text text-muted">
+        The document above uses {{ stats.slotCount }} slots.
+      </small>
     </div>
   </details>
 </template>
@@ -95,10 +98,12 @@
 <script setup>
 import { useSettingsStore } from "@/stores/settings";
 import { useBoardStore } from "@/stores/board";
+import { useStatsStore } from "@/stores/stats";
 import { computed } from "vue";
 
 const settings = useSettingsStore();
 const board = useBoardStore();
+const stats = useStatsStore();
 
 const defaults = computed(() => ({
   useDouble: board.doubleIsDefault,
