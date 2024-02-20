@@ -18,14 +18,8 @@ export const useBoardStore = defineStore("board", () => {
     memoryModel,
     doubleSupported: computed(() => !!memoryModel.value.doubleSupported),
     doubleIsDefault: computed(() => !!memoryModel.value.doubleIsDefault),
-    doubleInconsequential: computed(
-      () => memoryModel.value.slotSize[0] == memoryModel.value.slotSize[1],
-    ),
     longLongSupported: true,
     longLongIsDefault: computed(() => !!memoryModel.value.longLongIsDefault),
-    longLongInconsequential: computed(
-      () => memoryModel.value.slotSize[0] == memoryModel.value.slotSize[1],
-    ),
     psram: computed(() => cfg.cpu === "esp32"),
   };
 });

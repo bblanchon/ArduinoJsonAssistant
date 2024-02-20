@@ -61,7 +61,8 @@
         v-html="alert.message"
       ></div>
 
-      <AdvancedSettings />
+      <LibraryConfiguration />
+      <AssistantTweaks />
     </div>
 
     <div class="card-footer">
