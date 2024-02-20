@@ -139,6 +139,6 @@ function selectCpu(cpu) {
   settings.cpu = cpu;
   settings.useDouble = board.doubleIsDefault;
   settings.useLongLong = board.longLongIsDefault;
-  settings.slotIdSize = board.memoryModel.slotIdSize;
+  settings.slotIdSize = board.slotIdSize;
 }
 </script>

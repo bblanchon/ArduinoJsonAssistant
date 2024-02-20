@@ -3,26 +3,11 @@
     <h2 class="h4 card-header bg-primary text-white">Step 3: Program</h2>
 
     <div class="card-body">
-      <div
-        class="alert alert-warning"
-        v-if="board.longLongIsDefault != settings.useLongLong"
-      >
-        ⚠️ This program assumes you defined
-        <a :href="`${baseUrl}/v7/api/config/use_long_long/`"
-          ><code>ARDUINOJSON_USE_LONG_LONG</code></a
-        >
-        to <code>{{ +settings.useLongLong }}</code>
-      </div>
-      <div
-        class="alert alert-warning"
-        v-if="board.doubleIsDefault != settings.useDouble"
-      >
-        ⚠️ This program assumes you defined
-        <a :href="`${baseUrl}/v7/api/config/use_double/`"
-          ><code>ARDUINOJSON_USE_DOUBLE</code></a
-        >
-        to <code>{{ +settings.useDouble }}</code>
-      </div>
+      <figure>
+        <div class="highlight p-3 program">
+          <pre><code class="hljs" v-html="program.headerHtml"></code></pre>
+        </div>
+      </figure>
 
       <div class="form-inline" v-if="settings.isDeserializing">
         <label for="io-library" class="sr-only">Name</label>
@@ -85,13 +70,11 @@
 import "@/assets/highlight.scss";
 
 import { useSettingsStore } from "@/stores/settings";
-import { useBoardStore } from "@/stores/board";
 import { useProgramStore } from "@/stores/program";
 import { sleep } from "@/utils";
 import { inject, computed, ref, watchEffect } from "vue";
 
 const settings = useSettingsStore();
-const board = useBoardStore();
 const program = useProgramStore();
 const baseUrl = inject("baseUrl");
 
@@ -124,6 +107,21 @@ const links = computed(() =>
       if: settings.isSerializing,
       label: "<code>serializeJson()</code>",
       url: `${baseUrl}/v7/api/json/serializejson/`,
+    },
+    {
+      if: program.overridesSlotIdSize,
+      label: "<code>ARDUINOJSON_SLOT_ID_SIZE</code>",
+      url: `${baseUrl}/v7/api/config/slot_id_size/`,
+    },
+    {
+      if: program.overridesUseDouble,
+      label: "<code>ARDUINOJSON_USE_DOUBLE</code>",
+      url: `${baseUrl}/v7/api/config/use_double/`,
+    },
+    {
+      if: program.overridesUseLongLong,
+      label: "<code>ARDUINOJSON_USE_LONG_LONG</code>",
+      url: `${baseUrl}/v7/api/config/use_long_long/`,
     },
   ].filter((link) => link.if),
 );

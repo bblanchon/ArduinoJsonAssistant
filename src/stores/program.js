@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import hljs from "highlight.js/lib/core";
 import cpp from "highlight.js/lib/languages/cpp";
 
@@ -69,11 +69,42 @@ export const useProgramStore = defineStore("program", () => {
     programHtml.value = hljs.highlight(code, { language: "cpp" }).value;
   }
 
+  const overridesUseDouble = computed(
+    () => board.doubleIsDefault != cfg.useDouble,
+  );
+  const overridesUseLongLong = computed(
+    () => board.longLongIsDefault != cfg.useLongLong,
+  );
+  const overridesSlotIdSize = computed(
+    () => board.slotIdSize != cfg.slotIdSize,
+  );
+
+  const headerText = computed(() => {
+    const lines = [];
+    if (overridesSlotIdSize.value)
+      lines.push(`#define ARDUINOJSON_SLOT_ID_SIZE ${cfg.slotIdSize}`);
+    if (overridesUseDouble.value)
+      lines.push(`#define ARDUINOJSON_USE_DOUBLE ${+cfg.useDouble}`);
+    if (overridesUseLongLong.value)
+      lines.push(`#define ARDUINOJSON_USE_LONG_LONG ${+cfg.useLongLong}`);
+    lines.push(`#include <ArduinoJson.h>`);
+    return lines.join("\n");
+  });
+
+  const headerHtml = computed(
+    () => hljs.highlight(headerText.value, { language: "cpp" }).value,
+  );
+
   return {
+    headerText,
+    headerHtml,
     programHtml,
     programText,
     generate,
     ioLibrary,
     progmem,
+    overridesUseDouble,
+    overridesUseLongLong,
+    overridesSlotIdSize,
   };
 });

@@ -103,7 +103,7 @@ const board = useBoardStore();
 const defaults = computed(() => ({
   useDouble: board.doubleIsDefault,
   useLongLong: board.longLongIsDefault,
-  slotIdSize: board.memoryModel.slotIdSize,
+  slotIdSize: board.slotIdSize,
 }));
 
 const changeCount = computed(

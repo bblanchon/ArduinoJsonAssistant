@@ -21,5 +21,6 @@ export const useBoardStore = defineStore("board", () => {
     longLongSupported: true,
     longLongIsDefault: computed(() => !!memoryModel.value.longLongIsDefault),
     psram: computed(() => cfg.cpu === "esp32"),
+    slotIdSize: computed(() => memoryModel.value.slotIdSize),
   };
 });
