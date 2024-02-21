@@ -4,12 +4,15 @@
     <div class="card-body d-flex flex-column">
       <div class="d-flex justify-content-between">
         <ExampleDownloader />
-        <div class="custom-control custom-switch" v-if="isDeserializing">
+        <div
+          class="custom-control custom-switch"
+          v-if="settings.isDeserializing"
+        >
           <input
             type="checkbox"
             class="custom-control-input"
             id="filter-switch"
-            v-model="filterEnabled"
+            v-model="settings.filterEnabled"
           />
           <label class="custom-control-label" for="filter-switch"
             >Enable input filter</label
@@ -19,27 +22,27 @@
       <div class="row flex-fill">
         <div class="col-lg d-flex flex-column">
           <h3 class="h5">
-            {{ { serialize: "Output", deserialize: "Input" }[mode] }}
+            {{ { serialize: "Output", deserialize: "Input" }[settings.mode] }}
           </h3>
           <JsonEditor
-            :modelValue="inputJson"
-            @update:modelValue="setInputJson"
-            :placeholder="`Enter here the JSON document you want your program to ${mode}.`"
+            :modelValue="settings.inputJson"
+            @update:modelValue="settings.setInputJson"
+            :placeholder="`Enter here the JSON document you want your program to ${settings.mode}.`"
           />
         </div>
         <div
-          v-if="isDeserializing && filterEnabled"
+          v-if="settings.isDeserializing && settings.filterEnabled"
           class="col-lg d-flex flex-column"
         >
           <h3 class="h5">Filter</h3>
           <JsonEditor
-            :modelValue="filterJson"
-            @update:modelValue="setFilterJson"
+            :modelValue="settings.filterJson"
+            @update:modelValue="settings.setFilterJson"
             placeholder="Enter here the filter you want to apply to your inputdocument."
           />
         </div>
         <div
-          v-if="isDeserializing && filterEnabled"
+          v-if="settings.isDeserializing && settings.filterEnabled"
           class="col-lg d-flex flex-column"
         >
           <h3 class="h5">Filtered input</h3>
@@ -72,7 +75,7 @@
         </RouterLink>
         <RouterLink
           class="btn btn-primary"
-          :class="{ disabled: hasErrors }"
+          :class="{ disabled: settings.hasErrors }"
           :to="{ name: 'step3' }"
         >
           Next: Program
@@ -82,29 +85,15 @@
   </div>
 </template>
 
-<script>
-import { mapActions, mapState, mapWritableState } from "pinia";
+<script setup>
 import { useSettingsStore } from "@/stores/settings";
 import { useAlertsStore } from "@/stores/alerts";
+import { computed } from "vue";
 
-export default {
-  computed: {
-    ...mapState(useSettingsStore, [
-      "filter",
-      "filteredInput",
-      "filterJson",
-      "hasErrors",
-      "input",
-      "inputJson",
-      "isDeserializing",
-      "mode",
-    ]),
-    ...mapState(useAlertsStore, ["alerts"]),
-    ...mapWritableState(useSettingsStore, ["filterEnabled"]),
-    filteredInputJson() {
-      return JSON.stringify(this.filteredInput, null, 2);
-    },
-  },
-  methods: mapActions(useSettingsStore, ["setInputJson", "setFilterJson"]),
-};
+const settings = useSettingsStore();
+const { alerts } = useAlertsStore();
+
+const filteredInputJson = computed(() =>
+  JSON.stringify(settings.filteredInput, null, 2),
+);
 </script>
