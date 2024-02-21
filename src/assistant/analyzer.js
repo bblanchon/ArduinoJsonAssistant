@@ -93,12 +93,16 @@ class JsonDocument {
     this._deduplicateValues = cfg.deduplicateValues;
     this._filteringEnabled = !!cfg.filter;
 
+    const arch = memoryModels[cfg.arch];
+
     this._memory = memory;
     this._poolList = new SlotPoolList(cfg, this._memory);
-    this._stringOverhead = memoryModels[cfg.arch].stringOverhead;
+    this._stringOverhead = arch.stringOverhead;
+    if (cfg.stringLengthSize)
+      this._stringOverhead += cfg.stringLengthSize - arch.stringLengthSize;
     this._overAllocateStrings = cfg.overAllocateStrings;
 
-    this._memory.alloc(memoryModels[cfg.arch].documentSize);
+    this._memory.alloc(arch.documentSize);
   }
 
   allocSlots(n) {
@@ -197,6 +201,23 @@ export function measureNesting(obj) {
     innerNesting = Math.max(innerNesting, measureNesting(obj[key]));
   }
   return 1 + innerNesting;
+}
+
+export function getMaxStringLength(obj, cfg = {}) {
+  switch (getValueType(obj)) {
+    case "array":
+      return Math.max(...obj.map((x) => getMaxStringLength(x, cfg)));
+    case "string":
+      if (cfg.ignoreValues) return 0;
+      return obj.length;
+    case "object":
+      return Math.max(
+        ...(cfg.ignoreKeys ? [] : Object.keys(obj).map((key) => key.length)),
+        ...Object.values(obj).map((x) => getMaxStringLength(x, cfg)),
+      );
+    default:
+      return 0;
+  }
 }
 
 export function canLoop(input) {

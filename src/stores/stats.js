@@ -1,9 +1,15 @@
 import { defineStore } from "pinia";
 import { computed } from "vue";
 
-import { countSlots, measureSize } from "@/assistant/analyzer";
-import { hasJsonInJsonSyndrome, measureNesting } from "@/assistant/analyzer";
-import { needsDouble, needsLongLong } from "@/assistant/analyzer";
+import {
+  countSlots,
+  measureSize,
+  getMaxStringLength,
+  hasJsonInJsonSyndrome,
+  measureNesting,
+  needsDouble,
+  needsLongLong,
+} from "@/assistant/analyzer";
 
 import { useSettingsStore } from "./settings";
 import { useBoardStore } from "./board";
@@ -25,6 +31,7 @@ export const useStatsStore = defineStore("stats", () => {
       useDouble: cfg.useDouble,
       overAllocateStrings: cfg.mode == "deserialize",
       slotIdSize: cfg.slotIdSize,
+      stringLengthSize: cfg.stringLengthSize,
     }),
   );
 
@@ -49,12 +56,6 @@ export const useStatsStore = defineStore("stats", () => {
     () => size.value.peakMemoryUsage + bufferSize.value,
   );
 
-  const maxSlotsMapping = {
-    1: 255,
-    2: 65535,
-    4: 4294967295,
-  };
-
   return {
     nestingLevel: computed(() => measureNesting(cfg.input)),
     finalDocSize: computed(() => size.value.memoryUsage),
@@ -63,7 +64,7 @@ export const useStatsStore = defineStore("stats", () => {
     longLongNeeded: computed(() => needsLongLong(cfg.filteredInput)),
     jsonInJson: computed(() => hasJsonInJsonSyndrome(cfg.filteredInput)),
     slotCount: computed(() => countSlots(cfg.filteredInput)),
-    maxSlots: computed(() => maxSlotsMapping[cfg.slotIdSize]),
+    maxStringLength: computed(() => getMaxStringLength(cfg.filteredInput, cfg)),
     bufferSize,
     peakRamUsage,
     ramStatus: computed(() => {

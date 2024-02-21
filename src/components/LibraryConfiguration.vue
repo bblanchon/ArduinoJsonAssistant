@@ -111,6 +111,37 @@
             {{ formatInteger(stats.slotCount) }} slots.)
           </td>
         </tr>
+        <tr>
+          <td>
+            <label for="stringLengthSize" class="text-monospace">
+              ARDUINOJSON_STRING_LENGTH_SIZE
+            </label>
+          </td>
+          <td>
+            <select
+              id="stringLengthSize"
+              class="form-control form-control-sm"
+              v-model="settings.stringLengthSize"
+            >
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="4">4</option>
+            </select>
+          </td>
+          <td class="d-none d-sm-table-cell">
+            {{ +defaults.stringLengthSize }}
+            <ResetTweakButton
+              v-model="settings.stringLengthSize"
+              :default-value="defaults.stringLengthSize"
+            />
+          </td>
+          <td class="text-muted d-none d-md-table-cell">
+            String can contain up to
+            {{ formatInteger(settings.maxStringLength) }} characters.<br />
+            (The longest string in the document above has
+            {{ formatInteger(stats.maxStringLength) }} characters.)
+          </td>
+        </tr>
       </tbody>
     </table>
   </details>
@@ -121,6 +152,7 @@ import { useSettingsStore } from "@/stores/settings";
 import { useBoardStore } from "@/stores/board";
 import { useStatsStore } from "@/stores/stats";
 import { computed } from "vue";
+import { formatInteger } from "@/utils";
 
 const settings = useSettingsStore();
 const board = useBoardStore();
@@ -130,16 +162,8 @@ const defaults = computed(() => ({
   useDouble: board.doubleIsDefault,
   useLongLong: board.longLongIsDefault,
   slotIdSize: board.slotIdSize,
+  stringLengthSize: board.stringLengthSize,
 }));
-
-const integerFormatter = new Intl.NumberFormat("en-US", {
-  style: "decimal",
-  maximumFractionDigits: 0,
-});
-
-function formatInteger(value) {
-  return integerFormatter.format(value);
-}
 
 const changeCount = computed(
   () =>

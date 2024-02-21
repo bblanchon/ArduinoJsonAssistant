@@ -9,12 +9,13 @@ export const useAlertsStore = defineStore("alerts", () => {
   const cfg = useSettingsStore();
   const board = useBoardStore();
   const stats = useStatsStore();
+  const settings = useSettingsStore();
   const baseUrl = inject("baseUrl");
 
   const alerts = computed(() => {
     return [
       {
-        if: stats.slotCount > stats.maxSlots,
+        if: stats.slotCount > settings.maxSlotCount,
         id: "too-many-slots",
         type: "danger",
         message:

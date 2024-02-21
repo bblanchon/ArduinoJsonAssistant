@@ -54,11 +54,18 @@ export const useProgramStore = defineStore("program", () => {
   const overridesSlotIdSize = computed(
     () => board.slotIdSize != cfg.slotIdSize,
   );
+  const overridesStringLengthSize = computed(
+    () => board.stringLengthSize != cfg.stringLengthSize,
+  );
 
   const header = computed(() => {
     const lines = [];
     if (overridesSlotIdSize.value)
       lines.push(`#define ARDUINOJSON_SLOT_ID_SIZE ${cfg.slotIdSize}`);
+    if (overridesStringLengthSize.value)
+      lines.push(
+        `#define ARDUINOJSON_STRING_LENGTH_SIZE ${cfg.stringLengthSize}`,
+      );
     if (overridesUseDouble.value)
       lines.push(`#define ARDUINOJSON_USE_DOUBLE ${+cfg.useDouble}`);
     if (overridesUseLongLong.value)
@@ -73,8 +80,9 @@ export const useProgramStore = defineStore("program", () => {
     generate,
     ioLibrary,
     progmem,
+    overridesSlotIdSize,
+    overridesStringLengthSize,
     overridesUseDouble,
     overridesUseLongLong,
-    overridesSlotIdSize,
   };
 });

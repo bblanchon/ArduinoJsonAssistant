@@ -90,6 +90,11 @@ const links = computed(() =>
       url: `${baseUrl}/v7/config/slot_id_size/`,
     },
     {
+      if: program.overridesStringLengthSize,
+      label: "<code>ARDUINOJSON_STRING_LENGTH_SIZE</code>",
+      url: `${baseUrl}/v7/config/string_length_size/`,
+    },
+    {
       if: program.overridesUseDouble,
       label: "<code>ARDUINOJSON_USE_DOUBLE</code>",
       url: `${baseUrl}/v7/config/use_double/`,

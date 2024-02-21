@@ -23,7 +23,8 @@
     "longLongIsDefault": false,
     "arduinoStringOverhead": 6,
     "stdStringOverhead": 12,
-    "slotIdSize": 1
+    "slotIdSize": 1,
+    "stringLengthSize": 1
   },
   "16-bit": {
     "slotSize": {
@@ -49,7 +50,8 @@
     "longLongIsDefault": false,
     "arduinoStringOverhead": 6,
     "stdStringOverhead": 12,
-    "slotIdSize": 1
+    "slotIdSize": 1,
+    "stringLengthSize": 1
   },
   "32-bit": {
     "documentSize": 40,
@@ -76,7 +78,8 @@
     "longLongIsDefault": true,
     "arduinoStringOverhead": 12,
     "stdStringOverhead": 24,
-    "slotIdSize": 2
+    "slotIdSize": 2,
+    "stringLengthSize": 2
   },
   "64-bit": {
     "documentSize": 128,
@@ -103,6 +106,7 @@
     "longLongIsDefault": true,
     "arduinoStringOverhead": 24,
     "stdStringOverhead": 48,
-    "slotIdSize": 4
+    "slotIdSize": 4,
+    "stringLengthSize": 2
   }
 }
