@@ -77,5 +77,8 @@ export const useSettingsStore = defineStore("settings", {
     hasErrors() {
       return this.filteredInput === undefined;
     },
+    maxSlotCount() {
+      return { 1: 255, 2: 65635, 4: 4294967295 }[this.slotIdSize];
+    },
   },
 });

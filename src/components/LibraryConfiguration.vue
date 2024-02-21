@@ -12,86 +12,107 @@
         Reset {{ changeCount }} {{ changeCount > 1 ? "changes" : "change" }}
       </button>
     </summary>
-    <div v-if="board.doubleSupported" class="form-group">
-      <label for="useDouble" class="col-form-label text-monospace">
-        ARDUINOJSON_USE_DOUBLE
-      </label>
-      <ResetTweakButton
-        v-model="settings.useDouble"
-        :default-value="defaults.useDouble"
-      />
-      <select id="useDouble" class="form-control" v-model="settings.useDouble">
-        <option :value="false">
-          {{ defaults.useDouble ? "0" : "0 (default)" }}
-        </option>
-        <option :value="true">
-          {{ defaults.useDouble ? "1 (default)" : "1" }}
-        </option>
-      </select>
-      <small class="form-text text-muted">
-        Selects the type used to store floating point values:
-        <code>float</code> or <code>double</code>.
-      </small>
-    </div>
-    <div v-if="board.longLongSupported" class="form-group">
-      <label for="useLongLong" class="col-form-label text-monospace">
-        ARDUINOJSON_USE_LONG_LONG
-      </label>
-      <ResetTweakButton
-        v-model="settings.useLongLong"
-        :default-value="defaults.useLongLong"
-      />
-      <select
-        id="useLongLong"
-        class="form-control"
-        v-model="settings.useLongLong"
-      >
-        <option :value="false">
-          {{ defaults.useLongLong ? "0" : "0 (default)" }}
-        </option>
-        <option :value="true">
-          {{ defaults.useLongLong ? "1 (default)" : "1" }}
-        </option>
-      </select>
-      <small class="form-text text-muted">
-        Selects the type used to store integers: <code>long</code> or
-        <code>long long</code>.
-      </small>
-    </div>
-    <div class="form-group">
-      <label for="slotIdSize" class="col-form-label text-monospace">
-        ARDUINOJSON_SLOT_ID_SIZE
-      </label>
-      <ResetTweakButton
-        v-model="settings.slotIdSize"
-        :default-value="defaults.slotIdSize"
-      />
-      <select
-        id="slotIdSize"
-        class="form-control"
-        v-model="settings.slotIdSize"
-      >
-        <option value="1">
-          1 (up to 255 slots{{ defaults.slotIdSize == 1 ? ", default" : "" }})
-        </option>
-        <option value="2">
-          2 (up to 65,635 slots{{
-            defaults.slotIdSize == 2 ? ", default" : ""
-          }})
-        </option>
-        <option value="4">
-          4 (up to 4 million slots{{
-            defaults.slotIdSize == 4 ? ", default" : ""
-          }})
-        </option>
-      </select>
-      <small class="form-text text-muted">
-        Defines the number of bytes used to store a slot identifier.
-      </small>
-      <small class="form-text text-muted">
-        The document above uses {{ stats.slotCount }} slots.
-      </small>
-    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Setting</th>
+          <th>Value</th>
+          <th class="d-none d-sm-table-cell">Default</th>
+          <th class="d-none d-md-table-cell">Effect</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-if="board.doubleSupported">
+          <td>
+            <label for="useDouble" class="text-monospace">
+              ARDUINOJSON_USE_DOUBLE
+            </label>
+          </td>
+          <td>
+            <select
+              id="useDouble"
+              class="form-control form-control-sm"
+              v-model="settings.useDouble"
+            >
+              <option :value="false">0</option>
+              <option :value="true">1</option>
+            </select>
+          </td>
+          <td class="d-none d-sm-table-cell">
+            {{ +defaults.useDouble }}
+            <ResetTweakButton
+              v-model="settings.useDouble"
+              :default-value="defaults.useDouble"
+            />
+          </td>
+          <td class="text-muted d-none d-md-table-cell">
+            The <code>JsonDocument</code> will store floating point values as
+            <code>{{ settings.useDouble ? "double" : "float" }}</code
+            >.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label for="useLongLong" class="text-monospace">
+              ARDUINOJSON_USE_LONG_LONG
+            </label>
+          </td>
+          <td>
+            <select
+              id="useLongLong"
+              class="form-control form-control-sm"
+              v-model="settings.useLongLong"
+            >
+              <option :value="false">0</option>
+              <option :value="true">1</option>
+            </select>
+          </td>
+          <td class="d-none d-sm-table-cell">
+            {{ +defaults.useLongLong }}
+            <ResetTweakButton
+              v-model="settings.useLongLong"
+              :default-value="defaults.useLongLong"
+            />
+          </td>
+          <td class="text-muted d-none d-md-table-cell">
+            The <code>JsonDocument</code> will store integers as
+            <code>{{ settings.useLongLong ? "long long" : "long" }}</code
+            >.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label for="slotIdSize" class="text-monospace">
+              ARDUINOJSON_SLOT_ID_SIZE
+            </label>
+          </td>
+          <td>
+            <select
+              id="slotIdSize"
+              class="form-control form-control-sm"
+              v-model="settings.slotIdSize"
+            >
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="4">4</option>
+            </select>
+          </td>
+          <td class="d-none d-sm-table-cell">
+            {{ +defaults.slotIdSize }}
+            <ResetTweakButton
+              v-model="settings.slotIdSize"
+              :default-value="defaults.slotIdSize"
+            />
+          </td>
+          <td class="text-muted d-none d-md-table-cell">
+            The <code>JsonDocument</code> can contain up to
+            {{ formatInteger(settings.maxSlotCount) }} slots.<br />
+            (The document above uses
+            {{ formatInteger(stats.slotCount) }} slots.)
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </details>
 </template>
 
@@ -110,6 +131,15 @@ const defaults = computed(() => ({
   useLongLong: board.longLongIsDefault,
   slotIdSize: board.slotIdSize,
 }));
+
+const integerFormatter = new Intl.NumberFormat("en-US", {
+  style: "decimal",
+  maximumFractionDigits: 0,
+});
+
+function formatInteger(value) {
+  return integerFormatter.format(value);
+}
 
 const changeCount = computed(
   () =>
