@@ -87,17 +87,17 @@ const links = computed(() =>
     {
       if: program.overridesSlotIdSize,
       label: "<code>ARDUINOJSON_SLOT_ID_SIZE</code>",
-      url: `${baseUrl}/v7/api/config/slot_id_size/`,
+      url: `${baseUrl}/v7/config/slot_id_size/`,
     },
     {
       if: program.overridesUseDouble,
       label: "<code>ARDUINOJSON_USE_DOUBLE</code>",
-      url: `${baseUrl}/v7/api/config/use_double/`,
+      url: `${baseUrl}/v7/config/use_double/`,
     },
     {
       if: program.overridesUseLongLong,
       label: "<code>ARDUINOJSON_USE_LONG_LONG</code>",
-      url: `${baseUrl}/v7/api/config/use_long_long/`,
+      url: `${baseUrl}/v7/config/use_long_long/`,
     },
   ].filter((link) => link.if),
 );

@@ -32,14 +32,14 @@ export const useAlertsStore = defineStore("alerts", () => {
         if: stats.longLongNeeded && !board.longLongIsDefault,
         id: "long-long",
         type: "warning",
-        message: `This document contains <code>long&nbsp;long</code>; you should define <a href="${baseUrl}/v7/api/config/use_long_long/"><code>ARDUINOJSON_USE_LONG_LONG</code></a> to <code>1</code>`,
+        message: `This document contains <code>long&nbsp;long</code>; you should define <a href="${baseUrl}/v7/config/use_long_long/"><code>ARDUINOJSON_USE_LONG_LONG</code></a> to <code>1</code>`,
       },
       {
         if:
           stats.doubleNeeded && board.doubleSupported && !board.doubleIsDefault,
         id: "double",
         type: "warning",
-        message: `This document contains <code>double</code>; you should define <a href="${baseUrl}/v7/api/config/use_double/"><code>ARDUINOJSON_USE_DOUBLE</code></a> to <code>1</code>`,
+        message: `This document contains <code>double</code>; you should define <a href="${baseUrl}/v7/config/use_double/"><code>ARDUINOJSON_USE_DOUBLE</code></a> to <code>1</code>`,
       },
       {
         if: stats.doubleNeeded && !board.doubleSupported,
