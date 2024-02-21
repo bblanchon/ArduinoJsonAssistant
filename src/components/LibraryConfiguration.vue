@@ -107,8 +107,6 @@
           <td class="text-muted d-none d-md-table-cell">
             The <code>JsonDocument</code> can contain up to
             {{ formatInteger(settings.maxSlotCount) }} slots.<br />
-            (The document above uses
-            {{ formatInteger(stats.slotCount) }} slots.)
           </td>
         </tr>
         <tr>
@@ -138,8 +136,6 @@
           <td class="text-muted d-none d-md-table-cell">
             String can contain up to
             {{ formatInteger(settings.maxStringLength) }} characters.<br />
-            (The longest string in the document above has
-            {{ formatInteger(stats.maxStringLength) }} characters.)
           </td>
         </tr>
       </tbody>
@@ -150,13 +146,11 @@
 <script setup>
 import { useSettingsStore } from "@/stores/settings";
 import { useBoardStore } from "@/stores/board";
-import { useStatsStore } from "@/stores/stats";
 import { computed } from "vue";
 import { formatInteger } from "@/utils";
 
 const settings = useSettingsStore();
 const board = useBoardStore();
-const stats = useStatsStore();
 
 const defaults = computed(() => ({
   useDouble: board.doubleIsDefault,

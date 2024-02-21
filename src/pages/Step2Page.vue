@@ -55,7 +55,19 @@
         </div>
       </div>
 
-      <MemoryUsage class="my-3" />
+      <div class="border rounded bg-light my-3">
+        <div class="row">
+          <div class="col-sm-4 my-3">
+            <RamGauge />
+          </div>
+          <div class="col-sm-4 my-3">
+            <SlotsGauge />
+          </div>
+          <div class="col-sm-4 my-3">
+            <StringsGauge />
+          </div>
+        </div>
+      </div>
 
       <div
         v-for="alert in alerts"

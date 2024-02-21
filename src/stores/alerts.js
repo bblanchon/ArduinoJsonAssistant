@@ -12,14 +12,6 @@ export const useAlertsStore = defineStore("alerts", () => {
   const baseUrl = inject("baseUrl");
 
   function* enumerateAlerts() {
-    if (stats.slotCount > settings.maxSlotCount)
-      yield {
-        id: "too-many-slots",
-        type: "danger",
-        message:
-          "<b>This document contains too many values.</b><br>Because of an optimization, <code>JsonDocument</code> can only contain a limited number of values. You could overpass this limit by changing <code>ARDUINOJSON_SLOT_ID_SIZE</code>, but it would increase the memory usage.",
-      };
-
     if (
       settings.isDeserializing &&
       stats.nestingLevel > board.memoryModel.nestingLimit
@@ -58,14 +50,11 @@ export const useAlertsStore = defineStore("alerts", () => {
         message: `This document suffers from the <q>JSON in JSON</q> syndrome, so you may need to call <a href="${baseUrl}/v7/api/json/deserializejson/"><code>deserializeJson()</code></a> multiple times. <strong>The ArduinoJson Assistant doesn't support settings scenario.</strong>`,
       };
 
-    if (stats.ramStatus === "warning")
-      yield {
-        id: "size-warning",
-        type: "warning",
-        message: `This may not fit in the RAM. Make sure there is enough free space.`,
-      };
-
-    if (stats.ramStatus === "danger" && !board.psram)
+    if (
+      stats.ramStatus === "danger" &&
+      !board.psram &&
+      settings.isDeserializing
+    )
       yield {
         id: "size-error",
         type: "danger",
@@ -80,9 +69,7 @@ export const useAlertsStore = defineStore("alerts", () => {
       };
   }
 
-  const alerts = computed(() => {
-    return Array.from(enumerateAlerts());
-  });
-
-  return { alerts };
+  return {
+    alerts: computed(() => Array.from(enumerateAlerts())),
+  };
 });
