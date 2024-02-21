@@ -6,7 +6,6 @@ import { computed, inject } from "vue";
 import { useStatsStore } from "./stats";
 
 export const useAlertsStore = defineStore("alerts", () => {
-  const cfg = useSettingsStore();
   const board = useBoardStore();
   const stats = useStatsStore();
   const settings = useSettingsStore();
@@ -23,7 +22,7 @@ export const useAlertsStore = defineStore("alerts", () => {
       },
       {
         if:
-          cfg.isDeserializing &&
+          settings.isDeserializing &&
           stats.nestingLevel > board.memoryModel.nestingLimit,
         id: "too-deep",
         type: "warning",
@@ -52,7 +51,7 @@ export const useAlertsStore = defineStore("alerts", () => {
         if: stats.jsonInJson,
         id: "json-in-json",
         type: "warning",
-        message: `This document suffers from the <q>JSON in JSON</q> syndrome, so you may need to call <a href="${baseUrl}/v7/api/json/deserializejson/"><code>deserializeJson()</code></a> multiple times. <strong>The ArduinoJson Assistant doesn't support cfg scenario.</strong>`,
+        message: `This document suffers from the <q>JSON in JSON</q> syndrome, so you may need to call <a href="${baseUrl}/v7/api/json/deserializejson/"><code>deserializeJson()</code></a> multiple times. <strong>The ArduinoJson Assistant doesn't support settings scenario.</strong>`,
       },
       {
         if: stats.ramStatus === "warning",

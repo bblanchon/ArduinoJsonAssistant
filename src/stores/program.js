@@ -45,30 +45,17 @@ export const useProgramStore = defineStore("program", () => {
     body.value = code;
   }
 
-  const overridesUseDouble = computed(
-    () => board.doubleIsDefault != cfg.useDouble,
-  );
-  const overridesUseLongLong = computed(
-    () => board.longLongIsDefault != cfg.useLongLong,
-  );
-  const overridesSlotIdSize = computed(
-    () => board.slotIdSize != cfg.slotIdSize,
-  );
-  const overridesStringLengthSize = computed(
-    () => board.stringLengthSize != cfg.stringLengthSize,
-  );
-
   const header = computed(() => {
     const lines = [];
-    if (overridesSlotIdSize.value)
+    if (board.slotIdSize != cfg.slotIdSize)
       lines.push(`#define ARDUINOJSON_SLOT_ID_SIZE ${cfg.slotIdSize}`);
-    if (overridesStringLengthSize.value)
+    if (board.stringLengthSize != cfg.stringLengthSize)
       lines.push(
         `#define ARDUINOJSON_STRING_LENGTH_SIZE ${cfg.stringLengthSize}`,
       );
-    if (overridesUseDouble.value)
+    if (board.doubleIsDefault != cfg.useDouble)
       lines.push(`#define ARDUINOJSON_USE_DOUBLE ${+cfg.useDouble}`);
-    if (overridesUseLongLong.value)
+    if (board.longLongIsDefault != cfg.useLongLong)
       lines.push(`#define ARDUINOJSON_USE_LONG_LONG ${+cfg.useLongLong}`);
     lines.push(`#include <ArduinoJson.h>`);
     return lines.join("\n");
@@ -80,9 +67,5 @@ export const useProgramStore = defineStore("program", () => {
     generate,
     ioLibrary,
     progmem,
-    overridesSlotIdSize,
-    overridesStringLengthSize,
-    overridesUseDouble,
-    overridesUseLongLong,
   };
 });

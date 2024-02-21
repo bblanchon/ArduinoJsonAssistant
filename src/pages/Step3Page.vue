@@ -50,60 +50,12 @@
 <script setup>
 import { useSettingsStore } from "@/stores/settings";
 import { useProgramStore } from "@/stores/program";
-import { inject, computed, watchEffect } from "vue";
+import { useDocumentationStore } from "@/stores/documentation";
+import { watchEffect } from "vue";
 
 const settings = useSettingsStore();
 const program = useProgramStore();
-const baseUrl = inject("baseUrl");
+const { links } = useDocumentationStore();
 
 watchEffect(() => program.generate());
-
-const links = computed(() =>
-  [
-    {
-      if: settings.isDeserializing,
-      label: "Deserialization Tutorial",
-      url: `${baseUrl}/v7/tutorial/deserialization/`,
-    },
-    {
-      if: settings.isSerializing,
-      label: "Serialization Tutorial",
-      url: `${baseUrl}/v7/tutorial/serialization/`,
-    },
-    {
-      label: "<code>JsonDocument</code>",
-      url: `${baseUrl}/v7/api/jsondocument/`,
-    },
-    {
-      if: settings.isDeserializing,
-      label: "<code>deserializeJson()</code>",
-      url: `${baseUrl}/v7/api/json/deserializejson/`,
-    },
-    {
-      if: settings.isSerializing,
-      label: "<code>serializeJson()</code>",
-      url: `${baseUrl}/v7/api/json/serializejson/`,
-    },
-    {
-      if: program.overridesSlotIdSize,
-      label: "<code>ARDUINOJSON_SLOT_ID_SIZE</code>",
-      url: `${baseUrl}/v7/config/slot_id_size/`,
-    },
-    {
-      if: program.overridesStringLengthSize,
-      label: "<code>ARDUINOJSON_STRING_LENGTH_SIZE</code>",
-      url: `${baseUrl}/v7/config/string_length_size/`,
-    },
-    {
-      if: program.overridesUseDouble,
-      label: "<code>ARDUINOJSON_USE_DOUBLE</code>",
-      url: `${baseUrl}/v7/config/use_double/`,
-    },
-    {
-      if: program.overridesUseLongLong,
-      label: "<code>ARDUINOJSON_USE_LONG_LONG</code>",
-      url: `${baseUrl}/v7/config/use_long_long/`,
-    },
-  ].filter((link) => link.if),
-);
 </script>
