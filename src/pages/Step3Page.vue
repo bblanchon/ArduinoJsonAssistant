@@ -3,11 +3,7 @@
     <h2 class="h4 card-header bg-primary text-white">Step 3: Program</h2>
 
     <div class="card-body">
-      <figure>
-        <div class="highlight p-3 program">
-          <pre><code class="hljs" v-html="program.headerHtml"></code></pre>
-        </div>
-      </figure>
+      <CodeBlock :source="program.header" />
 
       <div class="form-inline" v-if="settings.isDeserializing">
         <label for="io-library" class="sr-only">Name</label>
@@ -33,23 +29,8 @@
         </div>
       </div>
 
-      <figure class="position-relative">
-        <button
-          class="btn position-absolute"
-          :class="{
-            'btn-outline-primary': !programCopied,
-            'btn-success': programCopied,
-          }"
-          :disabled="programCopied"
-          style="top: 1em; right: 1em; width: 6em"
-          @click="copyProgram"
-        >
-          {{ programCopied ? "✓ Copied" : "Copy" }}
-        </button>
-        <div class="highlight p-3 program">
-          <pre><code class="hljs" v-html="program.programHtml"></code></pre>
-        </div>
-      </figure>
+      <CodeBlock :source="program.body" />
+
       <ul class="list-inline card-text">
         <li class="list-inline-item font-weight-bold">See also</li>
         <li v-for="link in links" :key="link.label" class="list-inline-item">
@@ -67,18 +48,13 @@
 </template>
 
 <script setup>
-import "@/assets/highlight.scss";
-
 import { useSettingsStore } from "@/stores/settings";
 import { useProgramStore } from "@/stores/program";
-import { sleep } from "@/utils";
-import { inject, computed, ref, watchEffect } from "vue";
+import { inject, computed, watchEffect } from "vue";
 
 const settings = useSettingsStore();
 const program = useProgramStore();
 const baseUrl = inject("baseUrl");
-
-const programCopied = ref(false);
 
 watchEffect(() => program.generate());
 
@@ -125,18 +101,4 @@ const links = computed(() =>
     },
   ].filter((link) => link.if),
 );
-
-async function copyProgram() {
-  await navigator.clipboard.writeText(program.programText);
-  programCopied.value = true;
-  await sleep(500);
-  programCopied.value = false;
-}
 </script>
-
-<style scoped>
-.program {
-  max-height: 30em;
-  overflow-y: auto;
-}
-</style>

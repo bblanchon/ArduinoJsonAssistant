@@ -1,9 +1,6 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
-import hljs from "highlight.js/lib/core";
-import cpp from "highlight.js/lib/languages/cpp";
 
-import { sleep } from "@/utils";
 import { generateParsingProgram } from "@/assistant/parsingProgram";
 import { generateSerializingProgram } from "@/assistant/serializingProgram";
 
@@ -11,29 +8,11 @@ import { useSettingsStore } from "./settings";
 import { useBoardStore } from "./board";
 import { useStatsStore } from "./stats";
 
-hljs.registerLanguage("cpp", (hljs) => {
-  const lang = cpp(hljs);
-  lang.keywords.type.push(
-    "JsonArray",
-    "JsonObject",
-    "JsonVariant",
-    "JsonDocument",
-    "DeserializationError",
-    "DeserializationOption",
-  );
-  return lang;
-});
-
-function escapeHtmlTags(str) {
-  return str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
-
 export const useProgramStore = defineStore("program", () => {
   const cfg = useSettingsStore();
   const board = useBoardStore();
   const stats = useStatsStore();
-  const programText = ref("");
-  const programHtml = ref("");
+  const body = ref("");
   const ioLibrary = ref("serial");
   const progmem = ref(false);
 
@@ -63,10 +42,7 @@ export const useProgramStore = defineStore("program", () => {
         break;
     }
 
-    programText.value = code;
-    programHtml.value = escapeHtmlTags(code);
-    await sleep(100);
-    programHtml.value = hljs.highlight(code, { language: "cpp" }).value;
+    body.value = code;
   }
 
   const overridesUseDouble = computed(
@@ -79,7 +55,7 @@ export const useProgramStore = defineStore("program", () => {
     () => board.slotIdSize != cfg.slotIdSize,
   );
 
-  const headerText = computed(() => {
+  const header = computed(() => {
     const lines = [];
     if (overridesSlotIdSize.value)
       lines.push(`#define ARDUINOJSON_SLOT_ID_SIZE ${cfg.slotIdSize}`);
@@ -91,15 +67,9 @@ export const useProgramStore = defineStore("program", () => {
     return lines.join("\n");
   });
 
-  const headerHtml = computed(
-    () => hljs.highlight(headerText.value, { language: "cpp" }).value,
-  );
-
   return {
-    headerText,
-    headerHtml,
-    programHtml,
-    programText,
+    header,
+    body,
     generate,
     ioLibrary,
     progmem,
