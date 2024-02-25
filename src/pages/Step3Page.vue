@@ -33,7 +33,11 @@
 
       <ul class="list-inline card-text">
         <li class="list-inline-item font-weight-bold">See also</li>
-        <li v-for="link in links" :key="link.label" class="list-inline-item">
+        <li
+          v-for="link in documentation.links"
+          :key="link.label"
+          class="list-inline-item"
+        >
           <a :href="link.url" v-html="link.label"></a>
         </li>
       </ul>
@@ -55,7 +59,7 @@ import { watchEffect } from "vue";
 
 const settings = useSettingsStore();
 const program = useProgramStore();
-const { links } = useDocumentationStore();
+const documentation = useDocumentationStore();
 
 watchEffect(() => program.generate());
 </script>
