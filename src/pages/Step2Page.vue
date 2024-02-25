@@ -98,12 +98,14 @@
 </template>
 
 <script setup>
-import { useSettingsStore } from "@/stores/settings";
-import { useAlertsStore } from "@/stores/alerts";
+import { storeToRefs } from "pinia";
 import { computed } from "vue";
 
+import { useSettingsStore } from "@/stores/settings";
+import { useAlertsStore } from "@/stores/alerts";
+
 const settings = useSettingsStore();
-const { alerts } = useAlertsStore();
+const { alerts } = storeToRefs(useAlertsStore());
 
 const filteredInputJson = computed(() =>
   JSON.stringify(settings.filteredInput, null, 2),
