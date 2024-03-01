@@ -17,7 +17,7 @@ describe("writeDeserializationCode()", () => {
 
   it("inputType == charPtr", () => {
     expect(getDeserializationCode({ inputType: "charPtr" })).toEqual(
-      `// char* input;
+      `// const char* input;
 // size_t inputLength; (optional)
 
 JsonDocument doc;
@@ -33,17 +33,6 @@ DeserializationError error = deserializeJson(doc, input, inputLength);`,
 JsonDocument doc;
 
 DeserializationError error = deserializeJson(doc, input, MAX_INPUT_LENGTH);`,
-    );
-  });
-
-  it("inputType == constCharPtr", () => {
-    expect(getDeserializationCode({ inputType: "constCharPtr" })).toEqual(
-      `// const char* input;
-// size_t inputLength; (optional)
-
-JsonDocument doc;
-
-DeserializationError error = deserializeJson(doc, input, inputLength);`,
     );
   });
 

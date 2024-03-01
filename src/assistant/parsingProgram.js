@@ -141,11 +141,6 @@ export function writeDecompositionCode(prg, input, cfg = {}) {
 export function writeDeserializationCode(prg, cfg) {
   switch (cfg.inputType) {
     case "charPtr":
-      prg.addLine("// char* input;");
-      prg.addLine("// size_t inputLength; (optional)");
-      break;
-
-    case "constCharPtr":
       prg.addLine("// const char* input;");
       prg.addLine("// size_t inputLength; (optional)");
       break;
@@ -185,7 +180,6 @@ export function writeDeserializationCode(prg, cfg) {
 
   switch (cfg.inputType) {
     case "charPtr":
-    case "constCharPtr":
       args.push("inputLength");
       break;
     case "charArray":
