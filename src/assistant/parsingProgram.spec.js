@@ -16,64 +16,39 @@ describe("writeDeserializationCode()", () => {
   }
 
   it("inputType == charPtr", () => {
-    expect(getDeserializationCode({ inputType: "charPtr" })).toEqual(
-      `// const char* input;
-// size_t inputLength; (optional)
-
-JsonDocument doc;
-
-DeserializationError error = deserializeJson(doc, input, inputLength);`,
-    );
+    expect(
+      getDeserializationCode({ inputType: "charPtr" }),
+    ).toMatchFileSnapshot("snapshots/deserializejson/char-ptr.cpp");
   });
 
   it("inputType == charArray", () => {
-    expect(getDeserializationCode({ inputType: "charArray" })).toEqual(
-      `// char input[MAX_INPUT_LENGTH];
-
-JsonDocument doc;
-
-DeserializationError error = deserializeJson(doc, input, MAX_INPUT_LENGTH);`,
-    );
+    expect(
+      getDeserializationCode({ inputType: "charArray" }),
+    ).toMatchFileSnapshot("snapshots/deserializejson/char-array.cpp");
   });
 
   it("inputType == arduinoString", () => {
-    expect(getDeserializationCode({ inputType: "arduinoString" })).toEqual(
-      `// String input;
-
-JsonDocument doc;
-
-DeserializationError error = deserializeJson(doc, input);`,
-    );
+    expect(
+      getDeserializationCode({ inputType: "arduinoString" }),
+    ).toMatchFileSnapshot("snapshots/deserializejson/arduino-string.cpp");
   });
 
   it("inputType == arduinoStream", () => {
-    expect(getDeserializationCode({ inputType: "arduinoStream" })).toEqual(
-      `// Stream& input;
-
-JsonDocument doc;
-
-DeserializationError error = deserializeJson(doc, input);`,
-    );
+    expect(
+      getDeserializationCode({ inputType: "arduinoStream" }),
+    ).toMatchFileSnapshot("snapshots/deserializejson/arduino-stream.cpp");
   });
 
   it("inputType == stdString", () => {
-    expect(getDeserializationCode({ inputType: "stdString" })).toEqual(
-      `// std::string input;
-
-JsonDocument doc;
-
-DeserializationError error = deserializeJson(doc, input);`,
-    );
+    expect(
+      getDeserializationCode({ inputType: "stdString" }),
+    ).toMatchFileSnapshot("snapshots/deserializejson/std-string.cpp");
   });
 
   it("inputType == stdStream", () => {
-    expect(getDeserializationCode({ inputType: "stdStream" })).toEqual(
-      `// std::istream& input;
-
-JsonDocument doc;
-
-DeserializationError error = deserializeJson(doc, input);`,
-    );
+    expect(
+      getDeserializationCode({ inputType: "stdStream" }),
+    ).toMatchFileSnapshot("snapshots/deserializejson/std-istream.cpp");
   });
 });
 
@@ -85,31 +60,20 @@ describe("writeErrorCheckingCode()", () => {
   }
 
   it("should print to Serial when possible", () => {
-    expect(getErrorCheckingCode({ serial: true })).toEqual(
-      `if (error) {
-  Serial.print("deserializeJson() failed: ");
-  Serial.println(error.c_str());
-  return;
-}`,
+    expect(getErrorCheckingCode({ serial: true })).toMatchFileSnapshot(
+      "snapshots/check-error/serial.cpp",
     );
   });
 
   it("should use PROGMEM when possible", () => {
-    expect(getErrorCheckingCode({ serial: true, progmem: true })).toEqual(
-      `if (error) {
-  Serial.print(F("deserializeJson() failed: "));
-  Serial.println(error.f_str());
-  return;
-}`,
-    );
+    expect(
+      getErrorCheckingCode({ serial: true, progmem: true }),
+    ).toMatchFileSnapshot("snapshots/check-error/serial-progmem.cpp");
   });
 
   it("should print to cerr if Serial is not available", () => {
-    expect(getErrorCheckingCode({ serial: false })).toEqual(
-      `if (error) {
-  std::cerr << "deserializeJson() failed: " << error.c_str() << std::endl;
-  return;
-}`,
+    expect(getErrorCheckingCode({ serial: false })).toMatchFileSnapshot(
+      "snapshots/check-error/iostream.cpp",
     );
   });
 });
@@ -121,17 +85,7 @@ describe("generateParsingProgram", function () {
         input: [[[[[[[[[[[]]]]]]]]]]],
         nestingLimit: 11,
       }),
-    ).toEqual(
-      `JsonDocument doc;
-
-DeserializationError error = deserializeJson(doc, input, DeserializationOption::NestingLimit(11));
-
-if (error) {
-  std::cerr << "deserializeJson() failed: " << error.c_str() << std::endl;
-  return;
-}
-`,
-    );
+    ).toMatchFileSnapshot("snapshots/parsing-program/nestinglimit.cpp");
   });
 
   it("nesting limit with filter", () => {
@@ -141,37 +95,13 @@ if (error) {
         filter: { a: true },
         nestingLimit: 11,
       }),
-    ).toEqual(
-      `JsonDocument filter;
-filter["a"] = true;
-
-JsonDocument doc;
-
-DeserializationError error = deserializeJson(doc, input, DeserializationOption::Filter(filter), DeserializationOption::NestingLimit(11));
-
-if (error) {
-  std::cerr << "deserializeJson() failed: " << error.c_str() << std::endl;
-  return;
-}
-`,
-    );
+    ).toMatchFileSnapshot("snapshots/parsing-program/filter-nestinglimit.cpp");
   });
 
   it("filter", () => {
-    expect(generateParsingProgram({ input: {}, filter: { a: true } })).toEqual(
-      `JsonDocument filter;
-filter["a"] = true;
-
-JsonDocument doc;
-
-DeserializationError error = deserializeJson(doc, input, DeserializationOption::Filter(filter));
-
-if (error) {
-  std::cerr << "deserializeJson() failed: " << error.c_str() << std::endl;
-  return;
-}
-`,
-    );
+    expect(
+      generateParsingProgram({ input: {}, filter: { a: true } }),
+    ).toMatchFileSnapshot("snapshots/parsing-program/filter.cpp");
   });
 
   it("serial and progmem", () => {
@@ -181,20 +111,7 @@ if (error) {
         serial: true,
         progmem: true,
       }),
-    ).toEqual(
-      `JsonDocument doc;
-
-DeserializationError error = deserializeJson(doc, input);
-
-if (error) {
-  Serial.print(F("deserializeJson() failed: "));
-  Serial.println(error.f_str());
-  return;
-}
-
-const char* hello = doc[F("hello")]; // "world"
-`,
-    );
+    ).toMatchFileSnapshot("snapshots/parsing-program/serial-progmem.cpp");
   });
 });
 
@@ -214,89 +131,83 @@ describe("writeDecompositionCode", function () {
   });
 
   it("42", () => {
-    expect(getDecompositionCode(42)).toEqual("int root = doc.as<int>(); // 42");
+    expect(getDecompositionCode(42)).toMatchFileSnapshot(
+      "snapshots/decompose/int.cpp",
+    );
   });
 
   it("[42]", () => {
-    expect(getDecompositionCode([42])).toEqual("int root_0 = doc[0]; // 42\n");
+    expect(getDecompositionCode([42])).toMatchFileSnapshot(
+      "snapshots/decompose/array-one-int.cpp",
+    );
   });
 
   it("bool", () => {
-    expect(getDecompositionCode(true)).toEqual(
-      "bool root = doc.as<bool>(); // true",
+    expect(getDecompositionCode(true)).toMatchFileSnapshot(
+      "snapshots/decompose/bool-true.cpp",
     );
-    expect(getDecompositionCode(false)).toEqual(
-      "bool root = doc.as<bool>(); // false",
+    expect(getDecompositionCode(false)).toMatchFileSnapshot(
+      "snapshots/decompose/bool-false.cpp",
     );
   });
 
   it("[1,2,3]", () => {
-    expect(getDecompositionCode([1, 2, 3])).toEqual(
-      `int root_0 = doc[0]; // 1
-int root_1 = doc[1]; // 2
-int root_2 = doc[2]; // 3
-`,
+    expect(getDecompositionCode([1, 2, 3])).toMatchFileSnapshot(
+      "snapshots/decompose/array-three-int.cpp",
     );
   });
 
   it('{"hello":true}', () => {
-    expect(getDecompositionCode({ hello: true })).toEqual(
-      'bool hello = doc["hello"]; // true\n',
+    expect(getDecompositionCode({ hello: true })).toMatchFileSnapshot(
+      "snapshots/decompose/object-bool.cpp",
     );
   });
 
   it('{"hello":true} with progmem', () => {
-    expect(getDecompositionCode({ hello: true }, { progmem: true })).toEqual(
-      'bool hello = doc[F("hello")]; // true\n',
-    );
+    expect(
+      getDecompositionCode({ hello: true }, { progmem: true }),
+    ).toMatchFileSnapshot("snapshots/decompose/object-bool-progmem.cpp");
   });
 
   it('{"hello":null}', () => {
-    expect(getDecompositionCode({ hello: null })).toEqual(
-      '// doc["hello"] is null\n',
+    expect(getDecompositionCode({ hello: null })).toMatchFileSnapshot(
+      "snapshots/decompose/object-null.cpp",
     );
   });
 
   it('{"hello":"world"}', () => {
-    expect(getDecompositionCode({ hello: "world" })).toEqual(
-      'const char* hello = doc["hello"]; // "world"\n',
+    expect(getDecompositionCode({ hello: "world" })).toMatchFileSnapshot(
+      "snapshots/decompose/object-string.cpp",
     );
   });
 
   it('{"hello":"world"} with progmem', () => {
-    expect(getDecompositionCode({ hello: "world" }, { progmem: true })).toEqual(
-      'const char* hello = doc[F("hello")]; // "world"\n',
-    );
+    expect(
+      getDecompositionCode({ hello: "world" }, { progmem: true }),
+    ).toMatchFileSnapshot("snapshots/decompose/object-string-progmem.cpp");
   });
 
   it('[{"a":1,"b":2,"c":3}]', () => {
-    expect(getDecompositionCode([{ a: 1, b: 2, c: 3 }])).toEqual(
-      `JsonObject root_0 = doc[0];
-int root_0_a = root_0["a"]; // 1
-int root_0_b = root_0["b"]; // 2
-int root_0_c = root_0["c"]; // 3
-`,
+    expect(getDecompositionCode([{ a: 1, b: 2, c: 3 }])).toMatchFileSnapshot(
+      "snapshots/decompose/object-three-int.cpp",
     );
   });
 
   it("[[[[[[[[[[[42]]]]]]]]]]]", () => {
-    expect(getDecompositionCode([[[[[[[[[[[42]]]]]]]]]]])).toEqual(
-      "int root_0_0_0_0_0_0_0_0_0_0_0 = doc[0][0][0][0][0][0][0][0][0][0][0]; // 42\n",
+    expect(getDecompositionCode([[[[[[[[[[[42]]]]]]]]]]])).toMatchFileSnapshot(
+      "snapshots/decompose/array-deep-int.cpp",
     );
   });
 
   it("[10000,10000000,10000000000]", () => {
-    expect(getDecompositionCode([10000, 10000000, 10000000000])).toEqual(
-      `int root_0 = doc[0]; // 10000
-long root_1 = doc[1]; // 10000000
-long long root_2 = doc[2]; // 10000000000
-`,
-    );
+    expect(
+      getDecompositionCode([10000, 10000000, 10000000000]),
+    ).toMatchFileSnapshot("snapshots/decompose/array-large-integers.cpp");
   });
 
   it('{"123":1}', () => {
-    expect(getDecompositionCode({ 123: 1 })).toEqual(
-      'int root_123 = doc["123"]; // 1\n',
+    expect(getDecompositionCode({ 123: 1 })).toMatchFileSnapshot(
+      "snapshots/decompose/object-int-key.cpp",
     );
   });
 
@@ -314,18 +225,7 @@ long long root_2 = doc[2]; // 10000000000
           weather: [{ description: "clear sky" }],
         },
       ]),
-    ).toEqual(
-      `for (JsonObject item : doc.as<JsonArray>()) {
-
-  long dt = item["dt"]; // 1511978400, 1511989200
-
-  float main_temp = item["main"]["temp"]; // 3.95, 3.2
-
-  const char* weather_0_description = item["weather"][0]["description"]; // "light rain", "clear sky"
-
-}
-`,
-    );
+    ).toMatchFileSnapshot("snapshots/decompose/loop-in-root-array.cpp");
   });
 
   it("loop in member array", () => {
@@ -349,18 +249,7 @@ long long root_2 = doc[2]; // 10000000000
           },
         ],
       }),
-    ).toEqual(
-      `for (JsonObject list_item : doc["list"].as<JsonArray>()) {
-
-  long list_item_dt = list_item["dt"]; // 1511978400, 1511989200, 1512000000
-
-  float list_item_main_temp = list_item["main"]["temp"]; // 3.95, 3.2, 3.25
-
-  const char* list_item_weather_0_description = list_item["weather"][0]["description"]; // "light rain", ...
-
-}
-`,
-    );
+    ).toMatchFileSnapshot("snapshots/decompose/loop-in-member-array.cpp");
   });
 
   it("loop in member object", () => {
@@ -381,50 +270,26 @@ long long root_2 = doc[2]; // 10000000000
           },
         },
       }),
-    ).toEqual(
-      `for (JsonPair property : doc["properties"].as<JsonObject>()) {
-  const char* property_key = property.key().c_str(); // "batt", "tempc", "hum"
-
-  const char* property_value_unit = property.value()["unit"]; // "%", "°C", "%"
-  const char* property_value_name = property.value()["name"]; // "battery", "temperature", "humidity"
-
-}
-`,
-    );
+    ).toMatchFileSnapshot("snapshots/decompose/loop-in-member-object.cpp");
   });
 
   it("loop with mixed integer and long-longs", () => {
     expect(
       getDecompositionCode([{ x: 10000 }, { x: 10000000 }, { x: 10000000000 }]),
-    ).toEqual(
-      `for (JsonObject item : doc.as<JsonArray>()) {
-
-  long long x = item["x"]; // 10000, 10000000, 10000000000
-
-}
-`,
+    ).toMatchFileSnapshot(
+      "snapshots/decompose/loop-mixed-int-and-long-long.cpp",
     );
   });
 
   it("loop with mixed integer and floats", () => {
-    expect(getDecompositionCode([{ x: 10000 }, { x: 1.4 }])).toEqual(
-      `for (JsonObject item : doc.as<JsonArray>()) {
-
-  float x = item["x"]; // 10000, 1.4
-
-}
-`,
-    );
+    expect(
+      getDecompositionCode([{ x: 10000 }, { x: 1.4 }]),
+    ).toMatchFileSnapshot("snapshots/decompose/loop-mixed-int-and-float.cpp");
   });
 
   it("loop with mixed null and integer", () => {
-    expect(getDecompositionCode([{ x: null }, { x: 42 }])).toEqual(
-      `for (JsonObject item : doc.as<JsonArray>()) {
-
-  int x = item["x"]; // 0, 42
-
-}
-`,
+    expect(getDecompositionCode([{ x: null }, { x: 42 }])).toMatchFileSnapshot(
+      "snapshots/decompose/loop-mixed-int-and-null.cpp",
     );
   });
 
@@ -436,25 +301,13 @@ long long root_2 = doc[2]; // 10000000000
         { very_long_name: "yes another long value" },
         { very_long_name: "some string" },
       ]),
-    ).toEqual(
-      `for (JsonObject item : doc.as<JsonArray>()) {
-
-  const char* very_long_name = item["very_long_name"]; // "long value", "another long value", "yes another ...
-
-}
-`,
-    );
+    ).toMatchFileSnapshot("snapshots/decompose/loop-ellipsis.cpp");
   });
 
   it("loop on root with null siblings", () => {
-    expect(getDecompositionCode([{ x: { id: 10 } }, { x: null }])).toEqual(
-      `for (JsonObject item : doc.as<JsonArray>()) {
-
-  int x_id = item["x"]["id"]; // 10, 0
-
-}
-`,
-    );
+    expect(
+      getDecompositionCode([{ x: { id: 10 } }, { x: null }]),
+    ).toMatchFileSnapshot("snapshots/decompose/loop-null-sibling-object.cpp");
   });
 
   it("nested array with potential name conflict #1623", () => {
@@ -463,18 +316,7 @@ long long root_2 = doc[2]; // 10000000000
         { data: [{ time: 1 }, { time: 2 }] },
         { data: [{ time: 3 }, { time: 4 }] },
       ]),
-    ).toEqual(
-      `for (JsonObject item : doc.as<JsonArray>()) {
-
-  for (JsonObject data_item : item["data"].as<JsonArray>()) {
-
-    int data_item_time = data_item["time"]; // 1, 2
-
-  }
-
-}
-`,
-    );
+    ).toMatchFileSnapshot("snapshots/decompose/loop-nested.cpp");
   });
 
   it("null sibling array", () => {
@@ -484,14 +326,6 @@ long long root_2 = doc[2]; // 10000000000
         { data: [2, 4] },
         { data: null },
       ]),
-    ).toEqual(
-      `for (JsonObject item : doc.as<JsonArray>()) {
-
-  int data_0 = item["data"][0]; // 1, 2, 0
-  int data_1 = item["data"][1]; // 3, 4, 0
-
-}
-`,
-    );
+    ).toMatchFileSnapshot("snapshots/decompose/loop-null-sibling-array.cpp");
   });
 });

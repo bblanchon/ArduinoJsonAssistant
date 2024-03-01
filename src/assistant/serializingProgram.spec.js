@@ -18,56 +18,62 @@ describe("writeCompositionCode()", () => {
   });
 
   it("[]", () => {
-    expect(getCompositionCode([])).toEqual("doc.to<JsonArray>();");
+    expect(getCompositionCode([])).toMatchFileSnapshot(
+      "snapshots/compose/array-empty.cpp",
+    );
   });
 
   it("{}", () => {
-    expect(getCompositionCode({})).toEqual("doc.to<JsonObject>();");
+    expect(getCompositionCode({})).toMatchFileSnapshot(
+      "snapshots/compose/object-empty.cpp",
+    );
   });
 
   it("[42]", () => {
-    expect(getCompositionCode([42])).toEqual("doc[0] = 42;");
+    expect(getCompositionCode([42])).toMatchFileSnapshot(
+      "snapshots/compose/array-int.cpp",
+    );
   });
 
   it("[null]", () => {
-    expect(getCompositionCode([null])).toEqual("doc[0] = nullptr;");
+    expect(getCompositionCode([null])).toMatchFileSnapshot(
+      "snapshots/compose/array-null.cpp",
+    );
   });
 
   it('["hello"]', () => {
-    expect(getCompositionCode(["hello"])).toEqual('doc[0] = "hello";');
+    expect(getCompositionCode(["hello"])).toMatchFileSnapshot(
+      "snapshots/compose/array-one-string.cpp",
+    );
   });
 
   it('["hello","world",null]', () => {
-    expect(getCompositionCode(["hello", "world", null])).toEqual(
-      'doc.add("hello");\ndoc.add("world");\ndoc.add(nullptr);',
+    expect(getCompositionCode(["hello", "world", null])).toMatchFileSnapshot(
+      "snapshots/compose/array-string-string-null.cpp",
     );
   });
 
   it('{"answer":42}', () => {
-    expect(getCompositionCode({ answer: 42 })).toEqual('doc["answer"] = 42;');
+    expect(getCompositionCode({ answer: 42 })).toMatchFileSnapshot(
+      "snapshots/compose/object-int.cpp",
+    );
   });
 
   it('{"answer":null}', () => {
-    expect(getCompositionCode({ answer: null })).toEqual(
-      'doc["answer"] = nullptr;',
+    expect(getCompositionCode({ answer: null })).toMatchFileSnapshot(
+      "snapshots/compose/object-null.cpp",
     );
   });
 
   it('[{"answer":42}]', () => {
-    expect(getCompositionCode([{ answer: 42 }])).toEqual(
-      'doc[0]["answer"] = 42;',
+    expect(getCompositionCode([{ answer: 42 }])).toMatchFileSnapshot(
+      "snapshots/compose/array-object-int.cpp",
     );
   });
 
   it('{"answers":[42]}', () => {
-    expect(getCompositionCode({ answers: [42] })).toEqual(
-      'doc["answers"][0] = 42;',
-    );
-  });
-
-  it('{"message":{"status":"ok"}}', () => {
-    expect(getCompositionCode({ message: { status: "ok" } })).toEqual(
-      'doc["message"]["status"] = "ok";',
+    expect(getCompositionCode({ answers: [42] })).toMatchFileSnapshot(
+      "snapshots/compose/object-array-int.cpp",
     );
   });
 
@@ -77,74 +83,31 @@ describe("writeCompositionCode()", () => {
         [1, 2],
         [3, 4],
       ]),
-    ).toEqual(
-      `JsonArray doc_0 = doc.add<JsonArray>();
-doc_0.add(1);
-doc_0.add(2);
-
-JsonArray doc_1 = doc.add<JsonArray>();
-doc_1.add(3);
-doc_1.add(4);`,
-    );
+    ).toMatchFileSnapshot("snapshots/compose/array-2d.cpp");
   });
 
   it('{ A: { B: { C: "D" }, E: { F: "G" } } }', () => {
-    expect(getCompositionCode({ A: { B: { C: "D" }, E: { F: "G" } } })).toEqual(
-      `JsonObject A = doc["A"].to<JsonObject>();
-A["B"]["C"] = "D";
-A["E"]["F"] = "G";`,
-    );
+    expect(
+      getCompositionCode({ A: { B: { C: "D" }, E: { F: "G" } } }),
+    ).toMatchFileSnapshot("snapshots/compose/object-many-strings-deep.cpp");
   });
 
   it('{ A: { B: { C: "D" } } }', () => {
-    expect(getCompositionCode({ A: { B: { C: "D" } } })).toEqual(
-      'doc["A"]["B"]["C"] = "D";',
-    );
-  });
-
-  it("[[[42, 43],[44, 45]]]", () => {
-    expect(
-      getCompositionCode([
-        [
-          [42, 43],
-          [44, 45],
-        ],
-      ]),
-    ).toEqual(
-      `JsonArray doc_0 = doc.add<JsonArray>();
-
-JsonArray doc_0_0 = doc_0.add<JsonArray>();
-doc_0_0.add(42);
-doc_0_0.add(43);
-
-JsonArray doc_0_1 = doc_0.add<JsonArray>();
-doc_0_1.add(44);
-doc_0_1.add(45);`,
+    expect(getCompositionCode({ A: { B: { C: "D" } } })).toMatchFileSnapshot(
+      "snapshots/compose/object-one-string-deep.cpp",
     );
   });
 
   it('{"hello world":[42, 43]}', () => {
-    expect(getCompositionCode({ "hello world": [42, 43] })).toEqual(
-      `JsonArray hello_world = doc["hello world"].to<JsonArray>();
-hello_world.add(42);
-hello_world.add(43);`,
-    );
-  });
-
-  it("{ list: [{ dt: true }] }", () => {
-    expect(getCompositionCode({ list: [{ dt: true, main: true }] })).toEqual(
-      `JsonObject list_0 = doc["list"].add<JsonObject>();
-list_0["dt"] = true;
-list_0["main"] = true;`,
+    expect(getCompositionCode({ "hello world": [42, 43] })).toMatchFileSnapshot(
+      "snapshots/compose/object-array-ints.cpp",
     );
   });
 
   it("{ list: [{ dt: true, main: true }] }", () => {
-    expect(getCompositionCode({ list: [{ dt: true, main: true }] })).toEqual(
-      `JsonObject list_0 = doc["list"].add<JsonObject>();
-list_0["dt"] = true;
-list_0["main"] = true;`,
-    );
+    expect(
+      getCompositionCode({ list: [{ dt: true, main: true }] }),
+    ).toMatchFileSnapshot("snapshots/compose/object-array-object-bools.cpp");
   });
 
   it("{ data: { children: [{ data: { title: true, ups: true } }] } }", () => {
@@ -152,16 +115,14 @@ list_0["main"] = true;`,
       getCompositionCode({
         data: { children: [{ data: { title: true, ups: true } }] },
       }),
-    ).toEqual(
-      `JsonObject data_children_0_data = doc["data"]["children"][0]["data"].to<JsonObject>();
-data_children_0_data["title"] = true;
-data_children_0_data["ups"] = true;`,
+    ).toMatchFileSnapshot(
+      "snapshots/compose/object-array-object-object-bools.cpp",
     );
   });
 
   it("[{ a: 1 }, { a: 2 }]", () => {
-    expect(getCompositionCode([{ a: 1 }, { a: 2 }])).toEqual(
-      'doc[0]["a"] = 1;\ndoc[1]["a"] = 2;',
+    expect(getCompositionCode([{ a: 1 }, { a: 2 }])).toMatchFileSnapshot(
+      "snapshots/compose/array-objects-one-member-per-object.cpp",
     );
   });
 
@@ -171,54 +132,35 @@ data_children_0_data["ups"] = true;`,
         { a: 1, b: 2 },
         { a: 3, b: 4 },
       ]),
-    ).toEqual(
-      `JsonObject doc_0 = doc.add<JsonObject>();
-doc_0["a"] = 1;
-doc_0["b"] = 2;
-
-JsonObject doc_1 = doc.add<JsonObject>();
-doc_1["a"] = 3;
-doc_1["b"] = 4;`,
+    ).toMatchFileSnapshot(
+      "snapshots/compose/array-objects-two-members-per-object.cpp",
     );
   });
 
   it("{ if: {} }", () => {
-    expect(getCompositionCode({ if: {} })).toEqual(
-      'JsonObject if_ = doc["if"].to<JsonObject>();',
+    expect(getCompositionCode({ if: {} })).toMatchFileSnapshot(
+      "snapshots/compose/object-if-empty-object.cpp",
     );
   });
 });
 
 describe("generateSerializingProgram()", function () {
   it('{"answer":42}', () => {
-    expect(generateSerializingProgram({ output: { answer: 42 } })).toEqual(
-      `JsonDocument doc;
-
-doc["answer"] = 42;
-
-doc.shrinkToFit();  // optional
-
-serializeJson(doc, output);`,
-    );
+    expect(
+      generateSerializingProgram({ output: { answer: 42 } }),
+    ).toMatchFileSnapshot("snapshots/serializing-program/object.cpp");
   });
 
   it("null", () => {
-    expect(generateSerializingProgram({ output: null })).toEqual(
-      `JsonDocument doc;
-
-serializeJson(doc, output);`,
+    expect(generateSerializingProgram({ output: null })).toMatchFileSnapshot(
+      "snapshots/serializing-program/null.cpp",
     );
   });
 
   it("outputType = charPtr", () => {
-    expect(generateSerializingProgram({ outputType: "charPtr" })).toEqual(
-      `// char* output;
-// size_t outputCapacity;
-
-JsonDocument doc;
-
-serializeJson(doc, output, outputCapacity);`,
-    );
+    expect(
+      generateSerializingProgram({ outputType: "charPtr" }),
+    ).toMatchFileSnapshot("snapshots/serializing-program/char-ptr.cpp");
   });
 
   it("outputType = charArray", () => {
@@ -226,12 +168,7 @@ serializeJson(doc, output, outputCapacity);`,
       generateSerializingProgram({
         outputType: "charArray",
       }),
-    ).toEqual(
-      `JsonDocument doc;
-
-char output[MAX_OUTPUT_SIZE];
-serializeJson(doc, output);`,
-    );
+    ).toMatchFileSnapshot("snapshots/serializing-program/char-array.cpp");
   });
 
   it("outputType = arduinoString", () => {
@@ -239,12 +176,7 @@ serializeJson(doc, output);`,
       generateSerializingProgram({
         outputType: "arduinoString",
       }),
-    ).toEqual(
-      `JsonDocument doc;
-
-String output;
-serializeJson(doc, output);`,
-    );
+    ).toMatchFileSnapshot("snapshots/serializing-program/arduino-string.cpp");
   });
 
   it("outputType = stdString", () => {
@@ -252,12 +184,7 @@ serializeJson(doc, output);`,
       generateSerializingProgram({
         outputType: "stdString",
       }),
-    ).toEqual(
-      `JsonDocument doc;
-
-std::string output;
-serializeJson(doc, output);`,
-    );
+    ).toMatchFileSnapshot("snapshots/serializing-program/std-string.cpp");
   });
 
   it("outputType = arduinoStream", () => {
@@ -265,13 +192,7 @@ serializeJson(doc, output);`,
       generateSerializingProgram({
         outputType: "arduinoStream",
       }),
-    ).toEqual(
-      `// Stream& output;
-
-JsonDocument doc;
-
-serializeJson(doc, output);`,
-    );
+    ).toMatchFileSnapshot("snapshots/serializing-program/arduino-stream.cpp");
   });
 
   it("outputType = stdStream", () => {
@@ -279,12 +200,6 @@ serializeJson(doc, output);`,
       generateSerializingProgram({
         outputType: "stdStream",
       }),
-    ).toEqual(
-      `// std::ostream& output;
-
-JsonDocument doc;
-
-serializeJson(doc, output);`,
-    );
+    ).toMatchFileSnapshot("snapshots/serializing-program/std-ostream.cpp");
   });
 });

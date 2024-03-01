@@ -1,0 +1,1 @@
+bool root = doc.as<bool>(); // false
