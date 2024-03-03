@@ -9,7 +9,17 @@ import {
   makeItemName,
   makeVariableName,
   stringifyValue,
+  stripHtml,
 } from "./programWriter";
+import {
+  keywords,
+  types,
+  literals,
+  tokens,
+  functions,
+  macros,
+  globals,
+} from "./tokens";
 import { writeCompositionCode } from "./serializingProgram";
 import { applyFilter } from "./filter";
 
@@ -18,12 +28,19 @@ function extractValue(prg, cfg) {
   const parent = cfg.parent;
   const variableName = cfg.name;
 
+  const asFunction =
+    stripHtml(parent) == "doc"
+      ? functions.JsonDocument.as
+      : functions.JsonVariant.as;
+
   switch (getValueType(value)) {
     case "array":
       prg.addEmptyLine();
       if (canLoop(value)) {
-        const item = makeItemName(parent);
-        prg.addLine(`for (JsonObject ${item} : ${parent}.as<JsonArray>()) {`);
+        const item = tokens.variable(makeItemName(parent));
+        prg.addLine(
+          `${keywords.for} (${types.JsonObject} ${item} : ${parent}.${asFunction}&lt;${types.JsonArray}&gt;()) {`,
+        );
         prg.indent();
         extractValue(prg, {
           value: value[0],
@@ -36,11 +53,11 @@ function extractValue(prg, cfg) {
       } else {
         let arrayName = parent;
         if (value.length > 2 && parent.indexOf("[") >= 0) {
-          arrayName = makeVariableName(variableName);
-          prg.addLine(`JsonArray ${arrayName} = ${parent};`);
+          arrayName = tokens.variable(makeVariableName(variableName));
+          prg.addLine(`${types.JsonArray} ${arrayName} = ${parent};`);
         }
         for (let i = 0; i < value.length; i++) {
-          const elementExpression = `${arrayName}[${i}]`;
+          const elementExpression = `${arrayName}[${literals.number(i)}]`;
           extractValue(prg, {
             value: value[i],
             parent: elementExpression,
@@ -57,18 +74,20 @@ function extractValue(prg, cfg) {
       prg.addEmptyLine();
       if (canLoop(value)) {
         const item = makeItemName(parent);
-        prg.addLine(`for (JsonPair ${item} : ${parent}.as<JsonObject>()) {`);
+        prg.addLine(
+          `${keywords.for} (${types.JsonPair} ${tokens.variable(item)} : ${parent}.${asFunction}&lt;${types.JsonObject}&gt;()) {`,
+        );
         prg.indent();
         extractValue(prg, {
           value: Object.keys(value)[0],
-          name: item + "_key",
-          parent: item + ".key().c_str()",
+          name: tokens.variable(item + "_key"),
+          parent: tokens.variable(item) + ".key().c_str()",
           siblings: Object.keys(value),
           progmem: cfg.progmem,
         });
         extractValue(prg, {
           value: Object.values(value)[0],
-          parent: item + ".value()",
+          parent: tokens.variable(item) + ".value()",
           siblings: Object.values(value),
           progmem: cfg.progmem,
         });
@@ -77,13 +96,13 @@ function extractValue(prg, cfg) {
       } else {
         let objName = parent;
         if (variableName && Object.keys(value).length > 2) {
-          objName = makeVariableName(variableName);
-          prg.addLine(`JsonObject ${objName} = ${parent};`);
+          objName = tokens.variable(makeVariableName(variableName));
+          prg.addLine(`${types.JsonObject} ${objName} = ${parent};`);
         }
         for (const key in value) {
           const memberExpression = cfg.progmem
-            ? `${objName}[F("${key}")]`
-            : `${objName}["${key}"]`;
+            ? `${objName}[${macros.F}(${literals.string(key)})]`
+            : `${objName}[${literals.string(key)}]`;
           extractValue(prg, {
             value: value[key],
             parent: memberExpression,
@@ -100,22 +119,23 @@ function extractValue(prg, cfg) {
       const siblings = cfg.siblings || [value];
       const type = getCommonCppTypeFor(siblings);
       if (type) {
-        const statement = `${type} ${variableName} = ${parent};`;
+        const statement = `${tokens.type(type)} ${tokens.variable(variableName)} = ${parent};`;
         let comment = siblings
           .map((value) => stringifyValue(type, value))
           .join(", ");
-        if (statement.length + comment.length > 100) {
-          const spaceIndex = comment.lastIndexOf(" ", 100 - statement.length);
+        const lineLength = stripHtml(statement).length;
+        if (lineLength + comment.length > 100) {
+          const spaceIndex = comment.lastIndexOf(" ", 100 - lineLength);
           if (spaceIndex > 0) {
             comment = comment.slice(0, spaceIndex + 1) + "...";
           } else {
             comment = null;
           }
         }
-        if (comment) prg.addLine(`${statement} // ${comment}`);
+        if (comment) prg.addLine(`${statement} ${tokens.comment(comment)}`);
         else prg.addLine(statement);
       } else {
-        prg.addLine(`// ${parent} is null`);
+        prg.addLine(tokens.comment(`${parent} is null`));
       }
       break;
     }
@@ -128,11 +148,13 @@ export function writeDecompositionCode(prg, input, cfg = {}) {
       return extractValue(prg, {
         ...cfg,
         value: input,
-        parent: "doc",
+        parent: tokens.variable("doc"),
       });
     default: {
       const t = getCppTypeFor(input);
-      prg.addLine(t, " root = doc.as<", t, ">(); // ", JSON.stringify(input));
+      prg.addLine(
+        `${tokens.type(t)} ${tokens.variable("root")} = ${tokens.variable("doc")}.${functions.JsonDocument.as}&lt;${tokens.type(t)}&gt;(); ${tokens.comment(JSON.stringify(input))}`,
+      );
       break;
     }
   }
@@ -141,78 +163,91 @@ export function writeDecompositionCode(prg, input, cfg = {}) {
 export function writeDeserializationCode(prg, cfg) {
   switch (cfg.inputType) {
     case "charPtr":
-      prg.addLine("// const char* input;");
-      prg.addLine("// size_t inputLength; (optional)");
+      prg.addLine(tokens.comment("const char* input;"));
+      prg.addLine(tokens.comment("size_t inputLength; (optional)"));
       break;
 
     case "charArray":
-      prg.addLine("// char input[MAX_INPUT_LENGTH];");
+      prg.addLine(tokens.comment("char input[MAX_INPUT_LENGTH];"));
       break;
 
     case "arduinoString":
-      prg.addLine("// String input;");
+      prg.addLine(tokens.comment("String input;"));
       break;
 
     case "arduinoStream":
-      prg.addLine("// Stream& input;");
+      prg.addLine(tokens.comment("Stream& input;"));
       break;
 
     case "stdStream":
-      prg.addLine("// std::istream& input;");
+      prg.addLine(tokens.comment("std::istream& input;"));
       break;
 
     case "stdString":
-      prg.addLine("// std::string input;");
+      prg.addLine(tokens.comment("std::string input;"));
       break;
   }
   prg.addEmptyLine();
 
   const filter = cfg.filter;
   if (filter) {
-    prg.addLine("JsonDocument filter;");
+    prg.addLine(`${types.JsonDocument} ${tokens.variable("filter")};`);
     writeCompositionCode(prg, { value: filter, name: "filter" });
     prg.addEmptyLine();
   }
 
-  prg.addLine("JsonDocument doc;");
+  prg.addLine(`${types.JsonDocument} ${tokens.variable("doc")};`);
 
-  const args = ["doc", "input"];
+  const args = [tokens.variable("doc"), tokens.variable("input")];
 
   switch (cfg.inputType) {
     case "charPtr":
-      args.push("inputLength");
+      args.push(tokens.variable("inputLength"));
       break;
     case "charArray":
-      args.push("MAX_INPUT_LENGTH");
+      args.push(tokens.macro("MAX_INPUT_LENGTH"));
       break;
   }
 
-  if (filter) args.push("DeserializationOption::Filter(filter)");
+  if (filter)
+    args.push(
+      `${functions.DeserializationOption.Filter}(${tokens.variable("filter")})`,
+    );
 
   if (cfg.nestingLimit)
-    args.push(`DeserializationOption::NestingLimit(${cfg.nestingLimit})`);
+    args.push(
+      `${functions.DeserializationOption.NestingLimit}(${literals.number(cfg.nestingLimit)})`,
+    );
 
   prg.addEmptyLine();
   prg.addLine(
-    `DeserializationError error = deserializeJson(${args.join(", ")});`,
+    `${types.DeserializationError} ${tokens.variable("error")} = ${functions.deserializeJson}(${args.join(", ")});`,
   );
 }
 
 export function writeErrorCheckingCode(prg, cfg) {
-  prg.addLine(`if (error) {`);
+  prg.addLine(`${keywords.if} (${tokens.variable("error")}) {`);
   prg.indent();
   if (cfg.serial && cfg.progmem) {
-    prg.addLine('Serial.print(F("deserializeJson() failed: "));');
-    prg.addLine("Serial.println(error.f_str());");
+    prg.addLine(
+      `${functions.Serial.print}(${macros.F}(${literals.string("deserializeJson() failed: ")}));`,
+    );
+    prg.addLine(
+      `${functions.Serial.println}(${tokens.variable("error")}.f_str());`,
+    );
   } else if (cfg.serial) {
-    prg.addLine('Serial.print("deserializeJson() failed: ");');
-    prg.addLine("Serial.println(error.c_str());");
+    prg.addLine(
+      `${functions.Serial.print}(${literals.string("deserializeJson() failed: ")});`,
+    );
+    prg.addLine(
+      `${functions.Serial.println}(${tokens.variable("error")}.c_str());`,
+    );
   } else {
     prg.addLine(
-      'std::cerr << "deserializeJson() failed: " << error.c_str() << std::endl;',
+      `${globals.std.cerr} &lt;&lt; ${literals.string("deserializeJson() failed: ")} &lt;&lt; ${tokens.variable("error")}.c_str() &lt;&lt; ${globals.std.endl};`,
     );
   }
-  prg.addLine("return;");
+  prg.addLine(`${keywords.return};`);
   prg.unindent();
   prg.addLine("}");
 }
@@ -230,5 +265,5 @@ export function generateParsingProgram(cfg) {
     : cfg.input;
   writeDecompositionCode(prg, filteredInput, cfg);
 
-  return prg.toString();
+  return prg.toString(cfg.html);
 }

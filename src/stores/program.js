@@ -3,6 +3,7 @@ import { ref, computed } from "vue";
 
 import { generateParsingProgram } from "@/assistant/parsingProgram";
 import { generateSerializingProgram } from "@/assistant/serializingProgram";
+import { keywords, macros } from "@/assistant/tokens";
 
 import { useSettingsStore } from "./settings";
 import { useBoardStore } from "./board";
@@ -31,6 +32,7 @@ export const useProgramStore = defineStore("program", () => {
               : undefined,
           serial: ioLibrary.value == "serial",
           progmem: progmem.value,
+          html: true,
         });
         break;
 
@@ -38,6 +40,7 @@ export const useProgramStore = defineStore("program", () => {
         code = generateSerializingProgram({
           output: cfg.input,
           outputType: cfg.ioType,
+          html: true,
         });
         break;
     }
@@ -48,16 +51,22 @@ export const useProgramStore = defineStore("program", () => {
   const header = computed(() => {
     const lines = [];
     if (board.slotIdSize != cfg.slotIdSize)
-      lines.push(`#define ARDUINOJSON_SLOT_ID_SIZE ${cfg.slotIdSize}`);
+      lines.push(
+        `${keywords.define} ${macros.ARDUINOJSON_SLOT_ID_SIZE} ${cfg.slotIdSize}`,
+      );
     if (board.stringLengthSize != cfg.stringLengthSize)
       lines.push(
-        `#define ARDUINOJSON_STRING_LENGTH_SIZE ${cfg.stringLengthSize}`,
+        `${keywords.define} ${macros.ARDUINOJSON_STRING_LENGTH_SIZE} ${cfg.stringLengthSize}`,
       );
     if (board.doubleIsDefault != cfg.useDouble)
-      lines.push(`#define ARDUINOJSON_USE_DOUBLE ${+cfg.useDouble}`);
+      lines.push(
+        `${keywords.define} ${macros.ARDUINOJSON_USE_DOUBLE} ${+cfg.useDouble}`,
+      );
     if (board.longLongIsDefault != cfg.useLongLong)
-      lines.push(`#define ARDUINOJSON_USE_LONG_LONG ${+cfg.useLongLong}`);
-    lines.push(`#include <ArduinoJson.h>`);
+      lines.push(
+        `${keywords.define} ${macros.ARDUINOJSON_USE_LONG_LONG} ${+cfg.useLongLong}`,
+      );
+    lines.push(`${keywords.include} &lt;ArduinoJson.h&gt;`);
     return lines.join("\n");
   });
 

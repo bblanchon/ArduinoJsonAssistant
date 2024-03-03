@@ -23,8 +23,9 @@ export class ProgramWriter {
     this.depth--;
   }
 
-  toString() {
-    return this.lines.join("\n");
+  toString(html = false) {
+    const content = this.lines.join("\n");
+    return html ? content : stripHtml(content);
   }
 }
 
@@ -128,8 +129,15 @@ const reservedWords = [
   "xor_eq",
 ];
 
+export function stripHtml(html) {
+  return html
+    .replace(/<[^>]*>?/gi, "")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">");
+}
+
 export function makeVariableName(expression) {
-  let variable = expression
+  let variable = stripHtml(expression)
     .replace(/F\("([^"]+)"\)]/g, "$1")
     .replace(/["\]]/g, "")
     .replace(/[^a-z0-9]+/gi, "_")

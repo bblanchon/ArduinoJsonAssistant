@@ -1,24 +1,40 @@
-import { ProgramWriter, makeVariableName } from "./programWriter";
+import { getValueType } from "./analyzer";
+import { ProgramWriter, makeVariableName, stripHtml } from "./programWriter";
+import { literals, keywords, types, functions, tokens } from "./tokens";
 
 function stringifyValue(value) {
-  return value === null ? "nullptr" : JSON.stringify(value);
+  switch (getValueType(value)) {
+    case "string":
+      return literals.string(value);
+    case "number":
+      return literals.number(value);
+    case "boolean":
+      return literals.bool(value);
+    case "null":
+      return keywords.nullptr;
+    default:
+      return value;
+  }
 }
 
 function addArray(prg, { name, value, parent, key }) {
   const childrenCount = value.length;
 
   if (parent === undefined) {
-    if (childrenCount == 0) prg.addLine(`${name}.to<JsonArray>();`);
+    if (childrenCount == 0)
+      prg.addLine(
+        `${tokens.variable(name)}.${name == "doc" ? functions.JsonDocument.to : functions.JsonVariant.to}&lt;${types.JsonArray}&gt;();`,
+      );
     if (childrenCount == 1)
       return assignVariant(prg, {
-        parent: name,
+        parent: tokens.variable(name),
         name: name + "_0",
         key: 0,
         value: value[0],
       });
   } else if (childrenCount == 1) {
     return assignVariant(prg, {
-      parent: parent + JSON.stringify([key]),
+      parent: `${parent}[${stringifyValue(key)}]`,
       name: name + "_0",
       key: 0,
       value: value[0],
@@ -27,16 +43,19 @@ function addArray(prg, { name, value, parent, key }) {
     prg.addEmptyLine();
     if (typeof key === "string")
       prg.addLine(
-        `JsonArray ${name} = ${parent}[${JSON.stringify(
+        `${types.JsonArray} ${tokens.variable(name)} = ${parent}[${stringifyValue(
           key,
-        )}].to<JsonArray>();`,
+        )}].${stripHtml(parent) == "doc" ? functions.JsonDocument.to : functions.JsonVariant.to}&lt;${types.JsonArray}&gt;();`,
       );
-    else prg.addLine(`JsonArray ${name} = ${parent}.add<JsonArray>();`);
+    else
+      prg.addLine(
+        `${types.JsonArray} ${tokens.variable(name)} = ${parent}.${stripHtml(parent) == "doc" ? functions.JsonDocument.add : functions.JsonArray.add}&lt;${types.JsonArray}&gt;();`,
+      );
   }
   value.forEach((elem, index) => {
     addArrayElement(prg, {
       key: index,
-      array: name,
+      array: tokens.variable(name),
       name: name + "_" + index,
       value: elem,
     });
@@ -45,21 +64,27 @@ function addArray(prg, { name, value, parent, key }) {
 
 function addObject(prg, { parent, key, name, value }) {
   const childrenCount = Object.keys(value).length;
-  let objectName = name;
+  let objectName = tokens.variable(name);
 
   if (parent === undefined) {
-    if (childrenCount == 0) return prg.addLine(`${name}.to<JsonObject>();`);
+    if (childrenCount == 0)
+      return prg.addLine(
+        `${tokens.variable(name)}.${name == "doc" ? functions.JsonDocument.to : functions.JsonVariant.to}&lt;${types.JsonObject}&gt;();`,
+      );
   } else if (childrenCount == 1) {
-    objectName = parent + JSON.stringify([key]);
+    objectName = `${parent}[${stringifyValue(key)}]`;
   } else {
     prg.addEmptyLine();
     if (typeof key === "string")
       prg.addLine(
-        `JsonObject ${name} = ${parent}[${JSON.stringify(
+        `${types.JsonObject} ${tokens.variable(name)} = ${parent}[${stringifyValue(
           key,
-        )}].to<JsonObject>();`,
+        )}].${stripHtml(parent) == "doc" ? functions.JsonDocument.to : functions.JsonVariant.to}&lt;${types.JsonObject}&gt;();`,
       );
-    else prg.addLine(`JsonObject ${name} = ${parent}.add<JsonObject>();`);
+    else
+      prg.addLine(
+        `${types.JsonObject} ${tokens.variable(name)} = ${parent}.${stripHtml(parent) == "doc" ? functions.JsonDocument.add : functions.JsonArray.add}&lt;${types.JsonObject}&gt;();`,
+      );
   }
 
   for (const key in value) {
@@ -78,7 +103,9 @@ function addArrayElement(prg, { array, name, value, key }) {
   } else if (value instanceof Object) {
     addObject(prg, { parent: array, key, name, value });
   } else {
-    prg.addLine(`${array}.add(${stringifyValue(value)});`);
+    prg.addLine(
+      `${array}.${functions.JsonArray.add}(${stringifyValue(value)});`,
+    );
   }
 }
 
@@ -88,8 +115,9 @@ function addObjectMember(prg, { key, object, value, name }) {
   else if (value instanceof Object)
     addObject(prg, { parent: object, key, name, value });
   else {
-    key = JSON.stringify(key);
-    prg.addLine(`${object}[${key}] = ${stringifyValue(value)};`);
+    prg.addLine(
+      `${object}[${literals.string(key)}] = ${stringifyValue(value)};`,
+    );
   }
 }
 
@@ -99,10 +127,13 @@ function assignVariant(prg, { value, name, parent, key }) {
   } else if (value instanceof Object) {
     addObject(prg, { value, name, parent, key });
   } else if (parent) {
-    key = JSON.stringify(key);
-    prg.addLine(`${parent}[${key}] = ${stringifyValue(value)};`);
+    prg.addLine(
+      `${parent}[${stringifyValue(key)}] = ${stringifyValue(value)};`,
+    );
   } else if (value != null) {
-    prg.addLine(`${name}.set(${stringifyValue(value)});`);
+    prg.addLine(
+      `${tokens.variable(name)}.${name == "doc" ? functions.JsonDocument.set : functions.JsonVariant.set}(${stringifyValue(value)});`,
+    );
   }
 }
 
@@ -115,19 +146,19 @@ export function generateSerializingProgram(cfg) {
 
   switch (cfg.outputType) {
     case "charPtr":
-      prg.addLine("// char* output;");
-      prg.addLine("// size_t outputCapacity;");
+      prg.addLine(tokens.comment("char* output;"));
+      prg.addLine(tokens.comment("size_t outputCapacity;"));
       break;
     case "arduinoStream":
-      prg.addLine("// Stream& output;");
+      prg.addLine(tokens.comment("Stream& output;"));
       break;
     case "stdStream":
-      prg.addLine("// std::ostream& output;");
+      prg.addLine(tokens.comment("std::ostream& output;"));
       break;
   }
   prg.addEmptyLine();
 
-  prg.addLine("JsonDocument doc;");
+  prg.addLine(`${types.JsonDocument} ${tokens.variable("doc")};`);
 
   prg.addEmptyLine();
   writeCompositionCode(prg, {
@@ -136,34 +167,38 @@ export function generateSerializingProgram(cfg) {
   });
   prg.addEmptyLine();
 
-  const args = ["doc"];
+  const args = [tokens.variable("doc")];
   switch (cfg.outputType) {
     case "charPtr":
-      args.push("output", "outputCapacity");
+      args.push(tokens.variable("output"), tokens.variable("outputCapacity"));
       break;
     case "charArray":
-      prg.addLine("char output[MAX_OUTPUT_SIZE];");
-      args.push("output");
+      prg.addLine(
+        `${tokens.type("char")} ${tokens.variable("output")}[${tokens.macro("MAX_OUTPUT_SIZE")}];`,
+      );
+      args.push(tokens.variable("output"));
       break;
     case "arduinoString":
-      prg.addLine("String output;");
-      args.push("output");
+      prg.addLine(`${types.String} ${tokens.variable("output")};`);
+      args.push(tokens.variable("output"));
       break;
     case "stdString":
-      prg.addLine("std::string output;");
-      args.push("output");
+      prg.addLine(`${types.std.string} ${tokens.variable("output")};`);
+      args.push(tokens.variable("output"));
       break;
     default:
-      args.push("output");
+      args.push(tokens.variable("output"));
   }
 
   if (cfg.output) {
     prg.addEmptyLine();
-    prg.addLine("doc.shrinkToFit();  // optional");
+    prg.addLine(
+      `${tokens.variable("doc")}.${functions.JsonDocument.shrinkToFit}();  ${tokens.comment("optional")}`,
+    );
     prg.addEmptyLine();
   }
 
-  prg.addLine(`serializeJson(${args.join(", ")});`);
+  prg.addLine(`${functions.serializeJson}(${args.join(", ")});`);
 
-  return prg.toString();
+  return prg.toString(cfg.html);
 }

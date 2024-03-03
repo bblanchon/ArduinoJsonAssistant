@@ -13,47 +13,78 @@
       {{ programCopied ? "✓ Copied" : "Copy" }}
     </button>
     <div class="highlight p-3 program">
-      <pre><code class="hljs" v-html="sourceHtml"></code></pre>
+      <pre><code class="hl" v-html="props.source" ref="codeElement" @mouseover="onMouseOver"></code></pre>
     </div>
   </figure>
 </template>
 
 <script setup>
-import "@/assets/highlight.scss";
-import hightlight from "@/highlight.js";
-
 import { sleep } from "@/utils";
-import { ref, watchEffect } from "vue";
+import { ref } from "vue";
 
 const props = defineProps({
   source: String,
 });
 
 const programCopied = ref(false);
-const sourceHtml = ref("");
+const codeElement = ref(null);
 
 async function copyProgram() {
-  await navigator.clipboard.writeText(props.source);
+  await navigator.clipboard.writeText(codeElement.value.innerText);
   programCopied.value = true;
   await sleep(500);
   programCopied.value = false;
 }
 
-function escapeHtmlTags(str) {
-  return str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+function highlightVariable(variable) {
+  codeElement.value.querySelectorAll(".hl-variable").forEach((el) => {
+    el.classList.toggle("active", el.innerText === variable);
+  });
 }
 
-watchEffect(async () => {
-  const source = props.source;
-  sourceHtml.value = escapeHtmlTags(source);
-  await sleep(100);
-  sourceHtml.value = hightlight(source);
-});
+function onMouseOver(event) {
+  const target = event.target;
+  if (target.classList.contains("hl-variable")) {
+    highlightVariable(target.innerText);
+  } else {
+    highlightVariable("");
+  }
+}
 </script>
 
 <style scoped>
 .program {
   max-height: 30em;
   overflow-y: auto;
+}
+</style>
+
+<style>
+.hl-built_in,
+.hl-literal {
+  color: #d35400;
+}
+
+.hl-type,
+.hl-string {
+  color: #00979d;
+}
+
+.hl-comment {
+  color: rgba(149, 165, 166, 0.8);
+}
+
+.hl-keyword,
+.hl-meta-keyword {
+  color: #728e00;
+}
+
+.hl-number {
+  color: #8a7b52;
+}
+
+.hl-variable.active {
+  background-color: #fff;
+  cursor: pointer;
 }
 </style>

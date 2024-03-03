@@ -30,7 +30,6 @@
     "bootstrap-icons": "^1.11.3",
     "eslint": "^8.57.0",
     "eslint-plugin-vue": "^9.22.0",
-    "highlight.js": "^11.9.0",
     "prettier": "^3.2.5",
     "sass": "^1.71.1",
     "unplugin-vue-components": "^0.26.0",
