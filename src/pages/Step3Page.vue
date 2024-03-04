@@ -30,17 +30,6 @@
       </div>
 
       <CodeBlock :source="program.body" />
-
-      <ul class="list-inline card-text">
-        <li class="list-inline-item font-weight-bold">See also</li>
-        <li
-          v-for="link in documentation.links"
-          :key="link.label"
-          class="list-inline-item"
-        >
-          <a :href="link.url" v-html="link.label"></a>
-        </li>
-      </ul>
     </div>
 
     <div class="card-footer">
@@ -54,12 +43,10 @@
 <script setup>
 import { useSettingsStore } from "@/stores/settings";
 import { useProgramStore } from "@/stores/program";
-import { useDocumentationStore } from "@/stores/documentation";
 import { watchEffect } from "vue";
 
 const settings = useSettingsStore();
 const program = useProgramStore();
-const documentation = useDocumentationStore();
 
 watchEffect(() => program.generate());
 </script>
