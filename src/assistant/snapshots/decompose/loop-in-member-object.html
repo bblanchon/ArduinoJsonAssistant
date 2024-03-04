@@ -1,0 +1,7 @@
+<span class="hl-keyword">for</span> (<a href="https://arduinojson.org/v7/api/jsonobject/begin_end/#return-value" class="hl-type">JsonPair</a> <span class="hl-variable">property</span> : <span class="hl-variable">doc</span>[<span class="hl-string">"properties"</span>].<a href="https://arduinojson.org/v7/api/jsonvariant/as/" class="hl-built_in">as</a>&lt;<a href="https://arduinojson.org/v7/api/jsonobject/" class="hl-type">JsonObject</a>&gt;()) {
+  <span class="hl-type">const char*</span> <span class="hl-variable"><span class="hl-variable">property_key</span></span> = <span class="hl-variable">property</span>.key().c_str(); <span class="hl-comment">// "batt", "tempc", "hum"</span>
+
+  <span class="hl-type">const char*</span> <span class="hl-variable">property_value_unit</span> = <span class="hl-variable">property</span>.value()[<span class="hl-string">"unit"</span>]; <span class="hl-comment">// "%", "°C", "%"</span>
+  <span class="hl-type">const char*</span> <span class="hl-variable">property_value_name</span> = <span class="hl-variable">property</span>.value()[<span class="hl-string">"name"</span>]; <span class="hl-comment">// "battery", "temperature", "humidity"</span>
+
+}

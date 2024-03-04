@@ -1,0 +1,11 @@
+<a href="https://arduinojson.org/v7/api/jsondocument/" class="hl-type">JsonDocument</a> <span class="hl-variable">doc</span>;
+
+<a href="https://arduinojson.org/v7/api/misc/deserializationerror/" class="hl-type">DeserializationError</a> <span class="hl-variable">error</span> = <a href="https://arduinojson.org/v7/api/json/deserializejson/" class="hl-function">deserializeJson</a>(<span class="hl-variable">doc</span>, <span class="hl-variable">input</span>);
+
+<span class="hl-keyword">if</span> (<span class="hl-variable">error</span>) {
+  <a href="https://www.arduino.cc/reference/en/language/functions/communication/serial/" class="hl-built_in">Serial</a>.<a href="https://www.arduino.cc/reference/en/language/functions/communication/serial/print/" class="hl-built_in">print</a>(<a href="https://www.arduino.cc/reference/en/language/variables/utilities/progmem" class="hl-built_in">F</a>(<span class="hl-string">"deserializeJson() failed: "</span>));
+  <a href="https://www.arduino.cc/reference/en/language/functions/communication/serial/" class="hl-built_in">Serial</a>.<a href="https://www.arduino.cc/reference/en/language/functions/communication/serial/println/" class="hl-built_in">println</a>(<span class="hl-variable">error</span>.f_str());
+  <span class="hl-keyword">return</span>;
+}
+
+<span class="hl-type">const char*</span> <span class="hl-variable">hello</span> = <span class="hl-variable">doc</span>[<a href="https://www.arduino.cc/reference/en/language/variables/utilities/progmem" class="hl-built_in">F</a>(<span class="hl-string">"hello"</span>)]; <span class="hl-comment">// "world"</span>

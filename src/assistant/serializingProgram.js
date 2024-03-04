@@ -200,5 +200,5 @@ export function generateSerializingProgram(cfg) {
 
   prg.addLine(`${functions.serializeJson}(${args.join(", ")});`);
 
-  return prg.toString(cfg.html);
+  return prg.toString();
 }

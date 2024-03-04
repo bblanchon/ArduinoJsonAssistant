@@ -1,0 +1,11 @@
+<a href="https://arduinojson.org/v7/api/jsondocument/" class="hl-type">JsonDocument</a> <span class="hl-variable">filter</span>;
+<span class="hl-variable">filter</span>[<span class="hl-string">"a"</span>] = <span class="hl-literal">true</span>;
+
+<a href="https://arduinojson.org/v7/api/jsondocument/" class="hl-type">JsonDocument</a> <span class="hl-variable">doc</span>;
+
+<a href="https://arduinojson.org/v7/api/misc/deserializationerror/" class="hl-type">DeserializationError</a> <span class="hl-variable">error</span> = <a href="https://arduinojson.org/v7/api/json/deserializejson/" class="hl-function">deserializeJson</a>(<span class="hl-variable">doc</span>, <span class="hl-variable">input</span>, <span class="hl-type">DeserializationOption</span>::<a href="https://arduinojson.org/v7/api/json/deserializejson/#filtering" class="hl-built_in">Filter</a>(<span class="hl-variable">filter</span>), <span class="hl-type">DeserializationOption</span>::<a href="https://arduinojson.org/v7/api/json/deserializejson/#nesting-limit" class="hl-built_in">NestingLimit</a>(<span class="hl-number">11</span>));
+
+<span class="hl-keyword">if</span> (<span class="hl-variable">error</span>) {
+  <a href="https://en.cppreference.com/w/cpp/io/cerr" class="hl-built_in">std::cerr</a> &lt;&lt; <span class="hl-string">"deserializeJson() failed: "</span> &lt;&lt; <span class="hl-variable">error</span>.c_str() &lt;&lt; <a href="https://en.cppreference.com/w/cpp/io/manip/endl" class="hl-built_in">std::endl</a>;
+  <span class="hl-keyword">return</span>;
+}

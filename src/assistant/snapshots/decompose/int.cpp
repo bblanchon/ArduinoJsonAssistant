@@ -1,1 +1,0 @@
-int root = doc.as<int>(); // 42

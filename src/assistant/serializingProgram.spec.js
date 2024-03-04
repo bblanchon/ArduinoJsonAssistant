@@ -19,61 +19,61 @@ describe("writeCompositionCode()", () => {
 
   it("[]", () => {
     expect(getCompositionCode([])).toMatchFileSnapshot(
-      "snapshots/compose/array-empty.cpp",
+      "snapshots/compose/array-empty.html",
     );
   });
 
   it("{}", () => {
     expect(getCompositionCode({})).toMatchFileSnapshot(
-      "snapshots/compose/object-empty.cpp",
+      "snapshots/compose/object-empty.html",
     );
   });
 
   it("[42]", () => {
     expect(getCompositionCode([42])).toMatchFileSnapshot(
-      "snapshots/compose/array-int.cpp",
+      "snapshots/compose/array-int.html",
     );
   });
 
   it("[null]", () => {
     expect(getCompositionCode([null])).toMatchFileSnapshot(
-      "snapshots/compose/array-null.cpp",
+      "snapshots/compose/array-null.html",
     );
   });
 
   it('["hello"]', () => {
     expect(getCompositionCode(["hello"])).toMatchFileSnapshot(
-      "snapshots/compose/array-one-string.cpp",
+      "snapshots/compose/array-one-string.html",
     );
   });
 
   it('["hello","world",null]', () => {
     expect(getCompositionCode(["hello", "world", null])).toMatchFileSnapshot(
-      "snapshots/compose/array-string-string-null.cpp",
+      "snapshots/compose/array-string-string-null.html",
     );
   });
 
   it('{"answer":42}', () => {
     expect(getCompositionCode({ answer: 42 })).toMatchFileSnapshot(
-      "snapshots/compose/object-int.cpp",
+      "snapshots/compose/object-int.html",
     );
   });
 
   it('{"answer":null}', () => {
     expect(getCompositionCode({ answer: null })).toMatchFileSnapshot(
-      "snapshots/compose/object-null.cpp",
+      "snapshots/compose/object-null.html",
     );
   });
 
   it('[{"answer":42}]', () => {
     expect(getCompositionCode([{ answer: 42 }])).toMatchFileSnapshot(
-      "snapshots/compose/array-object-int.cpp",
+      "snapshots/compose/array-object-int.html",
     );
   });
 
   it('{"answers":[42]}', () => {
     expect(getCompositionCode({ answers: [42] })).toMatchFileSnapshot(
-      "snapshots/compose/object-array-int.cpp",
+      "snapshots/compose/object-array-int.html",
     );
   });
 
@@ -83,31 +83,31 @@ describe("writeCompositionCode()", () => {
         [1, 2],
         [3, 4],
       ]),
-    ).toMatchFileSnapshot("snapshots/compose/array-2d.cpp");
+    ).toMatchFileSnapshot("snapshots/compose/array-2d.html");
   });
 
   it('{ A: { B: { C: "D" }, E: { F: "G" } } }', () => {
     expect(
       getCompositionCode({ A: { B: { C: "D" }, E: { F: "G" } } }),
-    ).toMatchFileSnapshot("snapshots/compose/object-many-strings-deep.cpp");
+    ).toMatchFileSnapshot("snapshots/compose/object-many-strings-deep.html");
   });
 
   it('{ A: { B: { C: "D" } } }', () => {
     expect(getCompositionCode({ A: { B: { C: "D" } } })).toMatchFileSnapshot(
-      "snapshots/compose/object-one-string-deep.cpp",
+      "snapshots/compose/object-one-string-deep.html",
     );
   });
 
   it('{"hello world":[42, 43]}', () => {
     expect(getCompositionCode({ "hello world": [42, 43] })).toMatchFileSnapshot(
-      "snapshots/compose/object-array-ints.cpp",
+      "snapshots/compose/object-array-ints.html",
     );
   });
 
   it("{ list: [{ dt: true, main: true }] }", () => {
     expect(
       getCompositionCode({ list: [{ dt: true, main: true }] }),
-    ).toMatchFileSnapshot("snapshots/compose/object-array-object-bools.cpp");
+    ).toMatchFileSnapshot("snapshots/compose/object-array-object-bools.html");
   });
 
   it("{ data: { children: [{ data: { title: true, ups: true } }] } }", () => {
@@ -116,13 +116,13 @@ describe("writeCompositionCode()", () => {
         data: { children: [{ data: { title: true, ups: true } }] },
       }),
     ).toMatchFileSnapshot(
-      "snapshots/compose/object-array-object-object-bools.cpp",
+      "snapshots/compose/object-array-object-object-bools.html",
     );
   });
 
   it("[{ a: 1 }, { a: 2 }]", () => {
     expect(getCompositionCode([{ a: 1 }, { a: 2 }])).toMatchFileSnapshot(
-      "snapshots/compose/array-objects-one-member-per-object.cpp",
+      "snapshots/compose/array-objects-one-member-per-object.html",
     );
   });
 
@@ -133,13 +133,13 @@ describe("writeCompositionCode()", () => {
         { a: 3, b: 4 },
       ]),
     ).toMatchFileSnapshot(
-      "snapshots/compose/array-objects-two-members-per-object.cpp",
+      "snapshots/compose/array-objects-two-members-per-object.html",
     );
   });
 
   it("{ if: {} }", () => {
     expect(getCompositionCode({ if: {} })).toMatchFileSnapshot(
-      "snapshots/compose/object-if-empty-object.cpp",
+      "snapshots/compose/object-if-empty-object.html",
     );
   });
 });
@@ -148,19 +148,19 @@ describe("generateSerializingProgram()", function () {
   it('{"answer":42}', () => {
     expect(
       generateSerializingProgram({ output: { answer: 42 } }),
-    ).toMatchFileSnapshot("snapshots/serializing-program/object.cpp");
+    ).toMatchFileSnapshot("snapshots/serializing-program/object.html");
   });
 
   it("null", () => {
     expect(generateSerializingProgram({ output: null })).toMatchFileSnapshot(
-      "snapshots/serializing-program/null.cpp",
+      "snapshots/serializing-program/null.html",
     );
   });
 
   it("outputType = charPtr", () => {
     expect(
       generateSerializingProgram({ outputType: "charPtr" }),
-    ).toMatchFileSnapshot("snapshots/serializing-program/char-ptr.cpp");
+    ).toMatchFileSnapshot("snapshots/serializing-program/char-ptr.html");
   });
 
   it("outputType = charArray", () => {
@@ -168,7 +168,7 @@ describe("generateSerializingProgram()", function () {
       generateSerializingProgram({
         outputType: "charArray",
       }),
-    ).toMatchFileSnapshot("snapshots/serializing-program/char-array.cpp");
+    ).toMatchFileSnapshot("snapshots/serializing-program/char-array.html");
   });
 
   it("outputType = arduinoString", () => {
@@ -176,7 +176,7 @@ describe("generateSerializingProgram()", function () {
       generateSerializingProgram({
         outputType: "arduinoString",
       }),
-    ).toMatchFileSnapshot("snapshots/serializing-program/arduino-string.cpp");
+    ).toMatchFileSnapshot("snapshots/serializing-program/arduino-string.html");
   });
 
   it("outputType = stdString", () => {
@@ -184,7 +184,7 @@ describe("generateSerializingProgram()", function () {
       generateSerializingProgram({
         outputType: "stdString",
       }),
-    ).toMatchFileSnapshot("snapshots/serializing-program/std-string.cpp");
+    ).toMatchFileSnapshot("snapshots/serializing-program/std-string.html");
   });
 
   it("outputType = arduinoStream", () => {
@@ -192,7 +192,7 @@ describe("generateSerializingProgram()", function () {
       generateSerializingProgram({
         outputType: "arduinoStream",
       }),
-    ).toMatchFileSnapshot("snapshots/serializing-program/arduino-stream.cpp");
+    ).toMatchFileSnapshot("snapshots/serializing-program/arduino-stream.html");
   });
 
   it("outputType = stdStream", () => {
@@ -200,6 +200,6 @@ describe("generateSerializingProgram()", function () {
       generateSerializingProgram({
         outputType: "stdStream",
       }),
-    ).toMatchFileSnapshot("snapshots/serializing-program/std-ostream.cpp");
+    ).toMatchFileSnapshot("snapshots/serializing-program/std-ostream.html");
   });
 });

@@ -23,9 +23,8 @@ export class ProgramWriter {
     this.depth--;
   }
 
-  toString(html = false) {
-    const content = this.lines.join("\n");
-    return html ? content : stripHtml(content);
+  toString() {
+    return this.lines.join("\n");
   }
 }
 

@@ -265,5 +265,5 @@ export function generateParsingProgram(cfg) {
     : cfg.input;
   writeDecompositionCode(prg, filteredInput, cfg);
 
-  return prg.toString(cfg.html);
+  return prg.toString();
 }

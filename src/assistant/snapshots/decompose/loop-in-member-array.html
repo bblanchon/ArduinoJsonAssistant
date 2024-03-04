@@ -1,0 +1,9 @@
+<span class="hl-keyword">for</span> (<a href="https://arduinojson.org/v7/api/jsonobject/" class="hl-type">JsonObject</a> <span class="hl-variable">list_item</span> : <span class="hl-variable">doc</span>[<span class="hl-string">"list"</span>].<a href="https://arduinojson.org/v7/api/jsonvariant/as/" class="hl-built_in">as</a>&lt;<a href="https://arduinojson.org/v7/api/jsonarray/" class="hl-type">JsonArray</a>&gt;()) {
+
+  <span class="hl-type">long</span> <span class="hl-variable">list_item_dt</span> = <span class="hl-variable">list_item</span>[<span class="hl-string">"dt"</span>]; <span class="hl-comment">// 1511978400, 1511989200, 1512000000</span>
+
+  <span class="hl-type">float</span> <span class="hl-variable">list_item_main_temp</span> = <span class="hl-variable">list_item</span>[<span class="hl-string">"main"</span>][<span class="hl-string">"temp"</span>]; <span class="hl-comment">// 3.95, 3.2, 3.25</span>
+
+  <span class="hl-type">const char*</span> <span class="hl-variable">list_item_weather_0_description</span> = <span class="hl-variable">list_item</span>[<span class="hl-string">"weather"</span>][<span class="hl-number">0</span>][<span class="hl-string">"description"</span>]; <span class="hl-comment">// "light rain", ...</span>
+
+}

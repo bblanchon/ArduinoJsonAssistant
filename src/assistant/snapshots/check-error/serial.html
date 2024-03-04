@@ -1,0 +1,5 @@
+<span class="hl-keyword">if</span> (<span class="hl-variable">error</span>) {
+  <a href="https://www.arduino.cc/reference/en/language/functions/communication/serial/" class="hl-built_in">Serial</a>.<a href="https://www.arduino.cc/reference/en/language/functions/communication/serial/print/" class="hl-built_in">print</a>(<span class="hl-string">"deserializeJson() failed: "</span>);
+  <a href="https://www.arduino.cc/reference/en/language/functions/communication/serial/" class="hl-built_in">Serial</a>.<a href="https://www.arduino.cc/reference/en/language/functions/communication/serial/println/" class="hl-built_in">println</a>(<span class="hl-variable">error</span>.c_str());
+  <span class="hl-keyword">return</span>;
+}

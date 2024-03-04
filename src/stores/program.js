@@ -32,7 +32,6 @@ export const useProgramStore = defineStore("program", () => {
               : undefined,
           serial: ioLibrary.value == "serial",
           progmem: progmem.value,
-          html: true,
         });
         break;
 
@@ -40,7 +39,6 @@ export const useProgramStore = defineStore("program", () => {
         code = generateSerializingProgram({
           output: cfg.input,
           outputType: cfg.ioType,
-          html: true,
         });
         break;
     }
