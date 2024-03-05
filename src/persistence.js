@@ -1,4 +1,5 @@
 import { useSettingsStore } from "@/stores/settings";
+import boards from "@/assets/boards.json";
 
 const key = "ArduinoJson Assistant 7";
 
@@ -9,7 +10,7 @@ export function persistStore() {
     const cfg = JSON.parse(localStorage.getItem(key));
     settings.setInputJson(cfg.rootJson);
     settings.setFilterJson(cfg.filterJson);
-    settings.cpu = cfg.cpu;
+    if (cfg.cpu in boards) settings.cpu = cfg.cpu;
     settings.mode = cfg.mode;
     settings.ioType = cfg.ioType;
     settings.useDouble = cfg.useDouble;
