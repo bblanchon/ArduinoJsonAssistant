@@ -60,8 +60,9 @@ export const useSettingsStore = defineStore("settings", {
       return this.mode === "deserialize";
     },
     filteredInput() {
-      if (!this.filterEnabled) return this.input;
-      return applyFilter(this.input, this.filter);
+      if (this.isDeserializing && this.filterEnabled)
+        return applyFilter(this.input, this.filter);
+      return this.input;
     },
     ignoreKeys() {
       if (this.isSerializing) return this.assumeConstKeys;
