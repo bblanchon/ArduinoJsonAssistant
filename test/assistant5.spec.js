@@ -1,10 +1,10 @@
 import { describe, it, expect } from "vitest"
 
-import { measureSize } from "../assistant/calculator.js"
-import dataModels from "../assistant/architectures.js"
-import { generateParsingProgram } from "../assistant/parsingProgram.js"
-import { generateExpression } from "../assistant/SizeExpression.js"
-import { generateSerializingProgram } from "../assistant/serializingProgram.js"
+import { measureSize } from "../src/assistant/calculator.js"
+import dataModels from "../src/assistant/architectures.js"
+import { generateParsingProgram } from "../src/assistant/parsingProgram.js"
+import { generateExpression } from "../src/assistant/SizeExpression.js"
+import { generateSerializingProgram } from "../src/assistant/serializingProgram.js"
 
 var sample_object = {
   sensor: "gps",
