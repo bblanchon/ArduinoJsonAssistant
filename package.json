@@ -1,0 +1,20 @@
+{
+  "name": "@bblanchon/arduinojson-assistant",
+  "private": true,
+  "version": "5.0.0",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bblanchon/ArduinoJsonAssistant"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "vite": "^5.1.4",
+    "vitest": "^1.3.1"
+  }
+}

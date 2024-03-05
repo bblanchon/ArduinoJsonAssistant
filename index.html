@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="https://arduinojson.org/assets/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ArduinoJson Assistant 5</title>
+</head>
+
+<body>
+  <div class="container" id="assistant">
+
+    <div id='error' class="alert alert-warning" role="alert">
+      Please paste your JSON in the "input" box
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card">
+          <h4 class="card-header bg-primary text-white">Input</h4>
+          <div class="card-body">
+            <p>Examples:
+              <a href="#" id="$openweathermapAnchor">OpenWeatherMap</a>,
+              <a href="#" id="$wundergroundAnchor">Weather Underground</a>
+            </p>
+            <textarea class="form-control" rows=20 id="assistant-input"></textarea>
+            <p class="text-muted">Input length: <span id="assistant-input-length"></span></p>
+          </div>
+        </div>
+      </div>
+      <div id='results' class="col-md-6" style='display:none'>
+        <div class="card">
+          <h4 class="card-header bg-success text-white">Memory pool size</h4>
+          <div class="card-body">
+            <h3>Expression</h3>
+            <p><code id='$result_expr'></code></p>
+            <h3>Additional bytes for input duplication</h3>
+            <p><code id='$extra_bytes'></code></p>
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Platform</th>
+                  <th>Size</th>
+                </tr>
+              </thead>
+              <tbody id='$result_table'>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <p class="short-warning mt-2">Sizes can be significantly larger on a computer.</p>
+      </div>
+    </div>
+    <div class="alert alert-warning my-4" id="assistant-long-long-alert">
+      ⚠️ The programs below assume you defined <a
+        href="https://arduinojson.org/v5/api/config/use_long_long/"><code>ARDUINOJSON_USE_LONG_LONG</code></a> to
+      <code>1</code>
+    </div>
+    <div class="row">
+      <div class="col-12 my-2" id="$parserDiv">
+        <div class="card">
+          <h4 class="card-header bg-success text-white">Parsing program</h4>
+          <div class="card-body">
+            <div class="highlight">
+              <pre><code id="$parserCode" class="highlight"></code></pre>
+            </div>
+            <p class="mb-0">See also: <a href="https://arduinojson.org/v5/doc/deserialization/">Deserialization
+                Tutorial</a></p>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 my-2" id="$serializerDiv">
+        <div class="card">
+          <h4 class="card-header bg-success text-white">Serializing program</h4>
+          <div class="card-body">
+            <div class="highlight">
+              <pre><code id="$serializerCode"></code></pre>
+            </div>
+            <p class="mb-0">See also: <a href="https://arduinojson.org/v5/doc/serialization/">Serialization Tutorial</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://arduinojson.org/node_modules/jquery/dist/jquery.slim.min.js"></script>
+  <script src="https://arduinojson.org/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="/main.js"></script>
+</body>
+
+</html>
