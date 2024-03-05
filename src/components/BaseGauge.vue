@@ -48,7 +48,7 @@ import { format } from "bytes";
 
 function formatValue(value) {
   const result = format(value, { decimalPlaces: 1 });
-  return props.bytes ? result : result.substring(0, result.length - 1);
+  return props.bytes ? result : result?.substring(0, result.length - 1);
 }
 
 function createGauge() {
