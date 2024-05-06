@@ -15,6 +15,14 @@
                 @update:model-value="selectCpu"
                 id="cpu-selector"
               />
+              <p
+                class="alert alert-info mt-2 mb-0"
+                v-if="board.arch == '8-bit'"
+              >
+                For 8-bit microcontrollers, prefer
+                <a :href="baseUrl + '/v6/assistant/'">ArduinoJson 6</a>.<br />
+                It is smaller and can work without dynamic memory allocation.
+              </p>
             </div>
           </div>
           <div class="form-group row">
@@ -82,7 +90,7 @@
           </div>
         </div>
       </div>
-      <p class="short-tip">
+      <p class="text-muted">
         This is the Assistant for ArduinoJson {{ version }}. Make sure the same
         version is installed on your computer.
       </p>
@@ -109,6 +117,7 @@ const settings = useSettingsStore();
 const board = useBoardStore();
 const version = inject("version");
 const sponsors = inject("sponsors");
+const baseUrl = inject("baseUrl");
 
 onBeforeRouteLeave((to) => {
   if (to.name == "step2") {
