@@ -14,11 +14,11 @@
     "test": "vitest"
   },
   "dependencies": {
-    "vue": "^3.4.26"
+    "vue": "^3.4.31"
   },
   "devDependencies": {
-    "vite": "^5.2.11",
-    "vitest": "^1.5.3",
-    "@vitejs/plugin-vue": "^5.0.4"
+    "vite": "^5.3.3",
+    "vitest": "^2.0.3",
+    "@vitejs/plugin-vue": "^5.0.5"
   }
 }
