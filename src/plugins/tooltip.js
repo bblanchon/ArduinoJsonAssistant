@@ -1,12 +1,12 @@
 export default function (app) {
   app.directive("tooltip", {
     mounted(el, { value }) {
-      $(el).tooltip({
+      new bootstrap.Tooltip(el, {
         title: value,
       });
     },
     beforeUnmount(el) {
-      $(el).tooltip("dispose");
+      bootstrap.Tooltip.getInstance(el).hide();
     },
   });
 }

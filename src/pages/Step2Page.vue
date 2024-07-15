@@ -4,17 +4,14 @@
     <div class="card-body d-flex flex-column">
       <div class="d-flex justify-content-between">
         <ExampleDownloader />
-        <div
-          class="custom-control custom-switch"
-          v-if="settings.isDeserializing"
-        >
+        <div class="form-check form-switch" v-if="settings.isDeserializing">
           <input
             type="checkbox"
-            class="custom-control-input"
+            class="form-check-input"
             id="filter-switch"
             v-model="settings.filterEnabled"
           />
-          <label class="custom-control-label" for="filter-switch"
+          <label class="form-check-label" for="filter-switch"
             >Enable input filter</label
           >
         </div>

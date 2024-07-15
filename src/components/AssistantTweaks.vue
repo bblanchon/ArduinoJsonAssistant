@@ -12,7 +12,7 @@
         Reset {{ tweakCount }} {{ tweakCount > 1 ? "changes" : "change" }}
       </button>
     </summary>
-    <div class="form-group form-check" v-if="settings.isSerializing">
+    <div class="form-check" v-if="settings.isSerializing">
       <input
         id="assume-const-values"
         class="form-check-input"
@@ -34,7 +34,7 @@
         <code>const char*</code> values.
       </small>
     </div>
-    <div class="form-group form-check" v-if="settings.isSerializing">
+    <div class="form-check" v-if="settings.isSerializing">
       <input
         id="assume-const-keys"
         class="form-check-input"
@@ -53,7 +53,7 @@
         Uncheck this box if your program generates keys at runtime.
       </small>
     </div>
-    <div class="form-group form-check" v-if="!settings.ignoreValues">
+    <div class="form-check" v-if="!settings.ignoreValues">
       <input
         id="deduplicate-values"
         class="form-check-input"
@@ -74,7 +74,7 @@
         <code>XXXX</code>) in step&nbsp;2.
       </small>
     </div>
-    <div class="form-group form-check mb-0" v-if="!settings.ignoreKeys">
+    <div class="form-check mb-0" v-if="!settings.ignoreKeys">
       <input
         id="deduplicate-keys"
         class="form-check-input"

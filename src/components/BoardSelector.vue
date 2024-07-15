@@ -1,9 +1,9 @@
 <template>
-  <div class="dropdown" ref="dropdown">
+  <div class="dropdown" v-on="{ 'shown.bs.dropdown': focusSearchInput }">
     <button
       class="btn dropdown-toggle border w-100 d-flex align-items-center justify-content-between"
       type="button"
-      data-toggle="dropdown"
+      data-bs-toggle="dropdown"
       aria-expanded="false"
     >
       <BoardSelectorItem
@@ -11,7 +11,7 @@
         class="flex-fill"
         :board="selectedBoard"
       />
-      <span v-else class="flex-fill text-left text-truncate text-muted">
+      <span v-else class="flex-fill text-start text-truncate text-muted">
         Select a board
       </span>
     </button>
@@ -73,11 +73,11 @@ export default {
       );
     },
   },
-  mounted() {
-    $(this.$refs.dropdown).on("shown.bs.dropdown", () => {
+  methods: {
+    focusSearchInput() {
       this.search = "";
       this.$refs.input.focus();
-    });
+    },
   },
 };
 </script>

@@ -24,7 +24,7 @@
       <tbody>
         <tr v-if="board.doubleSupported">
           <td>
-            <label for="useDouble" class="text-monospace">
+            <label for="useDouble" class="font-monospace">
               ARDUINOJSON_USE_DOUBLE
             </label>
           </td>
@@ -53,7 +53,7 @@
         </tr>
         <tr>
           <td>
-            <label for="useLongLong" class="text-monospace">
+            <label for="useLongLong" class="font-monospace">
               ARDUINOJSON_USE_LONG_LONG
             </label>
           </td>
@@ -82,7 +82,7 @@
         </tr>
         <tr>
           <td>
-            <label for="slotIdSize" class="text-monospace">
+            <label for="slotIdSize" class="font-monospace">
               ARDUINOJSON_SLOT_ID_SIZE
             </label>
           </td>
@@ -111,7 +111,7 @@
         </tr>
         <tr>
           <td>
-            <label for="stringLengthSize" class="text-monospace">
+            <label for="stringLengthSize" class="font-monospace">
               ARDUINOJSON_STRING_LENGTH_SIZE
             </label>
           </td>

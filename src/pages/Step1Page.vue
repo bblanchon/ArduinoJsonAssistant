@@ -5,7 +5,7 @@
     <div class="card-body">
       <div class="row">
         <form class="col-lg-8 mb-4">
-          <div class="form-group row">
+          <div class="row">
             <label for="cpu-selector" class="col-sm-3 col-form-label"
               >Board</label
             >
@@ -14,9 +14,10 @@
                 :model-value="settings.cpu"
                 @update:model-value="selectCpu"
                 id="cpu-selector"
+                class="mb-2"
               />
               <p
-                class="alert alert-info mt-2 mb-0"
+                class="alert alert-info mt-2 mb-2"
                 v-if="board.arch == '8-bit'"
               >
                 For 8-bit microcontrollers, prefer
@@ -25,7 +26,7 @@
               </p>
             </div>
           </div>
-          <div class="form-group row">
+          <div class="row mb-2">
             <span class="col-sm-3 col-form-label">Mode</span>
             <div class="col-sm-9">
               <div class="form-check">
@@ -55,7 +56,7 @@
               </div>
             </div>
           </div>
-          <div class="form-group row">
+          <div class="row">
             <label for="io-type" class="col-sm-3 col-form-label">
               {{ settings.isSerializing ? "Output" : "Input" }}
             </label>
