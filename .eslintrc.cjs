@@ -10,7 +10,9 @@ module.exports = {
   ],
   env: {
     "vue/setup-compiler-macros": true,
-    jquery: true,
+  },
+  globals: {
+    bootstrap: true,
   },
   rules: {
     "prefer-const": "warn",

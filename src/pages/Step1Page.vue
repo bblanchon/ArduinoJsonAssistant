@@ -5,7 +5,7 @@
     <div class="card-body">
       <div class="row">
         <form class="col-lg-8 mb-4">
-          <div class="form-group row">
+          <div class="row mb-3">
             <label for="cpu-selector" class="col-sm-2 col-form-label"
               >Processor</label
             >
@@ -26,7 +26,7 @@
               </select>
             </div>
           </div>
-          <div class="form-group row">
+          <div class="row mb-3">
             <label for="mode-selector" class="col-sm-2 col-form-label"
               >Mode</label
             >
@@ -43,7 +43,7 @@
               </select>
             </div>
           </div>
-          <div class="form-group row">
+          <div class="row mb-3">
             <label for="io-type" class="col-sm-2 col-form-label">
               {{ isSerializing ? "Output" : "Input" }} type
             </label>

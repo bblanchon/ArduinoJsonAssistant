@@ -4,65 +4,67 @@
 
     <div class="card-body">
       <table class="table m-0">
-        <tr>
-          <th scope="row">Data structures</th>
-          <td>{{ capacity.slots }}</td>
-          <td class="text-muted">
-            Bytes needed to stores the JSON objects and arrays in memory
-            <a
-              href="#"
-              v-popover="{
-                title: 'Expression',
-                content: expression,
-              }"
-              @click.prevent
-            >
-              <InfoIcon />
-            </a>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">Strings</th>
-          <td>{{ capacity.strings }}</td>
-          <td class="text-muted">
-            Bytes needed to stores the strings in memory
-            <a
-              href="#"
-              v-popover="{
-                title: 'Deduplication',
-                content: 'Accoding to the configuration, ' + stringsDetails,
-              }"
-              @click.prevent
-              ><InfoIcon
-            /></a>
-          </td>
-        </tr>
-        <tr v-if="mode === 'deserialize-filter'">
-          <th scope="row">Filter</th>
-          <td>{{ capacity.filter }}</td>
-          <td class="text-muted">
-            The parser temporarily stores some ignored keys; this is the size of
-            the largest one.
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">Total (minimum)</th>
-          <td>{{ capacity.minimum }}</td>
-          <td class="text-muted">
-            Minimum capacity for the
-            <a :href="`${baseUrl}/v6/api/jsondocument/`"
-              ><code>JsonDocument</code></a
-            >.
-          </td>
-        </tr>
-        <tr class="table-primary">
-          <th scope="row">Total (recommended)</th>
-          <td>{{ capacity.recommended }}</td>
-          <td class="text-muted">
-            Including some slack in case the strings change, and rounded to a
-            power of two
-          </td>
-        </tr>
+        <tbody>
+          <tr>
+            <th scope="row">Data structures</th>
+            <td>{{ capacity.slots }}</td>
+            <td class="text-muted">
+              Bytes needed to stores the JSON objects and arrays in memory
+              <a
+                href="#"
+                v-popover="{
+                  title: 'Expression',
+                  content: expression,
+                }"
+                @click.prevent
+              >
+                <InfoIcon />
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Strings</th>
+            <td>{{ capacity.strings }}</td>
+            <td class="text-muted">
+              Bytes needed to stores the strings in memory
+              <a
+                href="#"
+                v-popover="{
+                  title: 'Deduplication',
+                  content: 'Accoding to the configuration, ' + stringsDetails,
+                }"
+                @click.prevent
+                ><InfoIcon
+              /></a>
+            </td>
+          </tr>
+          <tr v-if="mode === 'deserialize-filter'">
+            <th scope="row">Filter</th>
+            <td>{{ capacity.filter }}</td>
+            <td class="text-muted">
+              The parser temporarily stores some ignored keys; this is the size
+              of the largest one.
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Total (minimum)</th>
+            <td>{{ capacity.minimum }}</td>
+            <td class="text-muted">
+              Minimum capacity for the
+              <a :href="`${baseUrl}/v6/api/jsondocument/`"
+                ><code>JsonDocument</code></a
+              >.
+            </td>
+          </tr>
+          <tr class="table-primary">
+            <th scope="row">Total (recommended)</th>
+            <td>{{ capacity.recommended }}</td>
+            <td class="text-muted">
+              Including some slack in case the strings change, and rounded to a
+              power of two
+            </td>
+          </tr>
+        </tbody>
       </table>
       <p
         class="short-danger my-3"
@@ -102,7 +104,7 @@
           </button>
           <span v-else>(advanced users only)</span>
         </summary>
-        <div v-if="cpuInfo.useDouble" class="form-group">
+        <div v-if="cpuInfo.useDouble" class="mb-3">
           <label for="useDouble" class="col-form-label">
             Store floating point values as
           </label>
@@ -130,7 +132,7 @@
             <code>double</code> if you need the increased precision and range.
           </small>
         </div>
-        <div v-if="cpuInfo.useLongLong" class="form-group">
+        <div v-if="cpuInfo.useLongLong" class="mb-3">
           <label for="useLongLong" class="col-form-label">
             Store integral values values as
           </label>
@@ -161,7 +163,7 @@
             >.
           </small>
         </div>
-        <div class="form-group form-check" v-if="isSerializing">
+        <div class="mb-3 form-check" v-if="isSerializing">
           <input
             id="assume-const-values"
             class="form-check-input"
@@ -179,7 +181,7 @@
             <code>const char*</code> values.
           </small>
         </div>
-        <div class="form-group form-check" v-if="isSerializing">
+        <div class="mb-3 form-check" v-if="isSerializing">
           <input
             id="assume-const-keys"
             class="form-check-input"
@@ -194,7 +196,7 @@
             Uncheck this box if your program generates keys at runtime.
           </small>
         </div>
-        <div class="form-group form-check" v-if="!ignoreValues">
+        <div class="mb-3 form-check" v-if="!ignoreValues">
           <input
             id="deduplicate-values"
             class="form-check-input"
@@ -211,7 +213,7 @@
             <code>XXXX</code>) in step 2.
           </small>
         </div>
-        <div class="form-group form-check mb-0" v-if="!ignoreKeys">
+        <div class="form-check" v-if="!ignoreKeys">
           <input
             id="deduplicate-keys"
             class="form-check-input"

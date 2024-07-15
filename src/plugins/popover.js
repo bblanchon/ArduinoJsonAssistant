@@ -1,9 +1,9 @@
 export const popover = {
   mounted(el, { value }) {
-    $(el).popover(value);
+    new bootstrap.Popover(el, value);
   },
   beforeUnmount(el) {
-    $(el).popover("hide");
+    bootstrap.Popover.getInstance(el).hide();
   },
 };
 
