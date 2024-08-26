@@ -15,7 +15,7 @@ createApp(App)
   .use(createPinia())
   .use(tooltip)
   .provide("baseUrl", el.dataset.url || "")
-  .provide("version", "7.1")
+  .provide("version", "7.2")
   .provide("scriptUrl", document.currentScript?.src)
   .provide("sponsors", sponsors)
   .mount(el);
