@@ -123,7 +123,7 @@ class JsonDocument {
   }
 
   addObjectMember(key) {
-    this.allocSlots(1);
+    this.allocSlots(2);
     if (this._ignoreKeys) return;
     if (this._deduplicateKeys && this._strings[key]) return;
     this.allocString(key);
@@ -338,7 +338,16 @@ export const needsDouble = (val) => needsCppType("double", val);
 
 export function countSlots(input) {
   const type = getValueType(input);
-  const values =
-    type === "array" ? input : type === "object" ? Object.values(input) : [];
-  return values.length + values.map(countSlots).reduce((a, b) => a + b, 0);
+  switch (type) {
+    case "array":
+      return input.length + input.map(countSlots).reduce((a, b) => a + b, 0);
+    case "object": {
+      const values = Object.values(input);
+      return (
+        2 * values.length + values.map(countSlots).reduce((a, b) => a + b, 0)
+      );
+    }
+    default:
+      return 0;
+  }
 }

@@ -21,78 +21,78 @@ const sample_object = {
 
 describe("getEffectiveSlotSize()", () => {
   describe("on an 8-bit processor", () => {
-    it("should return 8 with default configuration", () => {
-      expect(getEffectiveSlotSize({ arch: "8-bit" })).toBe(8);
+    it("should return 6 with default configuration", () => {
+      expect(getEffectiveSlotSize({ arch: "8-bit" })).toBe(6);
     });
-    it("should return 8 if double is enabled", () => {
+    it("should return 6 if double is enabled", () => {
       expect(
         getEffectiveSlotSize({
           arch: "8-bit",
           useDouble: true,
         }),
-      ).toBe(8);
+      ).toBe(6);
     });
-    it("should return 12 if long long is enabled", () => {
+    it("should return 8 if long long is enabled", () => {
       expect(
         getEffectiveSlotSize({
           arch: "8-bit",
           useLongLong: true,
         }),
-      ).toBe(12);
+      ).toBe(8);
     });
-    it("should return 9 if slot id size is 2", () => {
+    it("should return 7 if slot id size is 2", () => {
       expect(
         getEffectiveSlotSize({
           arch: "8-bit",
           slotIdSize: 2,
         }),
-      ).toBe(9);
+      ).toBe(7);
     });
-    it("should return 15 if slot id size is 4", () => {
+    it("should return 13 if slot id size is 4", () => {
       expect(
         getEffectiveSlotSize({
           arch: "8-bit",
           slotIdSize: 4,
         }),
-      ).toBe(15);
+      ).toBe(13);
     });
   });
 
   describe("on a 32-bit processor", () => {
-    it("should return 16 with default configuration", () => {
-      expect(getEffectiveSlotSize({ arch: "32-bit" })).toBe(16);
+    it("should return 8 with default configuration", () => {
+      expect(getEffectiveSlotSize({ arch: "32-bit" })).toBe(8);
     });
-    it("should return 12 if double and long long are disabled", () => {
+    it("should return 8 if double and long long are disabled", () => {
       expect(
         getEffectiveSlotSize({
           arch: "32-bit",
           useDouble: false,
           useLongLong: false,
         }),
-      ).toBe(12);
+      ).toBe(8);
     });
-    it("should return 24 if slot id size is 4", () => {
+    it("should return 16 if slot id size is 4", () => {
       expect(
         getEffectiveSlotSize({
           arch: "32-bit",
           slotIdSize: 4,
         }),
-      ).toBe(24);
+      ).toBe(16);
     });
   });
 
   describe("on a 64-bit processor", () => {
-    it("should return 24 with default configuration", () => {
-      expect(getEffectiveSlotSize({ arch: "64-bit" })).toBe(24);
+    it("should return 16 with default configuration", () => {
+      expect(getEffectiveSlotSize({ arch: "64-bit" })).toBe(16);
     });
-    it("should return 24 if double and long long are disabled", () => {
+    it("should return 16 if double and long long are disabled", () => {
       expect(
         getEffectiveSlotSize({
           arch: "64-bit",
           useDouble: false,
           useLongLong: false,
         }),
-      ).toBe(24);
+      ).toBe(16);
     });
   });
 });
@@ -131,8 +131,8 @@ describe("measureSize", function () {
       arch: "8-bit",
     });
     expect(result).toEqual({
-      memoryUsage: 91,
-      peakMemoryUsage: 179,
+      memoryUsage: 99,
+      peakMemoryUsage: 147,
     });
   });
 
@@ -143,7 +143,7 @@ describe("measureSize", function () {
       useDouble: true,
     });
     expect(result).toEqual({
-      memoryUsage: 173,
+      memoryUsage: 157,
       peakMemoryUsage: 1117,
     });
   });
@@ -155,8 +155,8 @@ describe("measureSize", function () {
       arch: "8-bit",
     });
     expect(result).toEqual({
-      memoryUsage: 70,
-      peakMemoryUsage: 166,
+      memoryUsage: 74,
+      peakMemoryUsage: 134,
     });
   });
 
@@ -167,8 +167,8 @@ describe("measureSize", function () {
       arch: "8-bit",
     });
     expect(result).toEqual({
-      memoryUsage: 58,
-      peakMemoryUsage: 154,
+      memoryUsage: 62,
+      peakMemoryUsage: 122,
     });
   });
 
@@ -179,8 +179,8 @@ describe("measureSize", function () {
       arch: "8-bit",
     });
     expect(result).toEqual({
-      memoryUsage: 54,
-      peakMemoryUsage: 166,
+      memoryUsage: 50,
+      peakMemoryUsage: 134,
     });
   });
 
@@ -191,8 +191,8 @@ describe("measureSize", function () {
       arch: "8-bit",
     });
     expect(result).toEqual({
-      memoryUsage: 42,
-      peakMemoryUsage: 154,
+      memoryUsage: 38,
+      peakMemoryUsage: 122,
     });
   });
 
@@ -203,8 +203,8 @@ describe("measureSize", function () {
         { arch: "8-bit", filter: { hello: true } },
       ),
     ).toEqual({
-      memoryUsage: 64,
-      peakMemoryUsage: 194,
+      memoryUsage: 72,
+      peakMemoryUsage: 166,
     });
   });
 
@@ -223,8 +223,8 @@ describe("measureSize", function () {
         },
       ),
     ).toEqual({
-      memoryUsage: 112,
-      peakMemoryUsage: 207,
+      memoryUsage: 120,
+      peakMemoryUsage: 177,
     });
   });
 
@@ -238,8 +238,8 @@ describe("measureSize", function () {
         },
       ),
     ).toEqual({
-      memoryUsage: 35,
-      peakMemoryUsage: 155,
+      memoryUsage: 39,
+      peakMemoryUsage: 123,
     });
   });
 
@@ -253,8 +253,8 @@ describe("measureSize", function () {
         },
       ),
     ).toEqual({
-      memoryUsage: 32,
-      peakMemoryUsage: 152,
+      memoryUsage: 36,
+      peakMemoryUsage: 120,
     });
   });
 
@@ -268,8 +268,8 @@ describe("measureSize", function () {
         },
       ),
     ).toEqual({
-      memoryUsage: 42,
-      peakMemoryUsage: 188,
+      memoryUsage: 46,
+      peakMemoryUsage: 156,
     });
   });
 
@@ -280,8 +280,8 @@ describe("measureSize", function () {
         overAllocateStrings: true,
       }),
     ).toEqual({
-      memoryUsage: 526,
-      peakMemoryUsage: 526,
+      memoryUsage: 398,
+      peakMemoryUsage: 398,
     });
 
     expect(
@@ -290,8 +290,8 @@ describe("measureSize", function () {
         overAllocateStrings: true,
       }),
     ).toEqual({
-      memoryUsage: 554, // +28 => 5*4 for the pool list + 8 for the pool
-      peakMemoryUsage: 686, // +160 => 8*4 for the pool list + 16*8 for the pool
+      memoryUsage: 424, // +26 => 5*4 for the pool list + 6 for the pool
+      peakMemoryUsage: 526, // +128 => 8*4 for the pool list + 16*6 for the pool
     });
   });
 
@@ -302,8 +302,8 @@ describe("measureSize", function () {
         overAllocateStrings: true,
       }),
     ).toEqual({
-      memoryUsage: 1070,
-      peakMemoryUsage: 1070,
+      memoryUsage: 814,
+      peakMemoryUsage: 814,
     });
 
     expect(
@@ -312,8 +312,8 @@ describe("measureSize", function () {
         overAllocateStrings: true,
       }),
     ).toEqual({
-      memoryUsage: 1082, // +28 => 4 for the pool list + 8 for the pool
-      peakMemoryUsage: 1230, // +160 => 8*4 for the pool list + 16*8 for the pool
+      memoryUsage: 824, // +10 => 4 for the pool list + 6 for the pool
+      peakMemoryUsage: 942, // +128 => 8*4 for the pool list + 16*6 for the pool
     });
   });
 });
@@ -541,10 +541,10 @@ describe("countSlots", () => {
     expect(countSlots(42.0)).toBe(0);
   });
 
-  it("should return N for an object of N members", () => {
+  it("should return 2*N for an object of N members", () => {
     expect(countSlots({})).toBe(0);
-    expect(countSlots({ a: 1 })).toBe(1);
-    expect(countSlots({ a: 1, b: 2 })).toBe(2);
+    expect(countSlots({ a: 1 })).toBe(2);
+    expect(countSlots({ a: 1, b: 2 })).toBe(4);
   });
 
   it("should return N for an array of N elements", () => {
@@ -554,7 +554,7 @@ describe("countSlots", () => {
   });
 
   it("should recursively count slots", () => {
-    expect(countSlots([{ a: 1 }, { a: 2 }])).toBe(4);
+    expect(countSlots([{ a: 1 }, { a: 2 }])).toBe(6);
   });
 });
 
