@@ -319,6 +319,98 @@ describe("analyze", function () {
       peakMemoryUsage: 942, // +128 => 8*4 for the pool list + 16*6 for the pool
     });
   });
+
+  it("should not allocate an extra slot for 64-bit integers if useLongLong is false", () => {
+    expect(
+      analyze(4294967296, {
+        arch: "32-bit",
+        useLongLong: false,
+      }),
+    ).toMatchObject({
+      slotCount: 0,
+    });
+    expect(
+      analyze(-2147483649, {
+        arch: "32-bit",
+        useLongLong: false,
+      }),
+    ).toMatchObject({
+      slotCount: 0,
+    });
+  });
+
+  it("should allocate an extra slot for 64-bit integers if useLongLong is true", () => {
+    expect(
+      analyze(4294967296, {
+        arch: "32-bit",
+        useLongLong: true,
+      }),
+    ).toMatchObject({
+      slotCount: 1,
+    });
+    expect(
+      analyze(-2147483649, {
+        arch: "32-bit",
+        useLongLong: true,
+      }),
+    ).toMatchObject({
+      slotCount: 1,
+    });
+  });
+
+  it("should not allocate an extra slot for 64-bit floats if useDouble is false", () => {
+    expect(
+      analyze(1e40, {
+        arch: "32-bit",
+        useDouble: false,
+      }),
+    ).toMatchObject({
+      slotCount: 0,
+    });
+    expect(
+      analyze(1e-40, {
+        arch: "32-bit",
+        useDouble: false,
+      }),
+    ).toMatchObject({
+      slotCount: 0,
+    });
+    expect(
+      analyze(1.23456789, {
+        arch: "32-bit",
+        useDouble: false,
+      }),
+    ).toMatchObject({
+      slotCount: 0,
+    });
+  });
+
+  it("should allocate an extra slot for 64-bit integers if useDouble is true", () => {
+    expect(
+      analyze(1e40, {
+        arch: "32-bit",
+        useDouble: true,
+      }),
+    ).toMatchObject({
+      slotCount: 1,
+    });
+    expect(
+      analyze(1e-46, {
+        arch: "32-bit",
+        useDouble: true,
+      }),
+    ).toMatchObject({
+      slotCount: 1,
+    });
+    expect(
+      analyze(1.23456789, {
+        arch: "32-bit",
+        useDouble: true,
+      }),
+    ).toMatchObject({
+      slotCount: 1,
+    });
+  });
 });
 
 describe("hasJsonInJsonSyndrome()", () => {

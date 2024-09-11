@@ -98,6 +98,8 @@ class JsonDocument {
     this._deduplicateKeys = cfg.deduplicateKeys;
     this._deduplicateValues = cfg.deduplicateValues;
     this._filteringEnabled = !!cfg.filter;
+    this._useLongLong = cfg.useLongLong;
+    this._useDouble = cfg.useDouble;
 
     const arch = memoryModels[cfg.arch];
 
@@ -143,6 +145,17 @@ class JsonDocument {
     this._strings[s] = true;
   }
 
+  addNumber(value) {
+    switch (getCppTypeFor(value)) {
+      case "long long":
+        if (this._useLongLong) this.allocSlots(1);
+        break;
+      case "double":
+        if (this._useDouble) this.allocSlots(1);
+        break;
+    }
+  }
+
   addIgnoredKey(s) {
     this.allocString(s);
     this._memory.free(s.length + this._stringOverhead);
@@ -180,6 +193,10 @@ function fillDocument(doc, value, filter) {
 
     case "string":
       if (filter.allowsValue) doc.addString(value);
+      break;
+
+    case "number":
+      if (filter.allowsValue) doc.addNumber(value);
       break;
   }
 }
@@ -295,7 +312,12 @@ export function getCommonCppTypeFor(values) {
         if (max < 2000000000 && min > -2000000000) return "long";
         if (max < 9e18 && min > -9e18) return "long long";
       }
-      if (max < 2e38 && min > -2e38 && values.every(hasShortMantissa))
+      if (
+        max < 2e38 &&
+        min > -2e38 &&
+        values.every(hasShortMantissa) &&
+        (min == 0 || Math.abs(min) > 1e-45)
+      )
         return "float";
       return "double";
     }
