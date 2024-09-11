@@ -2,7 +2,6 @@ import { defineStore } from "pinia";
 import { computed } from "vue";
 
 import {
-  countSlots,
   measureSize,
   getMaxStringLength,
   hasJsonInJsonSyndrome,
@@ -63,7 +62,7 @@ export const useStatsStore = defineStore("stats", () => {
     doubleNeeded: computed(() => needsDouble(cfg.filteredInput)),
     longLongNeeded: computed(() => needsLongLong(cfg.filteredInput)),
     jsonInJson: computed(() => hasJsonInJsonSyndrome(cfg.filteredInput)),
-    slotCount: computed(() => countSlots(cfg.filteredInput)),
+    slotCount: computed(() => size.value.slotCount),
     maxStringLength: computed(() => getMaxStringLength(cfg.filteredInput, cfg)),
     bufferSize,
     peakRamUsage,

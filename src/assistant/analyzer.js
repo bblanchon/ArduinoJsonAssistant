@@ -55,6 +55,7 @@ class SlotPoolList {
     this._freeSlots = 0;
     this._poolCount = 0;
     this._poolListCapacity = this._initialPoolListCapacity;
+    this._totalSlots = 0;
   }
 
   allocSlot() {
@@ -70,6 +71,7 @@ class SlotPoolList {
       this._freeSlots = this._poolCapacity;
     }
     this._freeSlots--;
+    this._totalSlots++;
   }
 
   shrinkToFit() {
@@ -81,6 +83,10 @@ class SlotPoolList {
       );
       this._poolListCapacity = this._poolCount;
     }
+  }
+
+  get totalSlots() {
+    return this._totalSlots;
   }
 }
 
@@ -145,6 +151,10 @@ class JsonDocument {
   shrinkToFit() {
     this._poolList.shrinkToFit();
   }
+
+  get slotCount() {
+    return this._poolList.totalSlots;
+  }
 }
 
 function fillDocument(doc, value, filter) {
@@ -176,21 +186,21 @@ function fillDocument(doc, value, filter) {
 
 export function measureSize(obj, cfg) {
   const memory = new Memory();
+  const doc = new JsonDocument(memory, cfg);
   if (cfg.filter) {
     const filter = new JsonDocument(memory, cfg);
     fillDocument(filter, cfg.filter, new JsonFilter(true));
     filter.shrinkToFit();
-    const doc = new JsonDocument(memory, cfg);
     fillDocument(doc, obj, new JsonFilter(cfg.filter));
     doc.shrinkToFit();
   } else {
-    const doc = new JsonDocument(memory, cfg);
     fillDocument(doc, obj, new JsonFilter(true));
     doc.shrinkToFit();
   }
   return {
     memoryUsage: memory.memoryUsage,
     peakMemoryUsage: memory.peakMemoryUsage,
+    slotCount: doc.slotCount,
   };
 }
 
@@ -335,19 +345,3 @@ export function hasJsonInJsonSyndrome(val) {
 
 export const needsLongLong = (val) => needsCppType("long long", val);
 export const needsDouble = (val) => needsCppType("double", val);
-
-export function countSlots(input) {
-  const type = getValueType(input);
-  switch (type) {
-    case "array":
-      return input.length + input.map(countSlots).reduce((a, b) => a + b, 0);
-    case "object": {
-      const values = Object.values(input);
-      return (
-        2 * values.length + values.map(countSlots).reduce((a, b) => a + b, 0)
-      );
-    }
-    default:
-      return 0;
-  }
-}

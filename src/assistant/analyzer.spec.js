@@ -9,7 +9,6 @@ import {
   hasJsonInJsonSyndrome,
   getOverallocatedStringSize,
   getEffectiveSlotSize,
-  countSlots,
   getMaxStringLength,
 } from "./analyzer";
 
@@ -18,6 +17,10 @@ const sample_object = {
   time: 1351824120,
   data: [48.75608, 2.302038],
 };
+
+function countSlots(input) {
+  return measureSize(input, { arch: "8-bit" }).slotCount;
+}
 
 describe("getEffectiveSlotSize()", () => {
   describe("on an 8-bit processor", () => {
@@ -112,7 +115,7 @@ describe("getOverallocatedStringSize()", () => {
 describe("measureSize", function () {
   it("should return 0+0 for null", () => {
     const result = measureSize(null, { arch: "8-bit" });
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       memoryUsage: 14,
       peakMemoryUsage: 14,
     });
@@ -120,7 +123,7 @@ describe("measureSize", function () {
 
   it('should return 0+6 for "hello"', () => {
     const result = measureSize("hello", { arch: "8-bit" });
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       memoryUsage: 24,
       peakMemoryUsage: 24,
     });
@@ -130,7 +133,7 @@ describe("measureSize", function () {
     const result = measureSize(sample_object, {
       arch: "8-bit",
     });
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       memoryUsage: 99,
       peakMemoryUsage: 147,
     });
@@ -142,7 +145,7 @@ describe("measureSize", function () {
       useLongLong: true,
       useDouble: true,
     });
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       memoryUsage: 157,
       peakMemoryUsage: 1117,
     });
@@ -154,7 +157,7 @@ describe("measureSize", function () {
       deduplicateKeys: false,
       arch: "8-bit",
     });
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       memoryUsage: 74,
       peakMemoryUsage: 134,
     });
@@ -166,7 +169,7 @@ describe("measureSize", function () {
       deduplicateKeys: true,
       arch: "8-bit",
     });
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       memoryUsage: 62,
       peakMemoryUsage: 122,
     });
@@ -178,7 +181,7 @@ describe("measureSize", function () {
       deduplicateValues: false,
       arch: "8-bit",
     });
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       memoryUsage: 50,
       peakMemoryUsage: 134,
     });
@@ -190,7 +193,7 @@ describe("measureSize", function () {
       deduplicateValues: true,
       arch: "8-bit",
     });
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       memoryUsage: 38,
       peakMemoryUsage: 122,
     });
@@ -202,7 +205,7 @@ describe("measureSize", function () {
         { hello: 1, world: 2 },
         { arch: "8-bit", filter: { hello: true } },
       ),
-    ).toEqual({
+    ).toMatchObject({
       memoryUsage: 72,
       peakMemoryUsage: 166,
     });
@@ -222,7 +225,7 @@ describe("measureSize", function () {
           filter: [{ hello: true }],
         },
       ),
-    ).toEqual({
+    ).toMatchObject({
       memoryUsage: 120,
       peakMemoryUsage: 177,
     });
@@ -237,7 +240,7 @@ describe("measureSize", function () {
           ignoreKeys: true,
         },
       ),
-    ).toEqual({
+    ).toMatchObject({
       memoryUsage: 39,
       peakMemoryUsage: 123,
     });
@@ -252,7 +255,7 @@ describe("measureSize", function () {
           ignoreValues: true,
         },
       ),
-    ).toEqual({
+    ).toMatchObject({
       memoryUsage: 36,
       peakMemoryUsage: 120,
     });
@@ -267,7 +270,7 @@ describe("measureSize", function () {
           overAllocateStrings: true,
         },
       ),
-    ).toEqual({
+    ).toMatchObject({
       memoryUsage: 46,
       peakMemoryUsage: 156,
     });
@@ -279,7 +282,7 @@ describe("measureSize", function () {
         arch: "8-bit",
         overAllocateStrings: true,
       }),
-    ).toEqual({
+    ).toMatchObject({
       memoryUsage: 398,
       peakMemoryUsage: 398,
     });
@@ -289,7 +292,7 @@ describe("measureSize", function () {
         arch: "8-bit",
         overAllocateStrings: true,
       }),
-    ).toEqual({
+    ).toMatchObject({
       memoryUsage: 424, // +26 => 5*4 for the pool list + 6 for the pool
       peakMemoryUsage: 526, // +128 => 8*4 for the pool list + 16*6 for the pool
     });
@@ -301,7 +304,7 @@ describe("measureSize", function () {
         arch: "8-bit",
         overAllocateStrings: true,
       }),
-    ).toEqual({
+    ).toMatchObject({
       memoryUsage: 814,
       peakMemoryUsage: 814,
     });
@@ -311,7 +314,7 @@ describe("measureSize", function () {
         arch: "8-bit",
         overAllocateStrings: true,
       }),
-    ).toEqual({
+    ).toMatchObject({
       memoryUsage: 824, // +10 => 4 for the pool list + 6 for the pool
       peakMemoryUsage: 942, // +128 => 8*4 for the pool list + 16*6 for the pool
     });
