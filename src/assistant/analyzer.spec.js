@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 
 import {
-  measureSize,
+  analyze,
   needsLongLong,
   needsDouble,
   canLoop,
@@ -19,7 +19,7 @@ const sample_object = {
 };
 
 function countSlots(input) {
-  return measureSize(input, { arch: "8-bit" }).slotCount;
+  return analyze(input, { arch: "8-bit" }).slotCount;
 }
 
 describe("getEffectiveSlotSize()", () => {
@@ -112,9 +112,9 @@ describe("getOverallocatedStringSize()", () => {
   });
 });
 
-describe("measureSize", function () {
+describe("analyze", function () {
   it("should return 0+0 for null", () => {
-    const result = measureSize(null, { arch: "8-bit" });
+    const result = analyze(null, { arch: "8-bit" });
     expect(result).toMatchObject({
       memoryUsage: 14,
       peakMemoryUsage: 14,
@@ -122,7 +122,7 @@ describe("measureSize", function () {
   });
 
   it('should return 0+6 for "hello"', () => {
-    const result = measureSize("hello", { arch: "8-bit" });
+    const result = analyze("hello", { arch: "8-bit" });
     expect(result).toMatchObject({
       memoryUsage: 24,
       peakMemoryUsage: 24,
@@ -130,7 +130,7 @@ describe("measureSize", function () {
   });
 
   it("sample object on 8-bit processor", () => {
-    const result = measureSize(sample_object, {
+    const result = analyze(sample_object, {
       arch: "8-bit",
     });
     expect(result).toMatchObject({
@@ -140,7 +140,7 @@ describe("measureSize", function () {
   });
 
   it("sample object on 32-bit processor", () => {
-    const result = measureSize(sample_object, {
+    const result = analyze(sample_object, {
       arch: "32-bit",
       useLongLong: true,
       useDouble: true,
@@ -153,7 +153,7 @@ describe("measureSize", function () {
 
   it("should not deduplicate keys if deduplicateKeys is false", () => {
     const input = [{ example: 1 }, { example: 2 }];
-    const result = measureSize(input, {
+    const result = analyze(input, {
       deduplicateKeys: false,
       arch: "8-bit",
     });
@@ -165,7 +165,7 @@ describe("measureSize", function () {
 
   it("should not deduplicate keys if deduplicateKeys is true", () => {
     const input = [{ example: 1 }, { example: 2 }];
-    const result = measureSize(input, {
+    const result = analyze(input, {
       deduplicateKeys: true,
       arch: "8-bit",
     });
@@ -177,7 +177,7 @@ describe("measureSize", function () {
 
   it("should not deduplicate values if deduplicateValues is false", () => {
     const input = ["example", "example"];
-    const result = measureSize(input, {
+    const result = analyze(input, {
       deduplicateValues: false,
       arch: "8-bit",
     });
@@ -189,7 +189,7 @@ describe("measureSize", function () {
 
   it("should not deduplicate keys if deduplicateValues is true", () => {
     const input = ["example", "example"];
-    const result = measureSize(input, {
+    const result = analyze(input, {
       deduplicateValues: true,
       arch: "8-bit",
     });
@@ -201,7 +201,7 @@ describe("measureSize", function () {
 
   it("filter simple object", () => {
     expect(
-      measureSize(
+      analyze(
         { hello: 1, world: 2 },
         { arch: "8-bit", filter: { hello: true } },
       ),
@@ -213,7 +213,7 @@ describe("measureSize", function () {
 
   it("filter simple array", () => {
     expect(
-      measureSize(
+      analyze(
         [
           { hello: 1, world: 0 },
           { hello: 2, worldWorld: 0 },
@@ -233,7 +233,7 @@ describe("measureSize", function () {
 
   it("should ignore keys when ignoreKeys is true", () => {
     expect(
-      measureSize(
+      analyze(
         { hello: "world!!!" },
         {
           arch: "8-bit",
@@ -248,7 +248,7 @@ describe("measureSize", function () {
 
   it("should ignore values when ignoreValues is true", () => {
     expect(
-      measureSize(
+      analyze(
         { hello: "world!!!" },
         {
           arch: "8-bit",
@@ -263,7 +263,7 @@ describe("measureSize", function () {
 
   it("should over allocate string if overAllocateString is true", () => {
     expect(
-      measureSize(
+      analyze(
         { hello: "world" },
         {
           arch: "8-bit",
@@ -278,7 +278,7 @@ describe("measureSize", function () {
 
   it("should double pool list's capacity above 64 nodes", () => {
     expect(
-      measureSize(new Array(64), {
+      analyze(new Array(64), {
         arch: "8-bit",
         overAllocateStrings: true,
       }),
@@ -288,7 +288,7 @@ describe("measureSize", function () {
     });
 
     expect(
-      measureSize(new Array(65), {
+      analyze(new Array(65), {
         arch: "8-bit",
         overAllocateStrings: true,
       }),
@@ -300,7 +300,7 @@ describe("measureSize", function () {
 
   it("should quadruple pool list's capacity above 128 nodes", () => {
     expect(
-      measureSize(new Array(128), {
+      analyze(new Array(128), {
         arch: "8-bit",
         overAllocateStrings: true,
       }),
@@ -310,7 +310,7 @@ describe("measureSize", function () {
     });
 
     expect(
-      measureSize(new Array(129), {
+      analyze(new Array(129), {
         arch: "8-bit",
         overAllocateStrings: true,
       }),

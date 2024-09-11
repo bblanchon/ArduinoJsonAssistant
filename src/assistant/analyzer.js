@@ -184,7 +184,7 @@ function fillDocument(doc, value, filter) {
   }
 }
 
-export function measureSize(obj, cfg) {
+export function analyze(obj, cfg) {
   const memory = new Memory();
   const doc = new JsonDocument(memory, cfg);
   if (cfg.filter) {

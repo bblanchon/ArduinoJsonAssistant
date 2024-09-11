@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { computed } from "vue";
 
 import {
-  measureSize,
+  analyze,
   getMaxStringLength,
   hasJsonInJsonSyndrome,
   measureNesting,
@@ -17,8 +17,8 @@ export const useStatsStore = defineStore("stats", () => {
   const cfg = useSettingsStore();
   const board = useBoardStore();
 
-  const size = computed(() =>
-    measureSize(cfg.input, {
+  const results = computed(() =>
+    analyze(cfg.input, {
       filter:
         cfg.mode == "deserialize" && cfg.filterEnabled ? cfg.filter : undefined,
       arch: board.arch,
@@ -52,17 +52,17 @@ export const useStatsStore = defineStore("stats", () => {
   });
 
   const peakRamUsage = computed(
-    () => size.value.peakMemoryUsage + bufferSize.value,
+    () => results.value.peakMemoryUsage + bufferSize.value,
   );
 
   return {
     nestingLevel: computed(() => measureNesting(cfg.input)),
-    finalDocSize: computed(() => size.value.memoryUsage),
-    peakDocSize: computed(() => size.value.peakMemoryUsage),
+    finalDocSize: computed(() => results.value.memoryUsage),
+    peakDocSize: computed(() => results.value.peakMemoryUsage),
     doubleNeeded: computed(() => needsDouble(cfg.filteredInput)),
     longLongNeeded: computed(() => needsLongLong(cfg.filteredInput)),
     jsonInJson: computed(() => hasJsonInJsonSyndrome(cfg.filteredInput)),
-    slotCount: computed(() => size.value.slotCount),
+    slotCount: computed(() => results.value.slotCount),
     maxStringLength: computed(() => getMaxStringLength(cfg.filteredInput, cfg)),
     bufferSize,
     peakRamUsage,
