@@ -26,7 +26,7 @@ export const useSettingsStore = defineStore("settings", {
     return {
       assumeConstKeys: true,
       assumeConstValues: false,
-      cpu: "uno",
+      cpu: "uno_r4_wifi",
       deduplicateKeys: true,
       deduplicateValues: true,
       filter: true,
