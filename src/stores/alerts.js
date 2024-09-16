@@ -22,18 +22,18 @@ export const useAlertsStore = defineStore("alerts", () => {
         message: `This document is deeply nested; don't forget to pass <a href="${baseUrl}/v7/api/json/deserializejson/#nesting-limit"><code>DeserializationOption::NestingLimit(${stats.nestingLevel})</code></a>`,
       };
 
-    if (stats.longLongNeeded && !board.longLongIsDefault)
+    if (stats.longLongNeeded && !settings.useLongLong)
       yield {
         id: "long-long",
         type: "warning",
-        message: `This document contains <code>long&nbsp;long</code>; you should define <a href="${baseUrl}/v7/config/use_long_long/"><code>ARDUINOJSON_USE_LONG_LONG</code></a> to <code>1</code>`,
+        message: `This document contains 64-bit integers; you should set <a href="${baseUrl}/v7/config/use_long_long/"><code>ARDUINOJSON_USE_LONG_LONG</code></a> to <code>1</code>`,
       };
 
-    if (stats.doubleNeeded && board.doubleSupported && !board.doubleIsDefault)
+    if (stats.doubleNeeded && board.doubleSupported && !settings.useDouble)
       yield {
         id: "double",
         type: "warning",
-        message: `This document contains <code>double</code>; you should define <a href="${baseUrl}/v7/config/use_double/"><code>ARDUINOJSON_USE_DOUBLE</code></a> to <code>1</code>`,
+        message: `This document contains double precisions floating-point values; you should set <a href="${baseUrl}/v7/config/use_double/"><code>ARDUINOJSON_USE_DOUBLE</code></a> to <code>1</code>`,
       };
 
     if (stats.doubleNeeded && !board.doubleSupported)
