@@ -20,7 +20,7 @@ export default defineConfig({
       entry: path.resolve(__dirname, "src/main.js"),
       formats: ["iife"],
       name: "ArduinoJsonAssistant",
-      fileName: (format) => "assistant.js",
+      fileName: () => "assistant.js",
     },
   },
   define: {

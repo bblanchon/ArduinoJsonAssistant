@@ -59,7 +59,7 @@ export default {
     prettyText() {
       try {
         return JSON.stringify(JSON.parse(this.text), null, 2);
-      } catch (e) {
+      } catch {
         return this.text;
       }
     },

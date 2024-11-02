@@ -67,7 +67,7 @@ export default {
 
       // filter the boards object
       return Object.fromEntries(
-        Object.entries(this.boards).filter(([_key, board]) =>
+        Object.entries(this.boards).filter(([, board]) =>
           board.name.toLowerCase().includes(search),
         ),
       );
