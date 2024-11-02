@@ -11,14 +11,14 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "lint": "eslint",
     "test": "vitest --root src/"
   },
   "devDependencies": {
-    "@rushstack/eslint-patch": "^1.10.4",
     "@vitejs/plugin-vue": "^5.1.4",
-    "@vue/eslint-config-prettier": "^9.0.0",
-    "eslint": "^8.56.0",
+    "@vitest/eslint-plugin": "^1.1.7",
+    "@vue/eslint-config-prettier": "^10.1.0",
+    "eslint": "^9.14.0",
     "eslint-plugin-vue": "^9.30.0",
     "highlight.js": "^11.10.0",
     "pinia": "^2.2.5",
