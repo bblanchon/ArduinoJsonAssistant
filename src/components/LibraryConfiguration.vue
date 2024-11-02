@@ -144,10 +144,13 @@
 </template>
 
 <script setup>
+import { computed } from "vue";
+
 import { useSettingsStore } from "@/stores/settings";
 import { useBoardStore } from "@/stores/board";
-import { computed } from "vue";
 import { formatInteger } from "@/utils";
+
+import ResetTweakButton from "@/components/ResetTweakButton.vue";
 
 const settings = useSettingsStore();
 const board = useBoardStore();

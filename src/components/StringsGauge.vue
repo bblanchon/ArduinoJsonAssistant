@@ -14,6 +14,8 @@
 import { useStatsStore } from "@/stores/stats";
 import { useSettingsStore } from "@/stores/settings";
 
+import BaseGauge from "@/components/BaseGauge.vue";
+
 const stats = useStatsStore();
 const settings = useSettingsStore();
 </script>

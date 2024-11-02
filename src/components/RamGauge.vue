@@ -20,6 +20,8 @@ import bytes from "bytes";
 import { useStatsStore } from "@/stores/stats";
 import { useBoardStore } from "@/stores/board";
 
+import BaseGauge from "@/components/BaseGauge.vue";
+
 const stats = useStatsStore();
 const board = useBoardStore();
 

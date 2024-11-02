@@ -46,9 +46,12 @@
 </template>
 
 <script setup>
+import { watchEffect } from "vue";
+
 import { useSettingsStore } from "@/stores/settings";
 import { useProgramStore } from "@/stores/program";
-import { watchEffect } from "vue";
+
+import CodeBlock from "@/components/CodeBlock.vue";
 
 const settings = useSettingsStore();
 const program = useProgramStore();

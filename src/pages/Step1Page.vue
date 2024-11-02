@@ -109,10 +109,13 @@
 </template>
 
 <script setup>
-import { useBoardStore } from "@/stores/board";
-import { useSettingsStore } from "@/stores/settings";
 import { inject, computed } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
+
+import { useBoardStore } from "@/stores/board";
+import { useSettingsStore } from "@/stores/settings";
+
+import BoardSelector from "@/components/BoardSelector.vue";
 
 const settings = useSettingsStore();
 const board = useBoardStore();

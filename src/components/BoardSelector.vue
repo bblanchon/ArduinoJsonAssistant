@@ -47,7 +47,10 @@
 <script>
 import boards from "@/assets/boards.json";
 
+import BoardSelectorItem from "@/components/BoardSelectorItem.vue";
+
 export default {
+  components: { BoardSelectorItem },
   props: {
     modelValue: String,
   },

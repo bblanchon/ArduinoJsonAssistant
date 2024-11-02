@@ -97,8 +97,11 @@
 </template>
 
 <script setup>
-import { useSettingsStore } from "@/stores/settings";
 import { computed } from "vue";
+
+import { useSettingsStore } from "@/stores/settings";
+
+import ResetTweakButton from "@/components/ResetTweakButton.vue";
 
 const settings = useSettingsStore();
 

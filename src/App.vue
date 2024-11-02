@@ -17,9 +17,15 @@
 
 <script>
 import { mapState } from "pinia";
+
 import { useSettingsStore } from "@/stores/settings";
 
+import StepNumber from "@/components/StepNumber.vue";
+
 export default {
+  components: {
+    StepNumber,
+  },
   computed: {
     ...mapState(useSettingsStore, ["hasErrors"]),
     steps() {

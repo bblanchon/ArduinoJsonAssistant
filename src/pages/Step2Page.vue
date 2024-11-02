@@ -101,6 +101,14 @@ import { computed } from "vue";
 import { useSettingsStore } from "@/stores/settings";
 import { useAlertsStore } from "@/stores/alerts";
 
+import AssistantTweaks from "@/components/AssistantTweaks.vue";
+import LibraryConfiguration from "@/components/LibraryConfiguration.vue";
+import ExampleDownloader from "@/components/ExampleDownloader.vue";
+import JsonEditor from "@/components/JsonEditor.vue";
+import RamGauge from "@/components/RamGauge.vue";
+import SlotsGauge from "@/components/SlotsGauge.vue";
+import StringsGauge from "@/components/StringsGauge.vue";
+
 const settings = useSettingsStore();
 const { alerts } = storeToRefs(useAlertsStore());
 
