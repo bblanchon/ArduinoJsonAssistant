@@ -9,16 +9,18 @@ import {
 } from "./parsingProgram";
 import cpuInfos from "./cpus";
 
-describe("writeDeserializationCode()", () => {
-  function testDeserializationCode(config, expectedOutput) {
-    const prg = new ProgramWriter();
-    writeDeserializationCode(prg, config);
-    expect(prg.toString()).toEqual(expectedOutput);
-  }
+function deserializationCodeFor(config) {
+  const prg = new ProgramWriter();
+  writeDeserializationCode(prg, config);
+  const output = prg.toString();
+  return output;
+}
 
+describe("writeDeserializationCode()", () => {
   it("inputType == charPtr", () => {
-    testDeserializationCode(
-      { inputType: "charPtr", cpu: cpuInfos.avr },
+    expect(
+      deserializationCodeFor({ inputType: "charPtr", cpu: cpuInfos.avr }),
+    ).toEqual(
       "// char* input;\n" +
         "// size_t inputLength; (optional)\n\n" +
         "StaticJsonDocument<0> doc;\n\n" +
@@ -27,8 +29,9 @@ describe("writeDeserializationCode()", () => {
   });
 
   it("inputType == charArray", () => {
-    testDeserializationCode(
-      { inputType: "charArray", cpu: cpuInfos.avr },
+    expect(
+      deserializationCodeFor({ inputType: "charArray", cpu: cpuInfos.avr }),
+    ).toEqual(
       "// char input[MAX_INPUT_LENGTH];\n\n" +
         "StaticJsonDocument<0> doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input, MAX_INPUT_LENGTH);",
@@ -36,8 +39,9 @@ describe("writeDeserializationCode()", () => {
   });
 
   it("inputType == constCharPtr", () => {
-    testDeserializationCode(
-      { inputType: "constCharPtr", cpu: cpuInfos.avr },
+    expect(
+      deserializationCodeFor({ inputType: "constCharPtr", cpu: cpuInfos.avr }),
+    ).toEqual(
       "// const char* input;\n" +
         "// size_t inputLength; (optional)\n\n" +
         "StaticJsonDocument<0> doc;\n\n" +
@@ -46,8 +50,9 @@ describe("writeDeserializationCode()", () => {
   });
 
   it("inputType == arduinoString", () => {
-    testDeserializationCode(
-      { inputType: "arduinoString", cpu: cpuInfos.avr },
+    expect(
+      deserializationCodeFor({ inputType: "arduinoString", cpu: cpuInfos.avr }),
+    ).toEqual(
       "// String input;\n\n" +
         "StaticJsonDocument<0> doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input);",
@@ -55,8 +60,9 @@ describe("writeDeserializationCode()", () => {
   });
 
   it("inputType == arduinoStream", () => {
-    testDeserializationCode(
-      { inputType: "arduinoStream", cpu: cpuInfos.avr },
+    expect(
+      deserializationCodeFor({ inputType: "arduinoStream", cpu: cpuInfos.avr }),
+    ).toEqual(
       "// Stream& input;\n\n" +
         "StaticJsonDocument<0> doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input);",
@@ -64,8 +70,9 @@ describe("writeDeserializationCode()", () => {
   });
 
   it("inputType == stdString", () => {
-    testDeserializationCode(
-      { inputType: "stdString", cpu: cpuInfos.avr },
+    expect(
+      deserializationCodeFor({ inputType: "stdString", cpu: cpuInfos.avr }),
+    ).toEqual(
       "// std::string input;\n\n" +
         "StaticJsonDocument<0> doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input);",
@@ -73,8 +80,9 @@ describe("writeDeserializationCode()", () => {
   });
 
   it("inputType == stdStream", () => {
-    testDeserializationCode(
-      { inputType: "stdStream", cpu: cpuInfos.avr },
+    expect(
+      deserializationCodeFor({ inputType: "stdStream", cpu: cpuInfos.avr }),
+    ).toEqual(
       "// std::istream& input;\n\n" +
         "StaticJsonDocument<0> doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input);",
@@ -120,16 +128,13 @@ describe("writeErrorCheckingCode()", () => {
 });
 
 describe("generateParsingProgram", function () {
-  function testParginProgram(config, expectedOutput) {
-    expect(generateParsingProgram(config)).toEqual(expectedOutput);
-  }
-
   it("nesting limit witout filter", () => {
-    testParginProgram(
-      {
+    expect(
+      generateParsingProgram({
         root: [[[[[[[[[[[]]]]]]]]]]],
         cpu: { nestingLimit: 10, slotSize: 8 },
-      },
+      }),
+    ).toEqual(
       "StaticJsonDocument<96> doc;\n\n" +
         "DeserializationError error = deserializeJson(doc, input, DeserializationOption::NestingLimit(11));\n\n" +
         "if (error) {\n" +
@@ -140,12 +145,13 @@ describe("generateParsingProgram", function () {
   });
 
   it("nesting limit with filter", () => {
-    testParginProgram(
-      {
+    expect(
+      generateParsingProgram({
         root: { ignored: [[[[[[[[[[]]]]]]]]]] },
         filter: { a: true },
         cpu: { slotSize: 8, nestingLimit: 10 },
-      },
+      }),
+    ).toEqual(
       "StaticJsonDocument<8> filter;\n" +
         'filter["a"] = true;\n\n' +
         "StaticJsonDocument<24> doc;\n\n" +
@@ -158,8 +164,13 @@ describe("generateParsingProgram", function () {
   });
 
   it("filter", () => {
-    testParginProgram(
-      { root: {}, filter: { a: true }, cpu: { slotSize: 8 } },
+    expect(
+      generateParsingProgram({
+        root: {},
+        filter: { a: true },
+        cpu: { slotSize: 8 },
+      }),
+    ).toEqual(
       "StaticJsonDocument<8> filter;\n" +
         'filter["a"] = true;\n\n' +
         "StaticJsonDocument<0> doc;\n\n" +
@@ -172,8 +183,12 @@ describe("generateParsingProgram", function () {
   });
 
   it("DynamicJsonDocument", () => {
-    testParginProgram(
-      { root: "abcdef", cpu: { slotSize: 8, heapThreshold: 23 } },
+    expect(
+      generateParsingProgram({
+        root: "abcdef",
+        cpu: { slotSize: 8, heapThreshold: 23 },
+      }),
+    ).toEqual(
       "DynamicJsonDocument doc(24);\n\n" +
         "DeserializationError error = deserializeJson(doc, input);\n\n" +
         "if (error) {\n" +
@@ -185,37 +200,41 @@ describe("generateParsingProgram", function () {
   });
 });
 
-describe("writeDecompositionCode", function () {
-  function testDescompositionCode(root, expectedOutput) {
-    const prg = new ProgramWriter();
-    writeDecompositionCode(prg, root);
-    expect(prg.toString()).toEqual(expectedOutput);
-  }
+function decompositionCodeFor(root) {
+  const prg = new ProgramWriter();
+  writeDecompositionCode(prg, root);
+  const output = prg.toString();
+  return output;
+}
 
+describe("writeDecompositionCode", function () {
   it("[]", () => {
-    testDescompositionCode([], "");
+    expect(decompositionCodeFor([])).toEqual("");
   });
 
   it("{}", () => {
-    testDescompositionCode({}, "");
+    expect(decompositionCodeFor({})).toEqual("");
   });
 
   it("42", () => {
-    testDescompositionCode(42, "int root = doc.as<int>(); // 42");
+    expect(decompositionCodeFor(42)).toEqual("int root = doc.as<int>(); // 42");
   });
 
   it("[42]", () => {
-    testDescompositionCode([42], "int root_0 = doc[0]; // 42\n");
+    expect(decompositionCodeFor([42])).toEqual("int root_0 = doc[0]; // 42\n");
   });
 
   it("bool", () => {
-    testDescompositionCode(true, "bool root = doc.as<bool>(); // true");
-    testDescompositionCode(false, "bool root = doc.as<bool>(); // false");
+    expect(decompositionCodeFor(true)).toEqual(
+      "bool root = doc.as<bool>(); // true",
+    );
+    expect(decompositionCodeFor(false)).toEqual(
+      "bool root = doc.as<bool>(); // false",
+    );
   });
 
   it("[1,2,3]", () => {
-    testDescompositionCode(
-      [1, 2, 3],
+    expect(decompositionCodeFor([1, 2, 3])).toEqual(
       "int root_0 = doc[0]; // 1\n" +
         "int root_1 = doc[1]; // 2\n" +
         "int root_2 = doc[2]; // 3\n",
@@ -223,26 +242,25 @@ describe("writeDecompositionCode", function () {
   });
 
   it('{"hello":true}', () => {
-    testDescompositionCode(
-      { hello: true },
+    expect(decompositionCodeFor({ hello: true })).toEqual(
       'bool hello = doc["hello"]; // true\n',
     );
   });
 
   it('{"hello":null}', () => {
-    testDescompositionCode({ hello: null }, '// doc["hello"] is null\n');
+    expect(decompositionCodeFor({ hello: null })).toEqual(
+      '// doc["hello"] is null\n',
+    );
   });
 
   it('{"hello":"world"}', () => {
-    testDescompositionCode(
-      { hello: "world" },
+    expect(decompositionCodeFor({ hello: "world" })).toEqual(
       'const char* hello = doc["hello"]; // "world"\n',
     );
   });
 
   it('[{"a":1,"b":2,"c":3}]', () => {
-    testDescompositionCode(
-      [{ a: 1, b: 2, c: 3 }],
+    expect(decompositionCodeFor([{ a: 1, b: 2, c: 3 }])).toEqual(
       "JsonObject root_0 = doc[0];\n" +
         'int root_0_a = root_0["a"]; // 1\n' +
         'int root_0_b = root_0["b"]; // 2\n' +
@@ -251,15 +269,13 @@ describe("writeDecompositionCode", function () {
   });
 
   it("[[[[[[[[[[[42]]]]]]]]]]]", () => {
-    testDescompositionCode(
-      [[[[[[[[[[[42]]]]]]]]]]],
+    expect(decompositionCodeFor([[[[[[[[[[[42]]]]]]]]]]])).toEqual(
       "int root_0_0_0_0_0_0_0_0_0_0_0 = doc[0][0][0][0][0][0][0][0][0][0][0]; // 42\n",
     );
   });
 
   it("[10000,10000000,10000000000]", () => {
-    testDescompositionCode(
-      [10000, 10000000, 10000000000],
+    expect(decompositionCodeFor([10000, 10000000, 10000000000])).toEqual(
       "int root_0 = doc[0]; // 10000\n" +
         "long root_1 = doc[1]; // 10000000\n" +
         "long long root_2 = doc[2]; // 10000000000\n",
@@ -267,12 +283,14 @@ describe("writeDecompositionCode", function () {
   });
 
   it('{"123":1}', () => {
-    testDescompositionCode({ 123: 1 }, 'int root_123 = doc["123"]; // 1\n');
+    expect(decompositionCodeFor({ 123: 1 })).toEqual(
+      'int root_123 = doc["123"]; // 1\n',
+    );
   });
 
   it("loop on root", () => {
-    testDescompositionCode(
-      [
+    expect(
+      decompositionCodeFor([
         {
           dt: 1511978400,
           main: { temp: 3.95 },
@@ -283,7 +301,8 @@ describe("writeDecompositionCode", function () {
           main: { temp: 3.2 },
           weather: [{ description: "clear sky" }],
         },
-      ],
+      ]),
+    ).toEqual(
       "for (JsonObject item : doc.as<JsonArray>()) {\n\n" +
         '  long dt = item["dt"]; // 1511978400, 1511989200\n\n' +
         '  float main_temp = item["main"]["temp"]; // 3.95, 3.2\n\n' +
@@ -293,8 +312,8 @@ describe("writeDecompositionCode", function () {
   });
 
   it("loop in member array", () => {
-    testDescompositionCode(
-      {
+    expect(
+      decompositionCodeFor({
         list: [
           {
             dt: 1511978400,
@@ -312,7 +331,8 @@ describe("writeDecompositionCode", function () {
             weather: [{ description: "light rain" }],
           },
         ],
-      },
+      }),
+    ).toEqual(
       'for (JsonObject list_item : doc["list"].as<JsonArray>()) {\n\n' +
         '  long list_item_dt = list_item["dt"]; // 1511978400, 1511989200, 1512000000\n\n' +
         '  float list_item_main_temp = list_item["main"]["temp"]; // 3.95, 3.2, 3.25\n\n' +
@@ -322,8 +342,8 @@ describe("writeDecompositionCode", function () {
   });
 
   it("loop in member object", () => {
-    testDescompositionCode(
-      {
+    expect(
+      decompositionCodeFor({
         properties: {
           batt: {
             unit: "%",
@@ -338,7 +358,8 @@ describe("writeDecompositionCode", function () {
             name: "humidity",
           },
         },
-      },
+      }),
+    ).toEqual(
       'for (JsonPair property : doc["properties"].as<JsonObject>()) {\n' +
         '  const char* property_key = property.key().c_str(); // "batt", "tempc", "hum"\n\n' +
         '  const char* property_value_unit = property.value()["unit"]; // "%", "°C", "%"\n' +
@@ -348,8 +369,9 @@ describe("writeDecompositionCode", function () {
   });
 
   it("loop with mixed integer and long-longs", () => {
-    testDescompositionCode(
-      [{ x: 10000 }, { x: 10000000 }, { x: 10000000000 }],
+    expect(
+      decompositionCodeFor([{ x: 10000 }, { x: 10000000 }, { x: 10000000000 }]),
+    ).toEqual(
       "for (JsonObject item : doc.as<JsonArray>()) {\n\n" +
         '  long long x = item["x"]; // 10000, 10000000, 10000000000\n\n' +
         "}\n",
@@ -357,8 +379,7 @@ describe("writeDecompositionCode", function () {
   });
 
   it("loop with mixed integer and floats", () => {
-    testDescompositionCode(
-      [{ x: 10000 }, { x: 1.4 }],
+    expect(decompositionCodeFor([{ x: 10000 }, { x: 1.4 }])).toEqual(
       "for (JsonObject item : doc.as<JsonArray>()) {\n\n" +
         '  float x = item["x"]; // 10000, 1.4\n\n' +
         "}\n",
@@ -366,8 +387,7 @@ describe("writeDecompositionCode", function () {
   });
 
   it("loop with mixed null and integer", () => {
-    testDescompositionCode(
-      [{ x: null }, { x: 42 }],
+    expect(decompositionCodeFor([{ x: null }, { x: 42 }])).toEqual(
       "for (JsonObject item : doc.as<JsonArray>()) {\n\n" +
         '  int x = item["x"]; // 0, 42\n\n' +
         "}\n",
@@ -375,13 +395,14 @@ describe("writeDecompositionCode", function () {
   });
 
   it("loop with many values shows ellipsis", () => {
-    testDescompositionCode(
-      [
+    expect(
+      decompositionCodeFor([
         { very_long_name: "long value" },
         { very_long_name: "another long value" },
         { very_long_name: "yes another long value" },
         { very_long_name: "some string" },
-      ],
+      ]),
+    ).toEqual(
       "for (JsonObject item : doc.as<JsonArray>()) {\n\n" +
         '  const char* very_long_name = item["very_long_name"]; // "long value", "another long value", "yes another ...\n\n' +
         "}\n",
@@ -389,8 +410,7 @@ describe("writeDecompositionCode", function () {
   });
 
   it("loop on root with null siblings", () => {
-    testDescompositionCode(
-      [{ x: { id: 10 } }, { x: null }],
+    expect(decompositionCodeFor([{ x: { id: 10 } }, { x: null }])).toEqual(
       "for (JsonObject item : doc.as<JsonArray>()) {\n\n" +
         '  int x_id = item["x"]["id"]; // 10, 0\n\n' +
         "}\n",
@@ -398,11 +418,12 @@ describe("writeDecompositionCode", function () {
   });
 
   it("nested array with potential name conflict #1623", () => {
-    testDescompositionCode(
-      [
+    expect(
+      decompositionCodeFor([
         { data: [{ time: 1 }, { time: 2 }] },
         { data: [{ time: 3 }, { time: 4 }] },
-      ],
+      ]),
+    ).toEqual(
       "for (JsonObject item : doc.as<JsonArray>()) {\n\n" +
         '  for (JsonObject data_item : item["data"].as<JsonArray>()) {\n\n' +
         '    int data_item_time = data_item["time"]; // 1, 2\n\n' +
@@ -412,8 +433,13 @@ describe("writeDecompositionCode", function () {
   });
 
   it("null sibling array", () => {
-    testDescompositionCode(
-      [{ data: [1, 3] }, { data: [2, 4] }, { data: null }],
+    expect(
+      decompositionCodeFor([
+        { data: [1, 3] },
+        { data: [2, 4] },
+        { data: null },
+      ]),
+    ).toEqual(
       `for (JsonObject item : doc.as<JsonArray>()) {
 
   int data_0 = item["data"][0]; // 1, 2, 0

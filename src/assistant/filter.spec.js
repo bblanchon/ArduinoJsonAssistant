@@ -3,72 +3,71 @@ import { describe, it, expect } from "vitest";
 import { applyFilter } from "./filter";
 
 describe("applyFilter()", () => {
-  const testFilter = (input, filter, expectedOutput) => {
-    const output = applyFilter(input, filter);
-    expect(output).toEqual(expectedOutput);
-  };
-
   it("returns null if the filter is null", () => {
-    testFilter({ hello: "world" }, null, null);
+    expect(applyFilter({ hello: "world" }, null)).toEqual(null);
   });
 
   it("returns null if the filter is false", () => {
-    testFilter({ hello: "world" }, false, null);
+    expect(applyFilter({ hello: "world" }, false)).toEqual(null);
   });
 
   it("returns the input if filter is true", () => {
-    testFilter({ hello: "world" }, true, { hello: "world" });
+    expect(applyFilter({ hello: "world" }, true)).toEqual({ hello: "world" });
   });
 
   it("returns empty object if filter is empty object", () => {
-    testFilter({ hello: "world" }, {}, {});
+    expect(applyFilter({ hello: "world" }, {})).toEqual({});
   });
 
   it("returns filtered members", () => {
-    testFilter(
-      { a: 1, b: 2, c: 3, d: 4, z: 0 },
-      { a: true, c: true, z: true },
-      { a: 1, c: 3, z: 0 },
-    );
+    expect(
+      applyFilter(
+        { a: 1, b: 2, c: 3, d: 4, z: 0 },
+        { a: true, c: true, z: true },
+      ),
+    ).toEqual({ a: 1, c: 3, z: 0 });
   });
 
   it("returns filtered members in nested object", () => {
-    testFilter(
-      { a: { c1: 1, c2: 2 }, b: { c1: 3, c2: 4 } },
-      { a: { c1: true }, b: { c2: true } },
-      { a: { c1: 1 }, b: { c2: 4 } },
-    );
+    expect(
+      applyFilter(
+        { a: { c1: 1, c2: 2 }, b: { c1: 3, c2: 4 } },
+        { a: { c1: true }, b: { c2: true } },
+      ),
+    ).toEqual({ a: { c1: 1 }, b: { c2: 4 } });
   });
 
   it("wildcard key", () => {
-    testFilter(
-      { a: { c1: 1, c2: 2 }, b: { c1: 3, c2: 4 } },
-      { "*": { c1: true }, b: { c2: true } },
-      { a: { c1: 1 }, b: { c2: 4 } },
-    );
+    expect(
+      applyFilter(
+        { a: { c1: 1, c2: 2 }, b: { c1: 3, c2: 4 } },
+        { "*": { c1: true }, b: { c2: true } },
+      ),
+    ).toEqual({ a: { c1: 1 }, b: { c2: 4 } });
   });
 
-  it("input is object, filter is  array", () => {
-    testFilter({ a: 1 }, [], null);
+  it("input is object, filter is array", () => {
+    expect(applyFilter({ a: 1 }, [])).toEqual(null);
   });
 
   it("input is array, filter is empty array", () => {
-    testFilter([1, 2, 3], [], []);
+    expect(applyFilter([1, 2, 3], [])).toEqual([]);
   });
 
   it("only the first element of filter array counts", () => {
-    testFilter([1, 2, 3], [true, false], [1, 2, 3]);
-    testFilter([1, 2, 3], [false, true], []);
+    expect(applyFilter([1, 2, 3], [true, false])).toEqual([1, 2, 3]);
+    expect(applyFilter([1, 2, 3], [false, true])).toEqual([]);
   });
 
   it("filter member of object in array", () => {
-    testFilter(
-      [
-        { example: 1, ignore: 2 },
-        { example: 3, ignore: 4 },
-      ],
-      [{ example: true }],
-      [{ example: 1 }, { example: 3 }],
-    );
+    expect(
+      applyFilter(
+        [
+          { example: 1, ignore: 2 },
+          { example: 3, ignore: 4 },
+        ],
+        [{ example: true }],
+      ),
+    ).toEqual([{ example: 1 }, { example: 3 }]);
   });
 });
