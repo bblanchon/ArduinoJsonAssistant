@@ -8,7 +8,7 @@
           <tr>
             <th scope="row">Data structures</th>
             <td>{{ capacity.slots }}</td>
-            <td class="text-muted">
+            <td class="text-body-secondary">
               Bytes needed to stores the JSON objects and arrays in memory
               <a
                 href="#"
@@ -25,7 +25,7 @@
           <tr>
             <th scope="row">Strings</th>
             <td>{{ capacity.strings }}</td>
-            <td class="text-muted">
+            <td class="text-body-secondary">
               Bytes needed to stores the strings in memory
               <a
                 href="#"
@@ -41,7 +41,7 @@
           <tr v-if="mode === 'deserialize-filter'">
             <th scope="row">Filter</th>
             <td>{{ capacity.filter }}</td>
-            <td class="text-muted">
+            <td class="text-body-secondary">
               The parser temporarily stores some ignored keys; this is the size
               of the largest one.
             </td>
@@ -49,7 +49,7 @@
           <tr>
             <th scope="row">Total (minimum)</th>
             <td>{{ capacity.minimum }}</td>
-            <td class="text-muted">
+            <td class="text-body-secondary">
               Minimum capacity for the
               <a :href="`${baseUrl}/v6/api/jsondocument/`"
                 ><code>JsonDocument</code></a
@@ -59,7 +59,7 @@
           <tr class="table-primary">
             <th scope="row">Total (recommended)</th>
             <td>{{ capacity.recommended }}</td>
-            <td class="text-muted">
+            <td class="text-body-secondary">
               Including some slack in case the strings change, and rounded to a
               power of two
             </td>
@@ -120,17 +120,17 @@
             </option>
             <option v-else :value="false">float (default)</option>
           </select>
-          <small
+          <div
             v-if="cpuInfo.useDouble.slotSize == cpuInfo.slotSize"
-            class="form-text text-muted"
+            class="form-text"
           >
             This setting doesn't affect the document size of this platform, so
             you won't see any change in the table above.
-          </small>
-          <small v-else class="form-text text-muted">
+          </div>
+          <div v-else class="form-text">
             Choose <code>float</code> to reduce the document size; choose
             <code>double</code> if you need the increased precision and range.
-          </small>
+          </div>
         </div>
         <div v-if="cpuInfo.useLongLong" class="mb-3">
           <label for="useLongLong" class="col-form-label">
@@ -148,20 +148,20 @@
             </option>
             <option v-else :value="false">long (default)</option>
           </select>
-          <small
+          <div
             v-if="cpuInfo.useLongLong.slotSize == cpuInfo.slotSize"
-            class="form-text text-muted"
+            class="form-text"
           >
             This setting doesn't affect the document size of this platform, so
             you won't see any change in the table above.
-          </small>
-          <small v-else class="form-text text-muted">
+          </div>
+          <div v-else class="form-text">
             Choose <code>long</code> to reduce the document size; choose
             <code>long long</code> if you need the increased range.<br />
             In both cases, out-of-range values will be promoted to
             <code>{{ useDouble ? "double" : "float" }}</code
             >.
-          </small>
+          </div>
         </div>
         <div class="mb-3 form-check" v-if="isSerializing">
           <input
@@ -173,13 +173,13 @@
           <label for="assume-const-values" class="form-check-label"
             >Assume values are <code>const char*</code></label
           >
-          <small class="form-text text-muted">
+          <div class="form-text">
             <code>JsonDocument</code> stores strings differently depending on
             their types. It stores <code>const char*</code> by pointer (which
             takes no extra space) and all other types by copy.<br />
             Check this box if you're only adding
             <code>const char*</code> values.
-          </small>
+          </div>
         </div>
         <div class="mb-3 form-check" v-if="isSerializing">
           <input
@@ -191,10 +191,10 @@
           <label for="assume-const-keys" class="form-check-label"
             >Assume keys are <code>const char*</code></label
           >
-          <small class="form-text text-muted">
+          <div class="form-text">
             Same as above but for keys.<br />
             Uncheck this box if your program generates keys at runtime.
-          </small>
+          </div>
         </div>
         <div class="mb-3 form-check" v-if="!ignoreValues">
           <input
@@ -206,12 +206,12 @@
           <label for="deduplicate-values" class="form-check-label">
             Deduplicate values when measuring the capacity
           </label>
-          <small class="form-text text-muted">
+          <div class="form-text">
             ArduinoJson detects duplicate strings to store only one copy, but
             you can tell the Assistant to include all strings.<br />
             You should uncheck this box if you used placeholders values (like
             <code>XXXX</code>) in step 2.
-          </small>
+          </div>
         </div>
         <div class="form-check" v-if="!ignoreKeys">
           <input
@@ -223,10 +223,10 @@
           <label for="deduplicate-keys" class="form-check-label">
             Deduplicate keys when measuring the capacity
           </label>
-          <small class="form-text text-muted">
+          <div class="form-text">
             Same as above, but for keys instead of values.<br />
             You should check this box unless you know what you're doing.
-          </small>
+          </div>
         </div>
       </details>
     </div>

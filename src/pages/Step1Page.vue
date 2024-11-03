@@ -63,17 +63,17 @@
                   {{ type.label }}
                 </option>
               </select>
-              <small
+              <div
                 v-if="ioTypeInfo"
-                class="form-text text-muted"
+                class="form-text"
                 v-html="ioTypeInfo"
-              ></small>
+              ></div>
             </div>
           </div>
         </form>
         <div class="d-none d-lg-block col-4 mb-2" id="assistant-sponsors">
           <div class="bg-light p-2 h-100">
-            <div class="text-center text-muted">Our sponsors</div>
+            <div class="text-center text-body-secondary">Our sponsors</div>
             <div class="m-4" v-for="sponsor in sponsors" :key="sponsor">
               <a :href="sponsor.url" rel="sponsored" target="_blank"
                 ><img

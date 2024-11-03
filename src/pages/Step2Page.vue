@@ -19,14 +19,14 @@
         <div class="col-lg d-flex flex-column">
           <template v-if="isSerializing">
             <h3 class="h5">Output</h3>
-            <small class="text-muted"
+            <small class="text-body-secondary"
               >Enter here the JSON document you want your program to
               generate.</small
             >
           </template>
           <template v-else>
             <h3 class="h5">Input</h3>
-            <small class="text-muted"
+            <small class="text-body-secondary"
               >Enter here the JSON document you want your program to
               parse.</small
             >
@@ -44,8 +44,8 @@
             {{ inputError }}
           </div>
           <small v-else class="d-flex justify-content-between">
-            <span class="form-text text-muted"
-              >Input length: {{ inputJson.length }}</span
+            <small class="text-body-secondary"
+              >Input length: {{ inputJson.length }}</small
             >
             <a
               href="#"
@@ -57,7 +57,7 @@
         </div>
         <div v-if="filterEnabled" class="col-lg d-flex flex-column">
           <h3 class="h5">Filter</h3>
-          <small class="text-muted"
+          <small class="text-body-secondary"
             >Enter here the filter you want to apply to your input
             document.</small
           >
@@ -83,7 +83,7 @@
         </div>
         <div v-if="filterEnabled" class="col-lg d-flex flex-column">
           <h3 class="h5">Filtered input</h3>
-          <small class="text-muted"
+          <small class="text-body-secondary"
             >See here the result of applying the filter to your input
             document.</small
           >
