@@ -15,38 +15,38 @@ describe("writeDeserializationCode()", () => {
     return prg.toString();
   }
 
-  it("inputType == charPtr", () => {
-    expect(
+  it("inputType == charPtr", async () => {
+    await expect(
       getDeserializationCode({ inputType: "charPtr" }),
     ).toMatchFileSnapshot("snapshots/deserializejson/char-ptr.html");
   });
 
-  it("inputType == charArray", () => {
-    expect(
+  it("inputType == charArray", async () => {
+    await expect(
       getDeserializationCode({ inputType: "charArray" }),
     ).toMatchFileSnapshot("snapshots/deserializejson/char-array.html");
   });
 
-  it("inputType == arduinoString", () => {
-    expect(
+  it("inputType == arduinoString", async () => {
+    await expect(
       getDeserializationCode({ inputType: "arduinoString" }),
     ).toMatchFileSnapshot("snapshots/deserializejson/arduino-string.html");
   });
 
-  it("inputType == arduinoStream", () => {
-    expect(
+  it("inputType == arduinoStream", async () => {
+    await expect(
       getDeserializationCode({ inputType: "arduinoStream" }),
     ).toMatchFileSnapshot("snapshots/deserializejson/arduino-stream.html");
   });
 
-  it("inputType == stdString", () => {
-    expect(
+  it("inputType == stdString", async () => {
+    await expect(
       getDeserializationCode({ inputType: "stdString" }),
     ).toMatchFileSnapshot("snapshots/deserializejson/std-string.html");
   });
 
-  it("inputType == stdStream", () => {
-    expect(
+  it("inputType == stdStream", async () => {
+    await expect(
       getDeserializationCode({ inputType: "stdStream" }),
     ).toMatchFileSnapshot("snapshots/deserializejson/std-istream.html");
   });
@@ -59,28 +59,28 @@ describe("writeErrorCheckingCode()", () => {
     return prg.toString();
   }
 
-  it("should print to Serial when possible", () => {
-    expect(getErrorCheckingCode({ serial: true })).toMatchFileSnapshot(
+  it("should print to Serial when possible", async () => {
+    await expect(getErrorCheckingCode({ serial: true })).toMatchFileSnapshot(
       "snapshots/check-error/serial.html",
     );
   });
 
-  it("should use PROGMEM when possible", () => {
-    expect(
+  it("should use PROGMEM when possible", async () => {
+    await expect(
       getErrorCheckingCode({ serial: true, progmem: true }),
     ).toMatchFileSnapshot("snapshots/check-error/serial-progmem.html");
   });
 
-  it("should print to cerr if Serial is not available", () => {
-    expect(getErrorCheckingCode({ serial: false })).toMatchFileSnapshot(
+  it("should print to cerr if Serial is not available", async () => {
+    await expect(getErrorCheckingCode({ serial: false })).toMatchFileSnapshot(
       "snapshots/check-error/iostream.html",
     );
   });
 });
 
 describe("generateParsingProgram", function () {
-  it("nesting limit witout filter", () => {
-    expect(
+  it("nesting limit witout filter", async () => {
+    await expect(
       generateParsingProgram({
         input: [[[[[[[[[[[]]]]]]]]]]],
         nestingLimit: 11,
@@ -88,8 +88,8 @@ describe("generateParsingProgram", function () {
     ).toMatchFileSnapshot("snapshots/parsing-program/nestinglimit.html");
   });
 
-  it("nesting limit with filter", () => {
-    expect(
+  it("nesting limit with filter", async () => {
+    await expect(
       generateParsingProgram({
         input: { ignored: [[[[[[[[[[]]]]]]]]]] },
         filter: { a: true },
@@ -98,14 +98,14 @@ describe("generateParsingProgram", function () {
     ).toMatchFileSnapshot("snapshots/parsing-program/filter-nestinglimit.html");
   });
 
-  it("filter", () => {
-    expect(
+  it("filter", async () => {
+    await expect(
       generateParsingProgram({ input: {}, filter: { a: true } }),
     ).toMatchFileSnapshot("snapshots/parsing-program/filter.html");
   });
 
-  it("serial and progmem", () => {
-    expect(
+  it("serial and progmem", async () => {
+    await expect(
       generateParsingProgram({
         input: { hello: "world" },
         serial: true,
@@ -130,89 +130,89 @@ describe("writeDecompositionCode", function () {
     expect(getDecompositionCode({})).toEqual("");
   });
 
-  it("42", () => {
-    expect(getDecompositionCode(42)).toMatchFileSnapshot(
+  it("42", async () => {
+    await expect(getDecompositionCode(42)).toMatchFileSnapshot(
       "snapshots/decompose/int.html",
     );
   });
 
-  it("[42]", () => {
-    expect(getDecompositionCode([42])).toMatchFileSnapshot(
+  it("[42]", async () => {
+    await expect(getDecompositionCode([42])).toMatchFileSnapshot(
       "snapshots/decompose/array-one-int.html",
     );
   });
 
-  it("bool", () => {
-    expect(getDecompositionCode(true)).toMatchFileSnapshot(
+  it("bool", async () => {
+    await expect(getDecompositionCode(true)).toMatchFileSnapshot(
       "snapshots/decompose/bool-true.html",
     );
-    expect(getDecompositionCode(false)).toMatchFileSnapshot(
+    await expect(getDecompositionCode(false)).toMatchFileSnapshot(
       "snapshots/decompose/bool-false.html",
     );
   });
 
-  it("[1,2,3]", () => {
-    expect(getDecompositionCode([1, 2, 3])).toMatchFileSnapshot(
+  it("[1,2,3]", async () => {
+    await expect(getDecompositionCode([1, 2, 3])).toMatchFileSnapshot(
       "snapshots/decompose/array-three-int.html",
     );
   });
 
-  it('{"hello":true}', () => {
-    expect(getDecompositionCode({ hello: true })).toMatchFileSnapshot(
+  it('{"hello":true}', async () => {
+    await expect(getDecompositionCode({ hello: true })).toMatchFileSnapshot(
       "snapshots/decompose/object-bool.html",
     );
   });
 
-  it('{"hello":true} with progmem', () => {
-    expect(
+  it('{"hello":true} with progmem', async () => {
+    await expect(
       getDecompositionCode({ hello: true }, { progmem: true }),
     ).toMatchFileSnapshot("snapshots/decompose/object-bool-progmem.html");
   });
 
-  it('{"hello":null}', () => {
-    expect(getDecompositionCode({ hello: null })).toMatchFileSnapshot(
+  it('{"hello":null}', async () => {
+    await expect(getDecompositionCode({ hello: null })).toMatchFileSnapshot(
       "snapshots/decompose/object-null.html",
     );
   });
 
-  it('{"hello":"world"}', () => {
-    expect(getDecompositionCode({ hello: "world" })).toMatchFileSnapshot(
+  it('{"hello":"world"}', async () => {
+    await expect(getDecompositionCode({ hello: "world" })).toMatchFileSnapshot(
       "snapshots/decompose/object-string.html",
     );
   });
 
-  it('{"hello":"world"} with progmem', () => {
-    expect(
+  it('{"hello":"world"} with progmem', async () => {
+    await expect(
       getDecompositionCode({ hello: "world" }, { progmem: true }),
     ).toMatchFileSnapshot("snapshots/decompose/object-string-progmem.html");
   });
 
-  it('[{"a":1,"b":2,"c":3}]', () => {
-    expect(getDecompositionCode([{ a: 1, b: 2, c: 3 }])).toMatchFileSnapshot(
-      "snapshots/decompose/object-three-int.html",
-    );
+  it('[{"a":1,"b":2,"c":3}]', async () => {
+    await expect(
+      getDecompositionCode([{ a: 1, b: 2, c: 3 }]),
+    ).toMatchFileSnapshot("snapshots/decompose/object-three-int.html");
   });
 
-  it("[[[[[[[[[[[42]]]]]]]]]]]", () => {
-    expect(getDecompositionCode([[[[[[[[[[[42]]]]]]]]]]])).toMatchFileSnapshot(
-      "snapshots/decompose/array-deep-int.html",
-    );
+  it("[[[[[[[[[[[42]]]]]]]]]]]", async () => {
+    await expect(
+      getDecompositionCode([[[[[[[[[[[42]]]]]]]]]]]),
+    ).toMatchFileSnapshot("snapshots/decompose/array-deep-int.html");
   });
 
-  it("[10000,10000000,10000000000]", () => {
-    expect(
+  it("[10000,10000000,10000000000]", async () => {
+    await expect(
       getDecompositionCode([10000, 10000000, 10000000000]),
     ).toMatchFileSnapshot("snapshots/decompose/array-large-integers.html");
   });
 
-  it('{"123":1}', () => {
-    expect(getDecompositionCode({ 123: 1 })).toMatchFileSnapshot(
+  it('{"123":1}', async () => {
+    await expect(getDecompositionCode({ 123: 1 })).toMatchFileSnapshot(
       "snapshots/decompose/object-int-key.html",
     );
   });
 
-  it("loop on root", () => {
-    expect(
+  it("loop on root", async () => {
+    await expect(
       getDecompositionCode([
         {
           dt: 1511978400,
@@ -228,8 +228,8 @@ describe("writeDecompositionCode", function () {
     ).toMatchFileSnapshot("snapshots/decompose/loop-in-root-array.html");
   });
 
-  it("loop in member array", () => {
-    expect(
+  it("loop in member array", async () => {
+    await expect(
       getDecompositionCode({
         list: [
           {
@@ -252,8 +252,8 @@ describe("writeDecompositionCode", function () {
     ).toMatchFileSnapshot("snapshots/decompose/loop-in-member-array.html");
   });
 
-  it("loop in member object", () => {
-    expect(
+  it("loop in member object", async () => {
+    await expect(
       getDecompositionCode({
         properties: {
           batt: {
@@ -273,28 +273,28 @@ describe("writeDecompositionCode", function () {
     ).toMatchFileSnapshot("snapshots/decompose/loop-in-member-object.html");
   });
 
-  it("loop with mixed integer and long-longs", () => {
-    expect(
+  it("loop with mixed integer and long-longs", async () => {
+    await expect(
       getDecompositionCode([{ x: 10000 }, { x: 10000000 }, { x: 10000000000 }]),
     ).toMatchFileSnapshot(
       "snapshots/decompose/loop-mixed-int-and-long-long.html",
     );
   });
 
-  it("loop with mixed integer and floats", () => {
-    expect(
+  it("loop with mixed integer and floats", async () => {
+    await expect(
       getDecompositionCode([{ x: 10000 }, { x: 1.4 }]),
     ).toMatchFileSnapshot("snapshots/decompose/loop-mixed-int-and-float.html");
   });
 
-  it("loop with mixed null and integer", () => {
-    expect(getDecompositionCode([{ x: null }, { x: 42 }])).toMatchFileSnapshot(
-      "snapshots/decompose/loop-mixed-int-and-null.html",
-    );
+  it("loop with mixed null and integer", async () => {
+    await expect(
+      getDecompositionCode([{ x: null }, { x: 42 }]),
+    ).toMatchFileSnapshot("snapshots/decompose/loop-mixed-int-and-null.html");
   });
 
-  it("loop with many values shows ellipsis", () => {
-    expect(
+  it("loop with many values shows ellipsis", async () => {
+    await expect(
       getDecompositionCode([
         { very_long_name: "long value" },
         { very_long_name: "another long value" },
@@ -304,14 +304,14 @@ describe("writeDecompositionCode", function () {
     ).toMatchFileSnapshot("snapshots/decompose/loop-ellipsis.html");
   });
 
-  it("loop on root with null siblings", () => {
-    expect(
+  it("loop on root with null siblings", async () => {
+    await expect(
       getDecompositionCode([{ x: { id: 10 } }, { x: null }]),
     ).toMatchFileSnapshot("snapshots/decompose/loop-null-sibling-object.html");
   });
 
-  it("nested array with potential name conflict #1623", () => {
-    expect(
+  it("nested array with potential name conflict #1623", async () => {
+    await expect(
       getDecompositionCode([
         { data: [{ time: 1 }, { time: 2 }] },
         { data: [{ time: 3 }, { time: 4 }] },
@@ -319,8 +319,8 @@ describe("writeDecompositionCode", function () {
     ).toMatchFileSnapshot("snapshots/decompose/loop-nested.html");
   });
 
-  it("null sibling array", () => {
-    expect(
+  it("null sibling array", async () => {
+    await expect(
       getDecompositionCode([
         { data: [1, 3] },
         { data: [2, 4] },
