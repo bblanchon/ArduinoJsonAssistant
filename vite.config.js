@@ -20,6 +20,7 @@ export default defineConfig({
       formats: ["iife"],
       name: "ArduinoJsonAssistant",
       fileName: () => "assistant.js",
+      cssFileName: "style",
     },
   },
   define: {
