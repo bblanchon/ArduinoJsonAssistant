@@ -2,7 +2,7 @@ import { getValueType } from "./analyzer";
 import { ProgramWriter, makeVariableName, stripHtml } from "./programWriter";
 import { literals, keywords, types, functions, tokens } from "./tokens";
 
-function stringifyValue(value) {
+function stringifyValue(value: any) {
   switch (getValueType(value)) {
     case "string":
       return literals.string(value);
@@ -17,7 +17,17 @@ function stringifyValue(value) {
   }
 }
 
-function addArray(prg, { name, value, parent, key }) {
+interface ArrayDetails {
+  name: string;
+  value: any[];
+  parent?: string;
+  key?: any;
+}
+
+function addArray(
+  prg: ProgramWriter,
+  { name, value, parent, key }: ArrayDetails,
+) {
   const childrenCount = value.length;
 
   if (parent === undefined) {
@@ -62,7 +72,17 @@ function addArray(prg, { name, value, parent, key }) {
   });
 }
 
-function addObject(prg, { parent, key, name, value }) {
+interface ObjectDetails {
+  name: string;
+  value: { [key: string]: any };
+  parent?: string;
+  key?: any;
+}
+
+function addObject(
+  prg: ProgramWriter,
+  { parent, key, name, value }: ObjectDetails,
+) {
   const childrenCount = Object.keys(value).length;
   let objectName = tokens.variable(name);
 
@@ -97,7 +117,17 @@ function addObject(prg, { parent, key, name, value }) {
   }
 }
 
-function addArrayElement(prg, { array, name, value, key }) {
+interface ArrayElementDetails {
+  array: string;
+  name: string;
+  value: any;
+  key?: any;
+}
+
+function addArrayElement(
+  prg: ProgramWriter,
+  { array, name, value, key }: ArrayElementDetails,
+) {
   if (value instanceof Array) {
     addArray(prg, { parent: array, name, value });
   } else if (value instanceof Object) {
@@ -109,7 +139,17 @@ function addArrayElement(prg, { array, name, value, key }) {
   }
 }
 
-function addObjectMember(prg, { key, object, value, name }) {
+interface ObjectMemberDetails {
+  object: string;
+  key: string;
+  value: any;
+  name: string;
+}
+
+function addObjectMember(
+  prg: ProgramWriter,
+  { key, object, value, name }: ObjectMemberDetails,
+) {
   if (value instanceof Array)
     addArray(prg, { parent: object, key, name, value });
   else if (value instanceof Object)
@@ -121,7 +161,17 @@ function addObjectMember(prg, { key, object, value, name }) {
   }
 }
 
-function assignVariant(prg, { value, name, parent, key }) {
+interface VariantDetails {
+  name: string;
+  value: any;
+  parent?: string;
+  key?: any;
+}
+
+function assignVariant(
+  prg: ProgramWriter,
+  { value, name, parent, key }: VariantDetails,
+) {
   if (value instanceof Array) {
     addArray(prg, { value, name, parent, key });
   } else if (value instanceof Object) {
@@ -137,11 +187,25 @@ function assignVariant(prg, { value, name, parent, key }) {
   }
 }
 
-export function writeCompositionCode(prg, { value, name }) {
+export function writeCompositionCode(
+  prg: ProgramWriter,
+  { value, name }: { value: any; name: string },
+) {
   assignVariant(prg, { name, value });
 }
 
-export function generateSerializingProgram(cfg) {
+interface SerializingProgramConfig {
+  output?: any;
+  outputType?:
+    | "charPtr"
+    | "charArray"
+    | "arduinoString"
+    | "stdString"
+    | "arduinoStream"
+    | "stdStream";
+}
+
+export function generateSerializingProgram(cfg: SerializingProgramConfig) {
   const prg = new ProgramWriter();
 
   switch (cfg.outputType) {

@@ -7,8 +7,7 @@ export class ProgramWriter {
     this.depth = 1;
   }
 
-  addLine() {
-    const args = Array.prototype.slice.call(arguments);
+  addLine(...args: string[]) {
     const line = args.join("");
     this.lines.push(Array(this.depth).join("  ") + line);
   }
