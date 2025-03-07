@@ -1,6 +1,6 @@
 <template>
   <div class="assistant-step">
-    <RouterLink :to="route" class="btn" aria-current-value="step">
+    <RouterLink :to="`step${number}`" class="btn" aria-current-value="step">
       {{ number }}
     </RouterLink>
     <p>
@@ -10,11 +10,8 @@
 </template>
 
 <script setup lang="ts">
-import type { RouteLocationRaw } from "vue-router";
-
 defineProps<{
-  route: RouteLocationRaw;
-  number: number;
+  number: number | string;
   label?: string;
   disabled?: boolean;
 }>();
