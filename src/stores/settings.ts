@@ -22,6 +22,13 @@ const sizeToCount = {
 };
 
 type IntegerSize = 1 | 2 | 4;
+type IoType =
+  | "charPtr"
+  | "charArray"
+  | "arduinoString"
+  | "stdString"
+  | "arduinoStream"
+  | "stdStream";
 
 export const useSettingsStore = defineStore("settings", {
   state() {
@@ -35,7 +42,7 @@ export const useSettingsStore = defineStore("settings", {
       filterJson: "true",
       input: defaultInput,
       inputJson: JSON.stringify(defaultInput, null, 2),
-      ioType: "arduinoStream",
+      ioType: "arduinoStream" as IoType,
       mode: "deserialize",
       filterEnabled: false,
       useDouble: false,
