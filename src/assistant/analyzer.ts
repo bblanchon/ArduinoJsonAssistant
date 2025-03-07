@@ -1,7 +1,7 @@
 import { JsonFilter } from "./filter";
 import memoryModels from "@/assets/memoryModels.json";
 
-export function getValueType(value) {
+export function getValueType(value: any) {
   return value === null
     ? "null"
     : value instanceof Array
@@ -9,7 +9,7 @@ export function getValueType(value) {
       : typeof value;
 }
 
-export function getOverallocatedStringSize(s) {
+export function getOverallocatedStringSize(s: number) {
   // [0-31] -> 31
   // [32-63] -> 63
   // [64-127] -> 127
@@ -19,34 +19,77 @@ export function getOverallocatedStringSize(s) {
   return n;
 }
 
-export function getEffectiveSlotSize(cfg) {
+type Arch = "8-bit" | "16-bit" | "32-bit" | "64-bit";
+
+type SlotFlags =
+  | "001"
+  | "011"
+  | "101"
+  | "111"
+  | "002"
+  | "012"
+  | "102"
+  | "112"
+  | "004"
+  | "014"
+  | "104"
+  | "114";
+
+interface Config {
+  arch: Arch;
+  useDouble?: boolean;
+  useLongLong?: boolean;
+  slotIdSize?: number;
+  ignoreKeys?: boolean;
+  ignoreValues?: boolean;
+  deduplicateKeys?: boolean;
+  deduplicateValues?: boolean;
+  filter?: any;
+  stringLengthSize?: number;
+  overAllocateStrings?: boolean;
+}
+
+export function getEffectiveSlotSize(cfg: Config) {
   const arch = memoryModels[cfg.arch];
   const flags = [
     (cfg.useDouble ?? true) ? "1" : "0",
     (cfg.useLongLong ?? arch.longLongIsDefault) ? "1" : "0",
     cfg.slotIdSize || arch.slotIdSize,
-  ];
-  return arch.slotSize[flags.join("")];
+  ].join("") as SlotFlags;
+  return arch.slotSize[flags];
 }
 
 class Memory {
+  memoryUsage: number;
+  peakMemoryUsage: number;
+
   constructor() {
     this.memoryUsage = 0;
     this.peakMemoryUsage = 0;
   }
 
-  alloc(n) {
+  alloc(n: number) {
     this.memoryUsage += n;
     this.peakMemoryUsage = Math.max(this.peakMemoryUsage, this.memoryUsage);
   }
 
-  free(n) {
+  free(n: number) {
     this.memoryUsage -= n;
   }
 }
 
 class SlotPoolList {
-  constructor(cfg, memory) {
+  private _memory: Memory;
+  private _poolCapacity: number;
+  private _poolOverhead: number;
+  private _initialPoolListCapacity: number;
+  private _slotSize: number;
+  private _freeSlots: number;
+  private _poolCount: number;
+  private _poolListCapacity: number;
+  private _totalSlots: number;
+
+  constructor(cfg: Config, memory: Memory) {
     this._memory = memory;
     this._poolCapacity = memoryModels[cfg.arch].poolCapacity;
     this._poolOverhead = memoryModels[cfg.arch].poolOverhead;
@@ -91,15 +134,28 @@ class SlotPoolList {
 }
 
 class JsonDocument {
-  constructor(memory, cfg) {
+  private _memory: Memory;
+  private _poolList: SlotPoolList;
+  private _strings: Record<string, boolean>;
+  private _ignoreKeys: boolean;
+  private _ignoreValues: boolean;
+  private _deduplicateKeys: boolean;
+  private _deduplicateValues: boolean;
+  private _filteringEnabled: boolean;
+  private _useLongLong: boolean;
+  private _useDouble: boolean;
+  private _stringOverhead: number;
+  private _overAllocateStrings: boolean;
+
+  constructor(memory: Memory, cfg: Config) {
     this._strings = {};
-    this._ignoreKeys = cfg.ignoreKeys;
-    this._ignoreValues = cfg.ignoreValues;
-    this._deduplicateKeys = cfg.deduplicateKeys;
-    this._deduplicateValues = cfg.deduplicateValues;
+    this._ignoreKeys = !!cfg.ignoreKeys;
+    this._ignoreValues = !!cfg.ignoreValues;
+    this._deduplicateKeys = !!cfg.deduplicateKeys;
+    this._deduplicateValues = !!cfg.deduplicateValues;
     this._filteringEnabled = !!cfg.filter;
-    this._useLongLong = cfg.useLongLong;
-    this._useDouble = cfg.useDouble;
+    this._useLongLong = !!cfg.useLongLong;
+    this._useDouble = !!cfg.useDouble;
 
     const arch = memoryModels[cfg.arch];
 
@@ -108,16 +164,16 @@ class JsonDocument {
     this._stringOverhead = arch.stringOverhead;
     if (cfg.stringLengthSize)
       this._stringOverhead += cfg.stringLengthSize - arch.stringLengthSize;
-    this._overAllocateStrings = cfg.overAllocateStrings;
+    this._overAllocateStrings = !!cfg.overAllocateStrings;
 
     this._memory.alloc(arch.documentSize);
   }
 
-  allocSlots(n) {
+  allocSlots(n: number) {
     for (let i = 0; i < n; i++) this._poolList.allocSlot();
   }
 
-  allocString(s) {
+  allocString(s: string) {
     if (this._overAllocateStrings) {
       const size = getOverallocatedStringSize(s.length) + this._stringOverhead;
       this._memory.alloc(size);
@@ -126,11 +182,11 @@ class JsonDocument {
     this._memory.alloc(s.length + this._stringOverhead);
   }
 
-  addArray(n) {
+  addArray(n: number) {
     this.allocSlots(n);
   }
 
-  addObjectMember(key) {
+  addObjectMember(key: string) {
     this.allocSlots(2);
     if (this._ignoreKeys) return;
     if (this._deduplicateKeys && this._strings[key]) return;
@@ -138,14 +194,14 @@ class JsonDocument {
     this._strings[key] = true;
   }
 
-  addString(s) {
+  addString(s: string) {
     if (this._ignoreValues) return;
     if (this._deduplicateValues && this._strings[s]) return;
     this.allocString(s);
     this._strings[s] = true;
   }
 
-  addNumber(value) {
+  addNumber(value: number) {
     switch (getCppTypeFor(value)) {
       case "long long":
         if (this._useLongLong) this.allocSlots(1);
@@ -156,7 +212,7 @@ class JsonDocument {
     }
   }
 
-  addIgnoredKey(s) {
+  addIgnoredKey(s: string) {
     this.allocString(s);
     this._memory.free(s.length + this._stringOverhead);
   }
@@ -170,13 +226,13 @@ class JsonDocument {
   }
 }
 
-function fillDocument(doc, value, filter) {
+function fillDocument(doc: any, value: any, filter: JsonFilter) {
   switch (getValueType(value)) {
     case "array":
       if (filter.allowsArray) {
         doc.addArray(value.length);
         for (let i = 0; i < value.length; i++)
-          fillDocument(doc, value[i], filter.getElementFilter(i));
+          fillDocument(doc, value[i], filter.getElementFilter());
       }
       break;
 
@@ -201,7 +257,7 @@ function fillDocument(doc, value, filter) {
   }
 }
 
-export function analyze(obj, cfg) {
+export function analyze(obj: any, cfg: Config) {
   const memory = new Memory();
   const doc = new JsonDocument(memory, cfg);
   if (cfg.filter) {
@@ -221,7 +277,7 @@ export function analyze(obj, cfg) {
   };
 }
 
-export function measureNesting(obj) {
+export function measureNesting(obj: any) {
   if (obj instanceof Object === false) return 0;
   let innerNesting = 0;
   for (const key in obj) {
@@ -230,16 +286,16 @@ export function measureNesting(obj) {
   return 1 + innerNesting;
 }
 
-export function getMaxStringLength(obj, cfg = {}) {
+export function getMaxStringLength(obj: any, cfg?: Partial<Config>): number {
   switch (getValueType(obj)) {
     case "array":
-      return Math.max(...obj.map((x) => getMaxStringLength(x, cfg)));
+      return Math.max(...(obj as any[]).map((x) => getMaxStringLength(x, cfg)));
     case "string":
-      if (cfg.ignoreValues) return 0;
+      if (cfg?.ignoreValues) return 0;
       return obj.length;
     case "object":
       return Math.max(
-        ...(cfg.ignoreKeys ? [] : Object.keys(obj).map((key) => key.length)),
+        ...(cfg?.ignoreKeys ? [] : Object.keys(obj).map((key) => key.length)),
         ...Object.values(obj).map((x) => getMaxStringLength(x, cfg)),
       );
     default:
@@ -247,8 +303,8 @@ export function getMaxStringLength(obj, cfg = {}) {
   }
 }
 
-export function canLoop(input) {
-  function areSimilar(a, b) {
+export function canLoop(input: any) {
+  function areSimilar(a: any, b: any) {
     const ta = getValueType(a);
     const tb = getValueType(b);
     if (ta === "null" || tb === "null") return true;
@@ -274,7 +330,7 @@ export function canLoop(input) {
   switch (getValueType(input)) {
     case "array":
       if (input.length < 2) return false;
-      return input.every(
+      return (input as any[]).every(
         (value) =>
           getValueType(value) === "object" && areSimilar(input[0], value),
       );
@@ -287,15 +343,24 @@ export function canLoop(input) {
   }
 }
 
-export function getCppTypeFor(value) {
+export function getCppTypeFor(value: any) {
   return getCommonCppTypeFor([value]);
 }
 
-function hasShortMantissa(value) {
+function hasShortMantissa(value: number) {
   return value.toExponential().split("e")[0].length < 9;
 }
 
-export function getCommonCppTypeFor(values) {
+type CppType =
+  | "bool"
+  | "const char*"
+  | "int"
+  | "long"
+  | "long long"
+  | "float"
+  | "double";
+
+export function getCommonCppTypeFor(values: any[]): CppType | undefined {
   switch (getValueType(values[0])) {
     case "boolean":
       return "bool";
@@ -327,14 +392,14 @@ export function getCommonCppTypeFor(values) {
   }
 }
 
-function needsCppType(cpptype, value, siblings) {
+function needsCppType(cpptype: CppType, value: any, siblings?: any[]): boolean {
   switch (getValueType(value)) {
     case "array":
       if (canLoop(value)) return needsCppType(cpptype, value[0], value);
-      return value.some((x) => needsCppType(cpptype, x));
+      return (value as any[]).some((x) => needsCppType(cpptype, x));
 
     case "object":
-      return Object.keys(value).some((key) =>
+      return Object.keys(value as { [key: string]: any }).some((key) =>
         needsCppType(
           cpptype,
           value[key],
@@ -347,7 +412,7 @@ function needsCppType(cpptype, value, siblings) {
   }
 }
 
-export function hasJsonInJsonSyndrome(val) {
+export function hasJsonInJsonSyndrome(val: any): boolean {
   switch (getValueType(val)) {
     case "string":
       if (val[0] != "[" && val[0] != "{") return false;
@@ -365,5 +430,5 @@ export function hasJsonInJsonSyndrome(val) {
   return false;
 }
 
-export const needsLongLong = (val) => needsCppType("long long", val);
-export const needsDouble = (val) => needsCppType("double", val);
+export const needsDouble = (val: any) => needsCppType("double", val);
+export const needsLongLong = (val: any) => needsCppType("long long", val);

@@ -18,7 +18,7 @@ const sample_object = {
   data: [48.75608, 2.302038],
 };
 
-function countSlots(input) {
+function countSlots(input: any) {
   return analyze(input, { arch: "8-bit" }).slotCount;
 }
 
