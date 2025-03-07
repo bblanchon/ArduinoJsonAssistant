@@ -2,7 +2,7 @@
   <div ref="el" class="gauge"></div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
 import JustGage from "justgage";
 
@@ -38,7 +38,7 @@ const props = defineProps({
 });
 
 const el = ref();
-const gauge = ref(null);
+const gauge = ref<JustGage | null>(null);
 
 const green = "#28a745";
 const yellow = "#ffc107";
@@ -46,7 +46,7 @@ const red = "#dc3545";
 
 import { format } from "bytes";
 
-function formatValue(value) {
+function formatValue(value: number) {
   const result = format(value, { decimalPlaces: 1 });
   return props.bytes ? result : result?.substring(0, result.length - 1);
 }

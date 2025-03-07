@@ -7,3 +7,20 @@ declare namespace bootstrap {
     public hide(): void;
   }
 }
+
+declare module "justgage" {
+  class JustGage {
+    constructor(options: JustGage.Options);
+
+    public refresh(
+      val: number,
+      max?: number,
+      min?: number,
+      label?: string,
+    ): void;
+
+    public destroy(): void;
+  }
+
+  export default JustGage;
+}
