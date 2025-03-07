@@ -15,38 +15,29 @@
   </div>
 </template>
 
-<script lang="ts">
-import { mapState } from "pinia";
-
+<script setup lang="ts">
 import { useSettingsStore } from "@/stores/settings";
 
 import StepNumber from "@/components/StepNumber.vue";
+import { computed } from "vue";
 
-export default {
-  components: {
-    StepNumber,
+const settings = useSettingsStore();
+
+const steps = computed(() => [
+  {
+    route: "step1",
+    label: "Configuration",
   },
-  computed: {
-    ...mapState(useSettingsStore, ["hasErrors"]),
-    steps() {
-      return [
-        {
-          route: "step1",
-          label: "Configuration",
-        },
-        {
-          label: "JSON",
-          route: "step2",
-        },
-        {
-          label: "Program",
-          route: "step3",
-          disabled: this.hasErrors,
-        },
-      ];
-    },
+  {
+    label: "JSON",
+    route: "step2",
   },
-};
+  {
+    label: "Program",
+    route: "step3",
+    disabled: settings.hasErrors,
+  },
+]);
 </script>
 
 <style lang="scss">
