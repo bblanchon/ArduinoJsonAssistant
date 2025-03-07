@@ -6,17 +6,22 @@ import { createPinia } from "pinia";
 import { persistStore } from "./persistence";
 
 const sponsorsEl = document.getElementById("assistant-sponsors");
-const sponsors = sponsorsEl ? JSON.parse(sponsorsEl.textContent) : [];
+const sponsors = sponsorsEl?.textContent
+  ? JSON.parse(sponsorsEl.textContent)
+  : [];
 
-const el = document.getElementById("assistant-app");
+const el = document.getElementById("assistant-app")!;
 
 createApp(App)
   .use(router)
   .use(createPinia())
   .use(tooltip)
-  .provide("baseUrl", el.dataset.url || "")
+  .provide("baseUrl", el!.dataset.url || "")
   .provide("version", "7.3")
-  .provide("scriptUrl", document.currentScript?.src)
+  .provide(
+    "scriptUrl",
+    (document.currentScript as HTMLScriptElement | undefined)?.src,
+  )
   .provide("sponsors", sponsors)
   .mount(el);
 

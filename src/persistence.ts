@@ -7,7 +7,7 @@ export function persistStore() {
   const settings = useSettingsStore();
 
   try {
-    const cfg = JSON.parse(localStorage.getItem(key));
+    const cfg = JSON.parse(localStorage!.getItem(key)!);
     settings.setInputJson(cfg.rootJson);
     settings.setFilterJson(cfg.filterJson);
     if (cfg.cpu in boards) settings.cpu = cfg.cpu;
