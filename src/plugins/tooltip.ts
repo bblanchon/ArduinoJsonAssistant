@@ -1,4 +1,6 @@
-export default function (app) {
+import { type App } from "vue";
+
+export default function (app: App) {
   app.directive("tooltip", {
     mounted(el, { value }) {
       new bootstrap.Tooltip(el, {
