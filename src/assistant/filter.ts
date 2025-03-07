@@ -1,5 +1,14 @@
+type FilterMode = "array" | "object" | "accept" | "reject";
+
 export class JsonFilter {
-  constructor(value) {
+  value: any;
+  mode: FilterMode;
+  allowsArray: boolean;
+  allowsObject: boolean;
+  allowsValue: boolean;
+  allowsSomething: boolean;
+
+  constructor(value: any) {
     this.value = value;
     this.mode =
       value instanceof Array
@@ -15,7 +24,7 @@ export class JsonFilter {
     this.allowsSomething = this.mode !== "reject";
   }
 
-  getMemberFilter(key) {
+  getMemberFilter(key: string) {
     switch (this.mode) {
       case "accept":
         return new JsonFilter(true);
@@ -41,7 +50,7 @@ export class JsonFilter {
     }
   }
 
-  filterDocument(input) {
+  filterDocument(input: any): any {
     switch (this.mode) {
       case "reject":
         return undefined;
@@ -56,7 +65,7 @@ export class JsonFilter {
       }
 
       case "object": {
-        const output = {};
+        const output: any = {};
         for (const k in input) {
           if (k in input) {
             const memberFilter = this.getMemberFilter(k);
@@ -70,10 +79,10 @@ export class JsonFilter {
   }
 }
 
-export function makeJsonFilter(filter) {
+export function makeJsonFilter(filter: any) {
   return new JsonFilter(filter);
 }
 
-export function applyFilter(input, filter) {
+export function applyFilter(input: any, filter: any) {
   return new JsonFilter(filter).filterDocument(input) ?? null;
 }
