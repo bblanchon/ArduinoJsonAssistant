@@ -22,13 +22,14 @@ export default [
     languageOptions: {
       globals: {
         bootstrap: "readonly",
+        ...globals.browser,
       },
     },
   },
 
   {
     name: "app/node-globals",
-    files: ["*.{js,vue}"],
+    files: ["*.js"],
     languageOptions: {
       globals: globals.node,
     },
