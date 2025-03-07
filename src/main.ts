@@ -11,7 +11,6 @@ createApp(App)
   .use(router)
   .use(createPinia())
   .use(tooltip)
-  .provide("baseUrl", el!.dataset.url || "")
   .provide("version", "7.3")
   .provide(
     "scriptUrl",

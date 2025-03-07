@@ -21,7 +21,8 @@
                 v-if="board.arch == '8-bit'"
               >
                 For 8-bit microcontrollers, prefer
-                <a :href="baseUrl + '/v6/assistant/'">ArduinoJson 6</a>.<br />
+                <a href="https://arduinojson.org/v6/assistant/">ArduinoJson 6</a
+                >.<br />
                 It is smaller and can work without dynamic memory allocation.
               </p>
             </div>
@@ -122,7 +123,6 @@ const settings = useSettingsStore();
 const board = useBoardStore();
 const version = inject("version");
 const sponsors = useSponsors();
-const baseUrl = inject("baseUrl");
 
 onBeforeRouteLeave((to) => {
   if (to.name == "step2") {
