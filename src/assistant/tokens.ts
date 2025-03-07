@@ -1,25 +1,25 @@
 export const tokens = {
-  comment(value) {
+  comment(value: string) {
     return `<span class="hl-comment">// ${value}</span>`;
   },
-  type(value, href) {
+  type(value: string, href?: string) {
     if (href) return `<a href="${href}" class="hl-type">${value}</a>`;
     else return `<span class="hl-type">${value}</span>`;
   },
-  function(value, href) {
+  function(value: string, href?: string) {
     if (href) return `<a href="${href}" class="hl-function">${value}</a>`;
     else return `<span class="hl-function">${value}</span>`;
   },
-  builtin(value, href) {
+  builtin(value: string, href?: string) {
     if (href) return `<a href="${href}" class="hl-built_in">${value}</a>`;
     else return `<span class="hl-built_in">${value}</span>`;
   },
-  macro(value, href) {
+  macro(value: string, href?: string) {
     if (href) return `<a href="${href}" class="hl-built_in">${value}</a>`;
     else return `<span class="hl-built_in">${value}</span>`;
   },
-  keyword: (value) => `<span class="hl-keyword">${value}</span>`,
-  variable: (value) => `<span class="hl-variable">${value}</span>`,
+  keyword: (value: string) => `<span class="hl-keyword">${value}</span>`,
+  variable: (value: string) => `<span class="hl-variable">${value}</span>`,
 };
 
 export const keywords = {
@@ -32,10 +32,10 @@ export const keywords = {
 };
 
 export const literals = {
-  bool: (value) =>
+  bool: (value: boolean) =>
     `<span class="hl-literal">${value ? "true" : "false"}</span>`,
-  string: (value) => `<span class="hl-string">"${value}"</span>`,
-  number: (value) => `<span class="hl-number">${value}</span>`,
+  string: (value: string) => `<span class="hl-string">"${value}"</span>`,
+  number: (value: number) => `<span class="hl-number">${value}</span>`,
 };
 
 export const types = {
