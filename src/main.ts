@@ -5,11 +5,6 @@ import router from "./router";
 import { createPinia } from "pinia";
 import { persistStore } from "./persistence";
 
-const sponsorsEl = document.getElementById("assistant-sponsors");
-const sponsors = sponsorsEl?.textContent
-  ? JSON.parse(sponsorsEl.textContent)
-  : [];
-
 const el = document.getElementById("assistant-app")!;
 
 createApp(App)
@@ -22,7 +17,6 @@ createApp(App)
     "scriptUrl",
     (document.currentScript as HTMLScriptElement | undefined)?.src,
   )
-  .provide("sponsors", sponsors)
   .mount(el);
 
 persistStore();

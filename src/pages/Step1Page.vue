@@ -112,21 +112,16 @@
 import { inject, computed } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
+import { useSponsors } from "@/composables/sponsors";
 import { useBoardStore } from "@/stores/board";
 import { useSettingsStore } from "@/stores/settings";
 
 import BoardSelector from "@/components/BoardSelector.vue";
 
-interface Sponsor {
-  name: string;
-  url: string;
-  image: { url: string };
-}
-
 const settings = useSettingsStore();
 const board = useBoardStore();
 const version = inject("version");
-const sponsors = inject<Sponsor[]>("sponsors");
+const sponsors = useSponsors();
 const baseUrl = inject("baseUrl");
 
 onBeforeRouteLeave((to) => {
