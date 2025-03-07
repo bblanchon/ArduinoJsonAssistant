@@ -35,7 +35,7 @@
           type="button"
           :key="key"
           class="dropdown-item"
-          @click="$emit('update:modelValue', key)"
+          @click="boardId = key"
         >
           <BoardSelectorItem :board="board" />
         </button>
@@ -44,49 +44,40 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { computed, ref, useTemplateRef } from "vue";
+
 import boards from "@/assets/boards.json";
-import { type BoardDatabase } from "@/stores/board";
+import { type BoardData, type BoardDatabase } from "@/stores/board";
 
 import BoardSelectorItem from "@/components/BoardSelectorItem.vue";
 
-export default {
-  components: { BoardSelectorItem },
-  props: {
-    modelValue: {
-      type: String,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      boards: boards as BoardDatabase,
-      search: "",
-    };
-  },
-  computed: {
-    selectedBoard() {
-      return this.boards[this.modelValue];
-    },
-    filteredBoards() {
-      const search = this.search.toLowerCase().trim();
-      if (!search) return this.boards;
+const boardId = defineModel<string>({ required: true });
 
-      // filter the boards object
-      return Object.fromEntries(
-        Object.entries(this.boards).filter(([, board]) =>
-          board.name.toLowerCase().includes(search),
-        ),
-      );
-    },
-  },
-  methods: {
-    focusSearchInput() {
-      this.search = "";
-      (this.$refs.input as HTMLInputElement).focus();
-    },
-  },
-};
+const search = ref("");
+
+const selectedBoard = computed<BoardData>(
+  () => (boards as BoardDatabase)[boardId.value],
+);
+
+const filteredBoards = computed<BoardDatabase>(() => {
+  const searchText = search.value.toLowerCase().trim();
+  if (!searchText) return boards;
+
+  // filter the boards object
+  return Object.fromEntries(
+    Object.entries(boards).filter(([, board]) =>
+      board.name.toLowerCase().includes(searchText),
+    ),
+  );
+});
+
+const inputRef = useTemplateRef("input");
+
+function focusSearchInput() {
+  search.value = "";
+  inputRef.value!.focus();
+}
 </script>
 
 <style scoped>
