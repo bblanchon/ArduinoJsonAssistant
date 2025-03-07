@@ -25,55 +25,41 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import PrettifyIcon from "bootstrap-icons/icons/magic.svg";
+import { computed } from "vue";
 
-export default {
-  emits: ["update:modelValue"],
+const text = defineModel<string>({ default: "" });
+
+defineProps<{
+  readonly?: boolean;
+}>();
+
+defineOptions({
   inheritAttrs: false,
-  components: { PrettifyIcon },
-  props: {
-    modelValue: {
-      type: String,
-      default: "",
-    },
-    readonly: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  methods: {
-    prettify() {
-      this.$emit("update:modelValue", this.prettyText);
-    },
-  },
-  computed: {
-    text: {
-      set(value: string) {
-        this.$emit("update:modelValue", value);
-      },
-      get() {
-        return this.modelValue;
-      },
-    },
-    prettyText() {
-      try {
-        return JSON.stringify(JSON.parse(this.text), null, 2);
-      } catch {
-        return this.text;
-      }
-    },
-    error() {
-      if (!this.text.trim()) return "Please enter a JSON document";
-      try {
-        JSON.parse(this.text);
-        return null;
-      } catch (e: any) {
-        return e.message;
-      }
-    },
-  },
-};
+});
+
+const prettyText = computed<string>(() => {
+  try {
+    return JSON.stringify(JSON.parse(text.value), null, 2);
+  } catch {
+    return text.value;
+  }
+});
+
+function prettify() {
+  text.value = prettyText.value;
+}
+
+const error = computed<string | null>(() => {
+  if (!text.value.trim()) return "Please enter a JSON document";
+  try {
+    JSON.parse(text.value);
+    return null;
+  } catch (e: any) {
+    return e.message;
+  }
+});
 </script>
 
 <style scoped>
