@@ -10,7 +10,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useStatsStore } from "@/stores/stats";
 import { useSettingsStore } from "@/stores/settings";
 

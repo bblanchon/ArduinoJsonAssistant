@@ -45,7 +45,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { watchEffect } from "vue";
 
 import { useSettingsStore } from "@/stores/settings";

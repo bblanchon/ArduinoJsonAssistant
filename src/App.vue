@@ -3,7 +3,7 @@
     <nav class="assistant-nav">
       <StepNumber
         v-for="(step, idx) in steps"
-        :key="step.number"
+        :key="idx"
         :route="{ name: step.route }"
         :disabled="step.disabled"
         :label="step.label"
@@ -15,7 +15,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { mapState } from "pinia";
 
 import { useSettingsStore } from "@/stores/settings";

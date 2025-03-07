@@ -25,7 +25,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import PrettifyIcon from "bootstrap-icons/icons/magic.svg";
 
 export default {
@@ -49,7 +49,7 @@ export default {
   },
   computed: {
     text: {
-      set(value) {
+      set(value: string) {
         this.$emit("update:modelValue", value);
       },
       get() {
@@ -68,7 +68,7 @@ export default {
       try {
         JSON.parse(this.text);
         return null;
-      } catch (e) {
+      } catch (e: any) {
         return e.message;
       }
     },
@@ -81,6 +81,7 @@ textarea {
   overflow-x: auto;
   overflow-y: scroll;
 }
+
 .prettify-btn {
   position: absolute;
   right: 25px;

@@ -18,7 +18,7 @@ export const useProgramStore = defineStore("program", () => {
   const progmem = ref(false);
 
   async function generate() {
-    let code;
+    let code = "";
 
     switch (cfg.mode) {
       case "deserialize":

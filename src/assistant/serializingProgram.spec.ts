@@ -7,7 +7,7 @@ import {
 } from "./serializingProgram";
 
 describe("writeCompositionCode()", () => {
-  function getCompositionCode(output) {
+  function getCompositionCode(output: any) {
     const prg = new ProgramWriter();
     writeCompositionCode(prg, { value: output, name: "doc" });
     return prg.toString();

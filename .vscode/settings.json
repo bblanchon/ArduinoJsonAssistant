@@ -1,10 +1,12 @@
 {
   "files.eol": "\n",
   "explorer.fileNesting.patterns": {
-    "package.json": "package-lock.json, yarn.lock",
-    "*.js": "${capture}.spec.js"
+    "package.json": "package-lock.json, pnpm*, .yarnrc*, yarn*, .eslint*, eslint*, .prettier*, prettier*, .editorconfig",
+    "*.ts": "${capture}.spec.ts",
+    "tsconfig.json": "tsconfig.*.json, env.d.ts",
+    "vite.config.*": "vitest.config.*"
   },
-  "[javascript]": {
+  "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[vue]": {

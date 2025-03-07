@@ -7,7 +7,7 @@ const defaultInput = {
   data: [48.75608, 2.302038],
 };
 
-function tryParse(input) {
+function tryParse(input: any) {
   try {
     return JSON.parse(input);
   } catch {
@@ -21,6 +21,15 @@ const sizeToCount = {
   4: 4294967295,
 };
 
+type IntegerSize = 1 | 2 | 4;
+type IoType =
+  | "charPtr"
+  | "charArray"
+  | "arduinoString"
+  | "stdString"
+  | "arduinoStream"
+  | "stdStream";
+
 export const useSettingsStore = defineStore("settings", {
   state() {
     return {
@@ -33,7 +42,7 @@ export const useSettingsStore = defineStore("settings", {
       filterJson: "true",
       input: defaultInput,
       inputJson: JSON.stringify(defaultInput, null, 2),
-      ioType: "arduinoStream",
+      ioType: "arduinoStream" as IoType,
       mode: "deserialize",
       filterEnabled: false,
       useDouble: false,
@@ -43,36 +52,36 @@ export const useSettingsStore = defineStore("settings", {
     };
   },
   actions: {
-    setFilterJson(val) {
+    setFilterJson(val: any) {
       this.filterJson = val;
       this.filter = tryParse(val);
     },
-    setInputJson(val) {
+    setInputJson(val: any) {
       this.inputJson = val;
       this.input = tryParse(val);
     },
   },
   getters: {
-    isSerializing() {
+    isSerializing(): boolean {
       return this.mode === "serialize";
     },
-    isDeserializing() {
+    isDeserializing(): boolean {
       return this.mode === "deserialize";
     },
-    filteredInput() {
+    filteredInput(): any {
       if (this.isDeserializing && this.filterEnabled)
         return applyFilter(this.input, this.filter);
       return this.input;
     },
-    ignoreKeys() {
+    ignoreKeys(): boolean {
       if (this.isSerializing) return this.assumeConstKeys;
       else return false;
     },
-    ignoreValues() {
+    ignoreValues(): boolean {
       if (this.isSerializing) return this.assumeConstValues;
       else return false;
     },
-    ioTypeNames() {
+    ioTypeNames(): Record<string, string> {
       return {
         charPtr: this.isSerializing ? "char*" : "const char*",
         charArray: "char[N]",
@@ -85,11 +94,11 @@ export const useSettingsStore = defineStore("settings", {
     hasErrors() {
       return this.filteredInput === undefined;
     },
-    maxSlotCount() {
-      return sizeToCount[this.slotIdSize];
+    maxSlotCount(): number {
+      return sizeToCount[this.slotIdSize as IntegerSize];
     },
-    maxStringLength() {
-      return sizeToCount[this.stringLengthSize];
+    maxStringLength(): number {
+      return sizeToCount[this.stringLengthSize as IntegerSize];
     },
   },
 });

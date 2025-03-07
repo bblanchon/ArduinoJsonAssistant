@@ -14,7 +14,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import bytes from "bytes";
 
 import { useStatsStore } from "@/stores/stats";
@@ -25,7 +25,7 @@ import BaseGauge from "@/components/BaseGauge.vue";
 const stats = useStatsStore();
 const board = useBoardStore();
 
-function formatBytes(values) {
-  return bytes.format(values, { decimalPlaces: 1, unitSeparator: " " });
+function formatBytes(values: number) {
+  return bytes.format(values, { decimalPlaces: 1, unitSeparator: " " }) as string;
 }
 </script>

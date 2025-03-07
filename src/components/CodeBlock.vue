@@ -18,32 +18,32 @@
   </figure>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { sleep } from "@/utils";
-import { ref } from "vue";
+import { ref, useTemplateRef } from "vue";
 
 const props = defineProps({
   source: String,
 });
 
 const programCopied = ref(false);
-const codeElement = ref(null);
+const codeElement = useTemplateRef("codeElement");
 
 async function copyProgram() {
-  await navigator.clipboard.writeText(codeElement.value.innerText);
+  await navigator.clipboard.writeText(codeElement.value!.innerText);
   programCopied.value = true;
   await sleep(500);
   programCopied.value = false;
 }
 
-function highlightVariable(variable) {
-  codeElement.value.querySelectorAll(".hl-variable").forEach((el) => {
-    el.classList.toggle("active", el.innerText === variable);
+function highlightVariable(variable: string) {
+  codeElement.value!.querySelectorAll(".hl-variable").forEach((el) => {
+    el.classList.toggle("active", (el as HTMLElement).innerText === variable);
   });
 }
 
-function onMouseOver(event) {
-  const target = event.target;
+function onMouseOver(event: MouseEvent) {
+  const target = event.target as HTMLElement;
   if (target.classList.contains("hl-variable")) {
     highlightVariable(target.innerText);
   } else {

@@ -1,46 +1,34 @@
-import js from "@eslint/js";
-import pluginVue from "eslint-plugin-vue";
-import pluginVitest from "@vitest/eslint-plugin";
-import skipFormatting from "@vue/eslint-config-prettier/skip-formatting";
-import globals from "globals";
+import vueTsEslintConfig from '@vue/eslint-config-typescript'
+import pluginVue from 'eslint-plugin-vue'
+import pluginVitest from '@vitest/eslint-plugin'
+import skipFormatting from '@vue/eslint-config-prettier/skip-formatting'
 
 /** @type { import("eslint").Linter.Config[] } */
 export default [
   {
-    name: "app/files-to-lint",
-    files: ["**/*.{js,vue}"],
+    name: 'app/files-to-lint',
+    files: ['**/*.{ts,mts,tsx,vue}'],
   },
 
   {
-    name: "app/files-to-ignore",
-    ignores: ["**/dist/**", "**/dist-ssr/**", "**/coverage/**"],
+    name: 'app/files-to-ignore',
+    ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**'],
   },
 
+  ...pluginVue.configs['flat/essential'],
+  ...vueTsEslintConfig(),
+
   {
-    name: "app/browser-globals",
-    files: ["src/**/*.{js,vue}"],
-    languageOptions: {
-      globals: {
-        bootstrap: "readonly",
-        ...globals.browser,
-      },
+    name: 'app/overrides',
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
     },
   },
 
-  {
-    name: "app/node-globals",
-    files: ["*.js"],
-    languageOptions: {
-      globals: globals.node,
-    },
-  },
-
-  js.configs.recommended,
-  ...pluginVue.configs["flat/essential"],
 
   {
     ...pluginVitest.configs.recommended,
-    files: ["src/**/*.spec.js"],
+    files: ['src/**/*.spec.ts'],
   },
   skipFormatting,
-];
+]
