@@ -8,6 +8,13 @@ declare namespace bootstrap {
   }
 }
 
+function plausible(
+  eventName: string,
+  options?: {
+    props?: { [propName: string]: string | number | boolean };
+  },
+): void;
+
 declare module "justgage" {
   class JustGage {
     constructor(options: JustGage.Options);

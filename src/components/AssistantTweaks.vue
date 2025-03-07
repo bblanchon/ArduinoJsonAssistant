@@ -96,7 +96,7 @@
   </details>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed } from "vue";
 
 import { useSettingsStore } from "@/stores/settings";
@@ -105,23 +105,25 @@ import ResetTweakButton from "@/components/ResetTweakButton.vue";
 
 const settings = useSettingsStore();
 
-const defaults = computed(() => ({
+const defaults = {
   assumeConstKeys: true,
   assumeConstValues: false,
   deduplicateKeys: true,
   deduplicateValues: true,
-}));
+} as const;
+
+type Option = keyof typeof defaults;
 
 const tweakCount = computed(
   () =>
-    Object.entries(defaults.value).filter(
-      ([key, value]) => value !== settings[key],
+    Object.entries(defaults).filter(
+      ([key, value]) => value !== settings[key as Option],
     ).length,
 );
 
 function resetTweaks() {
-  Object.entries(defaults.value).forEach(
-    ([key, value]) => (settings[key] = value),
+  Object.entries(defaults).forEach(
+    ([key, value]) => (settings[key as Option] = value),
   );
 }
 </script>

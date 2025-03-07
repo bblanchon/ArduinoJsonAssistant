@@ -47,8 +47,8 @@ export const useSettingsStore = defineStore("settings", {
       filterEnabled: false,
       useDouble: false,
       useLongLong: false,
-      slotIdSize: 1 as IntegerSize,
-      stringLengthSize: 1 as IntegerSize,
+      slotIdSize: 1,
+      stringLengthSize: 1,
     };
   },
   actions: {
@@ -95,10 +95,10 @@ export const useSettingsStore = defineStore("settings", {
       return this.filteredInput === undefined;
     },
     maxSlotCount(): number {
-      return sizeToCount[this.slotIdSize];
+      return sizeToCount[this.slotIdSize as IntegerSize];
     },
     maxStringLength(): number {
-      return sizeToCount[this.stringLengthSize];
+      return sizeToCount[this.stringLengthSize as IntegerSize];
     },
   },
 });

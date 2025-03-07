@@ -6,8 +6,9 @@ import memoryModels from "@/assets/memoryModels.json";
 
 import { useSettingsStore } from "./settings";
 
-type BoardData = (typeof boards)["uno_r4_wifi"];
-type BoardDatabase = Record<string, BoardData>;
+export type BoardData = (typeof boards)["uno_r4_wifi"];
+export type BoardDatabase = Record<string, BoardData>;
+
 type Arch = "8-bit" | "16-bit" | "32-bit" | "64-bit";
 
 export const useBoardStore = defineStore("board", () => {

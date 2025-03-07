@@ -80,7 +80,7 @@
         <div class="d-none d-lg-block col-4 mb-2" id="assistant-sponsors">
           <div class="bg-light p-2 h-100">
             <div class="text-center text-muted">Our sponsors</div>
-            <div class="m-4" v-for="sponsor in sponsors" :key="sponsor">
+            <div class="m-4" v-for="(sponsor, idx) in sponsors" :key="idx">
               <a :href="sponsor.url" rel="sponsored" target="_blank"
                 ><img
                   class="img img-fluid"
@@ -108,7 +108,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { inject, computed } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
@@ -117,10 +117,16 @@ import { useSettingsStore } from "@/stores/settings";
 
 import BoardSelector from "@/components/BoardSelector.vue";
 
+interface Sponsor {
+  name: string;
+  url: string;
+  image: { url: string };
+}
+
 const settings = useSettingsStore();
 const board = useBoardStore();
 const version = inject("version");
-const sponsors = inject("sponsors");
+const sponsors = inject<Sponsor[]>("sponsors");
 const baseUrl = inject("baseUrl");
 
 onBeforeRouteLeave((to) => {
@@ -148,7 +154,7 @@ const selectedMode = computed({
   },
 });
 
-function selectCpu(cpu) {
+function selectCpu(cpu: string) {
   settings.cpu = cpu;
   settings.useDouble = board.doubleIsDefault;
   settings.useLongLong = board.longLongIsDefault;

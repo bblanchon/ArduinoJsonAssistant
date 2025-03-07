@@ -143,7 +143,7 @@
   </details>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed } from "vue";
 
 import { useSettingsStore } from "@/stores/settings";
@@ -164,14 +164,18 @@ const defaults = computed(() => ({
 
 const changeCount = computed(
   () =>
-    Object.entries(defaults.value).filter(
-      ([key, value]) => value !== settings[key],
-    ).length,
+    [
+      settings.useDouble !== defaults.value.useDouble,
+      settings.useLongLong !== defaults.value.useLongLong,
+      settings.slotIdSize !== defaults.value.slotIdSize,
+      settings.stringLengthSize !== defaults.value.stringLengthSize,
+    ].filter(Boolean).length,
 );
 
 function resetChanges() {
-  Object.entries(defaults.value).forEach(
-    ([key, value]) => (settings[key] = value),
-  );
+  settings.useDouble = defaults.value.useDouble;
+  settings.useLongLong = defaults.value.useLongLong;
+  settings.slotIdSize = defaults.value.slotIdSize;
+  settings.stringLengthSize = defaults.value.stringLengthSize;
 }
 </script>

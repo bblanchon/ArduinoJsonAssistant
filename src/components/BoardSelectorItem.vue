@@ -6,12 +6,14 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import bytes from "bytes";
+import { type BoardData } from "@/stores/board";
 
-defineProps({
-  board: Object,
-});
+defineProps<{
+  board: BoardData;
+}>();
 
-const formatBytes = (value) => bytes.format(value, { decimalPlaces: 1 });
+const formatBytes = (value: number) =>
+  bytes.format(value, { decimalPlaces: 1 });
 </script>

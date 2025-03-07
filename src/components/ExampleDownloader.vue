@@ -14,15 +14,15 @@
   </p>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useSettingsStore } from "@/stores/settings";
 import { inject, ref } from "vue";
 
-const scriptUrl = inject("scriptUrl");
+const scriptUrl = inject<string>("scriptUrl");
 const isDownloading = ref(false);
 const settings = useSettingsStore();
 
-async function downloadSettings(url) {
+async function downloadSettings(url: string | URL) {
   if (scriptUrl) url = new URL(url, scriptUrl);
   isDownloading.value = true;
   try {

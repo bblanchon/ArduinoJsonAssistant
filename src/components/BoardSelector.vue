@@ -44,19 +44,23 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import boards from "@/assets/boards.json";
+import { type BoardDatabase } from "@/stores/board";
 
 import BoardSelectorItem from "@/components/BoardSelectorItem.vue";
 
 export default {
   components: { BoardSelectorItem },
   props: {
-    modelValue: String,
+    modelValue: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
-      boards,
+      boards: boards as BoardDatabase,
       search: "",
     };
   },
@@ -79,7 +83,7 @@ export default {
   methods: {
     focusSearchInput() {
       this.search = "";
-      this.$refs.input.focus();
+      (this.$refs.input as HTMLInputElement).focus();
     },
   },
 };
