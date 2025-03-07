@@ -1,4 +1,7 @@
 export class ProgramWriter {
+  lines: string[];
+  depth: number;
+
   constructor() {
     this.lines = [];
     this.depth = 1;
@@ -128,14 +131,14 @@ const reservedWords = [
   "xor_eq",
 ];
 
-export function stripHtml(html) {
+export function stripHtml(html: string) {
   return html
     .replace(/<[^>]*>?/gi, "")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">");
 }
 
-export function makeVariableName(expression) {
+export function makeVariableName(expression: string) {
   let variable = stripHtml(expression)
     .replace(/F\("([^"]+)"\)]/g, "$1")
     .replace(/["\]]/g, "")
@@ -147,14 +150,14 @@ export function makeVariableName(expression) {
   return variable;
 }
 
-export function makeItemName(expression) {
+export function makeItemName(expression: string) {
   return makeVariableName(expression + "_item")
     .replace(/hildren_item$/, "hild")
     .replace(/ies_item$/, "y")
     .replace(/s_item$/, "");
 }
 
-export function stringifyValue(type, value) {
+export function stringifyValue(type: string, value: any) {
   const numberTypes = ["int", "long", "long long", "float", "double"];
   if (!value && numberTypes.includes(type)) return "0";
   if (!value && type.endsWith("*")) return "nullptr";
