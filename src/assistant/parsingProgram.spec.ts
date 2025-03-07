@@ -6,10 +6,11 @@ import {
   writeDeserializationCode,
   writeDecompositionCode,
   writeErrorCheckingCode,
+  type ParsingProgramConfig,
 } from "./parsingProgram";
 
 describe("writeDeserializationCode()", () => {
-  function getDeserializationCode(config) {
+  function getDeserializationCode(config: ParsingProgramConfig) {
     const prg = new ProgramWriter();
     writeDeserializationCode(prg, config);
     return prg.toString();
@@ -53,7 +54,7 @@ describe("writeDeserializationCode()", () => {
 });
 
 describe("writeErrorCheckingCode()", () => {
-  function getErrorCheckingCode(config) {
+  function getErrorCheckingCode(config: ParsingProgramConfig) {
     const prg = new ProgramWriter();
     writeErrorCheckingCode(prg, config);
     return prg.toString();
@@ -116,7 +117,7 @@ describe("generateParsingProgram", function () {
 });
 
 describe("writeDecompositionCode", function () {
-  function getDecompositionCode(input, cfg) {
+  function getDecompositionCode(input: any, cfg?: ParsingProgramConfig) {
     const prg = new ProgramWriter();
     writeDecompositionCode(prg, input, cfg);
     return prg.toString();

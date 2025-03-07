@@ -23,10 +23,18 @@ import {
 import { writeCompositionCode } from "./serializingProgram";
 import { applyFilter } from "./filter";
 
-function extractValue(prg, cfg) {
+interface ValueDetails {
+  value: any;
+  parent: string;
+  name?: string;
+  siblings?: any[];
+  progmem?: boolean;
+}
+
+function extractValue(prg: ProgramWriter, cfg: ValueDetails) {
   const value = cfg.value;
   const parent = cfg.parent;
-  const variableName = cfg.name;
+  const variableName = cfg.name ?? "";
 
   const asFunction =
     stripHtml(parent) == "doc"
@@ -120,7 +128,7 @@ function extractValue(prg, cfg) {
       const type = getCommonCppTypeFor(siblings);
       if (type) {
         const statement = `${tokens.type(type)} ${tokens.variable(variableName)} = ${parent};`;
-        let comment = siblings
+        let comment: string | null = siblings
           .map((value) => stringifyValue(type, value))
           .join(", ");
         const lineLength = stripHtml(statement).length;
@@ -142,7 +150,20 @@ function extractValue(prg, cfg) {
   }
 }
 
-export function writeDecompositionCode(prg, input, cfg = {}) {
+export interface ParsingProgramConfig {
+  input?: any;
+  inputType?: string;
+  filter?: any;
+  nestingLimit?: number;
+  serial?: boolean;
+  progmem?: boolean;
+}
+
+export function writeDecompositionCode(
+  prg: ProgramWriter,
+  input: any,
+  cfg: ParsingProgramConfig = {},
+) {
   switch (typeof input) {
     case "object":
       return extractValue(prg, {
@@ -151,7 +172,7 @@ export function writeDecompositionCode(prg, input, cfg = {}) {
         parent: tokens.variable("doc"),
       });
     default: {
-      const t = getCppTypeFor(input);
+      const t = getCppTypeFor(input) ?? "auto";
       prg.addLine(
         `${tokens.type(t)} ${tokens.variable("root")} = ${tokens.variable("doc")}.${functions.JsonDocument.as}&lt;${tokens.type(t)}&gt;(); ${tokens.comment(JSON.stringify(input))}`,
       );
@@ -160,7 +181,10 @@ export function writeDecompositionCode(prg, input, cfg = {}) {
   }
 }
 
-export function writeDeserializationCode(prg, cfg) {
+export function writeDeserializationCode(
+  prg: ProgramWriter,
+  cfg: ParsingProgramConfig,
+) {
   switch (cfg.inputType) {
     case "charPtr":
       prg.addLine(tokens.comment("const char* input;"));
@@ -225,7 +249,10 @@ export function writeDeserializationCode(prg, cfg) {
   );
 }
 
-export function writeErrorCheckingCode(prg, cfg) {
+export function writeErrorCheckingCode(
+  prg: ProgramWriter,
+  cfg: ParsingProgramConfig,
+) {
   prg.addLine(`${keywords.if} (${tokens.variable("error")}) {`);
   prg.indent();
   if (cfg.serial && cfg.progmem) {
@@ -252,7 +279,7 @@ export function writeErrorCheckingCode(prg, cfg) {
   prg.addLine("}");
 }
 
-export function generateParsingProgram(cfg) {
+export function generateParsingProgram(cfg: ParsingProgramConfig) {
   const prg = new ProgramWriter();
 
   writeDeserializationCode(prg, cfg);
