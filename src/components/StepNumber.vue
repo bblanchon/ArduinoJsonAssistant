@@ -1,17 +1,17 @@
 <template>
   <div class="assistant-step">
-    <RouterLink :to="`step${number}`" class="btn" aria-current-value="step">
-      {{ number }}
+    <RouterLink :to="`step${step}`" class="btn" aria-current-value="step">
+      {{ step }}
     </RouterLink>
     <p>
-      <small>{{ label }}</small>
+      <small><slot></slot></small>
     </p>
   </div>
 </template>
 
 <script setup lang="ts">
 defineProps<{
-  number: number | string;
+  step: number | string;
   label?: string;
   disabled?: boolean;
 }>();

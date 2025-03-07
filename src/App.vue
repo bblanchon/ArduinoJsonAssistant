@@ -1,9 +1,9 @@
 <template>
   <div>
     <nav class="assistant-nav">
-      <StepNumber number="1" label="Configuration" />
-      <StepNumber number="2" label="JSON" />
-      <StepNumber number="3" label="Program" :disabled="settings.hasErrors" />
+      <StepNumber step="1">Configuration</StepNumber>
+      <StepNumber step="2">JSON</StepNumber>
+      <StepNumber step="3" :disabled="settings.hasErrors">Program</StepNumber>
     </nav>
 
     <RouterView />
