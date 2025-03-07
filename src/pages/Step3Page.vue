@@ -5,17 +5,10 @@
     <div class="card-body">
       <CodeBlock :source="program.header" />
 
-      <div
-        class="row align-items-center g-2 mb-3"
-        v-if="settings.isDeserializing"
-      >
+      <div class="row align-items-center g-2 mb-3" v-if="settings.isDeserializing">
         <label for="io-library" class="visually-hidden">I/O</label>
         <div class="col-sm-3">
-          <select
-            id="io-library"
-            v-model="program.ioLibrary"
-            class="form-control flex-0 max-w-0"
-          >
+          <select id="io-library" v-model="program.ioLibrary" class="form-control flex-0 max-w-0">
             <option value="serial">Serial</option>
             <option value="iostream">iostream</option>
           </select>
@@ -23,12 +16,7 @@
 
         <div class="col-sm-3">
           <div class="form-check flex-0">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              id="progmem"
-              v-model="program.progmem"
-            />
+            <input class="form-check-input" type="checkbox" id="progmem" v-model="program.progmem" />
             <label class="form-check-label" for="progmem">Flash strings</label>
           </div>
         </div>
