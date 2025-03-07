@@ -9,27 +9,15 @@
   </div>
 </template>
 
-<script lang="ts">
-export default {
-  props: {
-    route: {
-      type: Object,
-      required: true,
-    },
-    number: {
-      type: Number,
-      required: true,
-    },
-    label: {
-      type: String,
-      required: false,
-    },
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-  },
-};
+<script setup lang="ts">
+import type { RouteLocationRaw } from "vue-router";
+
+defineProps<{
+  route: RouteLocationRaw;
+  number: number;
+  label?: string;
+  disabled?: boolean;
+}>();
 </script>
 
 <style lang="scss">
