@@ -12,10 +12,6 @@ createApp(App)
   .use(createPinia())
   .use(tooltip)
   .provide("version", "7.3")
-  .provide(
-    "scriptUrl",
-    (document.currentScript as HTMLScriptElement | undefined)?.src,
-  )
   .mount(el);
 
 persistStore();

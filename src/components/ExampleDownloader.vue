@@ -15,10 +15,12 @@
 </template>
 
 <script setup lang="ts">
-import { useSettingsStore } from "@/stores/settings";
-import { inject, ref } from "vue";
+import { ref } from "vue";
 
-const scriptUrl = inject<string>("scriptUrl");
+import { useScriptUrl } from "@/composables/script-url";
+import { useSettingsStore } from "@/stores/settings";
+
+const scriptUrl = useScriptUrl();
 const isDownloading = ref(false);
 const settings = useSettingsStore();
 
