@@ -1,27 +1,27 @@
-import { getValueType } from "./analyzer";
+import {
+  isJsonBoolean,
+  isJsonNumber,
+  isJsonString,
+  type JsonArray,
+  type JsonObject,
+  type JsonValue,
+} from "./json";
 import { ProgramWriter, makeVariableName, stripHtml } from "./programWriter";
 import { literals, keywords, types, functions, tokens } from "./tokens";
 
-function stringifyValue(value: any) {
-  switch (getValueType(value)) {
-    case "string":
-      return literals.string(value);
-    case "number":
-      return literals.number(value);
-    case "boolean":
-      return literals.bool(value);
-    case "null":
-      return keywords.nullptr;
-    default:
-      return value;
-  }
+function stringifyValue(value: JsonValue) {
+  if (isJsonString(value)) return literals.string(value);
+  if (isJsonNumber(value)) return literals.number(value);
+  if (isJsonBoolean(value)) return literals.bool(value);
+  if (value === null) return keywords.nullptr;
+  return value;
 }
 
 interface ArrayDetails {
   name: string;
-  value: any[];
+  value: JsonArray;
   parent?: string;
-  key?: any;
+  key?: string | number;
 }
 
 function addArray(
@@ -43,6 +43,7 @@ function addArray(
         value: value[0],
       });
   } else if (childrenCount == 1) {
+    if (key === undefined) throw new Error("key is required if parent is set");
     return assignVariant(prg, {
       parent: `${parent}[${stringifyValue(key)}]`,
       name: name + "_0",
@@ -74,9 +75,9 @@ function addArray(
 
 interface ObjectDetails {
   name: string;
-  value: { [key: string]: any };
+  value: JsonObject;
   parent?: string;
-  key?: any;
+  key?: string | number;
 }
 
 function addObject(
@@ -92,6 +93,7 @@ function addObject(
         `${tokens.variable(name)}.${name == "doc" ? functions.JsonDocument.to : functions.JsonVariant.to}&lt;${types.JsonObject}&gt;();`,
       );
   } else if (childrenCount == 1) {
+    if (key === undefined) throw new Error("key is required if parent is set");
     objectName = `${parent}[${stringifyValue(key)}]`;
   } else {
     prg.addEmptyLine();
@@ -120,8 +122,8 @@ function addObject(
 interface ArrayElementDetails {
   array: string;
   name: string;
-  value: any;
-  key?: any;
+  value: JsonValue;
+  key?: string | number;
 }
 
 function addArrayElement(
@@ -142,7 +144,7 @@ function addArrayElement(
 interface ObjectMemberDetails {
   object: string;
   key: string;
-  value: any;
+  value: JsonValue;
   name: string;
 }
 
@@ -163,9 +165,9 @@ function addObjectMember(
 
 interface VariantDetails {
   name: string;
-  value: any;
+  value: JsonValue;
   parent?: string;
-  key?: any;
+  key?: string | number;
 }
 
 function assignVariant(
@@ -177,6 +179,7 @@ function assignVariant(
   } else if (value instanceof Object) {
     addObject(prg, { value, name, parent, key });
   } else if (parent) {
+    if (key === undefined) throw new Error("key is required if parent is set");
     prg.addLine(
       `${parent}[${stringifyValue(key)}] = ${stringifyValue(value)};`,
     );
@@ -189,13 +192,13 @@ function assignVariant(
 
 export function writeCompositionCode(
   prg: ProgramWriter,
-  { value, name }: { value: any; name: string },
+  { value, name }: { value: JsonValue; name: string },
 ) {
   assignVariant(prg, { name, value });
 }
 
 interface SerializingProgramConfig {
-  output?: any;
+  output?: JsonValue;
   outputType?:
     | "charPtr"
     | "charArray"
@@ -226,7 +229,7 @@ export function generateSerializingProgram(cfg: SerializingProgramConfig) {
 
   prg.addEmptyLine();
   writeCompositionCode(prg, {
-    value: cfg.output,
+    value: cfg.output ?? null,
     name: "doc",
   });
   prg.addEmptyLine();

@@ -1,14 +1,21 @@
+import {
+  isJsonArray,
+  isJsonObject,
+  type JsonObject,
+  type JsonValue,
+} from "./json";
+
 type FilterMode = "array" | "object" | "accept" | "reject";
 
 export class JsonFilter {
-  value: any;
+  value: JsonValue;
   mode: FilterMode;
   allowsArray: boolean;
   allowsObject: boolean;
   allowsValue: boolean;
   allowsSomething: boolean;
 
-  constructor(value: any) {
+  constructor(value: JsonValue) {
     this.value = value;
     this.mode =
       value instanceof Array
@@ -30,6 +37,7 @@ export class JsonFilter {
         return new JsonFilter(true);
 
       case "object":
+        if (!isJsonObject(this.value)) throw new Error("Object expected");
         return new JsonFilter(
           key in this.value ? this.value[key] : this.value["*"],
         );
@@ -44,13 +52,14 @@ export class JsonFilter {
       case "accept":
         return new JsonFilter(true);
       case "array":
+        if (!isJsonArray(this.value)) throw new Error("Array expected");
         return new JsonFilter(this.value[0]);
       default:
         return new JsonFilter(false);
     }
   }
 
-  filterDocument(input: any): any {
+  filterDocument(input: JsonValue): JsonValue | undefined {
     switch (this.mode) {
       case "reject":
         return undefined;
@@ -61,11 +70,12 @@ export class JsonFilter {
         if (!Array.isArray(input)) return undefined;
         const elementFilter = this.getElementFilter();
         if (elementFilter.mode === "reject") return [];
-        return input.map((el) => elementFilter.filterDocument(el));
+        return input.map((el) => elementFilter.filterDocument(el) ?? null);
       }
 
       case "object": {
-        const output: any = {};
+        const output: JsonObject = {};
+        if (!isJsonObject(input)) return undefined;
         for (const k in input) {
           if (k in input) {
             const memberFilter = this.getMemberFilter(k);
@@ -79,10 +89,10 @@ export class JsonFilter {
   }
 }
 
-export function makeJsonFilter(filter: any) {
+export function makeJsonFilter(filter: JsonValue) {
   return new JsonFilter(filter);
 }
 
-export function applyFilter(input: any, filter: any) {
+export function applyFilter(input: JsonValue, filter: JsonValue): JsonValue {
   return new JsonFilter(filter).filterDocument(input) ?? null;
 }

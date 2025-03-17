@@ -1,13 +1,13 @@
 import { JsonFilter } from "./filter";
 import memoryModels from "@/assets/memoryModels.json";
-
-export function getValueType(value: any) {
-  return value === null
-    ? "null"
-    : value instanceof Array
-      ? "array"
-      : typeof value;
-}
+import {
+  isJsonArray,
+  isJsonBoolean,
+  isJsonNumber,
+  isJsonObject,
+  isJsonString,
+  type JsonValue,
+} from "./json";
 
 export function getOverallocatedStringSize(s: number) {
   // [0-31] -> 31
@@ -44,7 +44,7 @@ interface Config {
   ignoreValues?: boolean;
   deduplicateKeys?: boolean;
   deduplicateValues?: boolean;
-  filter?: any;
+  filter?: JsonValue;
   stringLengthSize?: number;
   overAllocateStrings?: boolean;
 }
@@ -224,38 +224,32 @@ class JsonDocument {
   }
 }
 
-function fillDocument(doc: any, value: any, filter: JsonFilter) {
-  switch (getValueType(value)) {
-    case "array":
-      if (filter.allowsArray) {
-        doc.addArray(value.length);
-        for (let i = 0; i < value.length; i++)
-          fillDocument(doc, value[i], filter.getElementFilter());
-      }
-      break;
+function fillDocument(doc: JsonDocument, value: JsonValue, filter: JsonFilter) {
+  if (isJsonArray(value) && filter.allowsArray) {
+    doc.addArray(value.length);
+    for (let i = 0; i < value.length; i++)
+      fillDocument(doc, value[i], filter.getElementFilter());
+  }
 
-    case "object":
-      if (filter.allowsObject) {
-        for (const key in value) {
-          const memberFilter = filter.getMemberFilter(key);
-          if (memberFilter.allowsSomething) doc.addObjectMember(key);
-          else doc.addIgnoredKey(key);
-          fillDocument(doc, value[key], memberFilter);
-        }
-      }
-      break;
+  if (isJsonObject(value) && filter.allowsObject) {
+    for (const key in value) {
+      const memberFilter = filter.getMemberFilter(key);
+      if (memberFilter.allowsSomething) doc.addObjectMember(key);
+      else doc.addIgnoredKey(key);
+      fillDocument(doc, value[key], memberFilter);
+    }
+  }
 
-    case "string":
-      if (filter.allowsValue) doc.addString(value);
-      break;
+  if (isJsonString(value) && filter.allowsValue) {
+    doc.addString(value);
+  }
 
-    case "number":
-      if (filter.allowsValue) doc.addNumber(value);
-      break;
+  if (isJsonNumber(value) && filter.allowsValue) {
+    doc.addNumber(value);
   }
 }
 
-export function analyze(obj: any, cfg: Config) {
+export function analyze(obj: JsonValue, cfg: Config) {
   const memory = new Memory();
   const doc = new JsonDocument(memory, cfg);
   if (cfg.filter) {
@@ -275,39 +269,42 @@ export function analyze(obj: any, cfg: Config) {
   };
 }
 
-export function measureNesting(obj: any) {
+export function measureNesting(obj: JsonValue): number {
   if (obj instanceof Object === false) return 0;
   let innerNesting = 0;
-  for (const key in obj) {
-    innerNesting = Math.max(innerNesting, measureNesting(obj[key]));
-  }
+  Object.values(obj).forEach((value) => {
+    innerNesting = Math.max(innerNesting, measureNesting(value));
+  });
   return 1 + innerNesting;
 }
 
-export function getMaxStringLength(obj: any, cfg?: Partial<Config>): number {
-  switch (getValueType(obj)) {
-    case "array":
-      return Math.max(...(obj as any[]).map((x) => getMaxStringLength(x, cfg)));
-    case "string":
-      if (cfg?.ignoreValues) return 0;
-      return obj.length;
-    case "object":
-      return Math.max(
-        ...(cfg?.ignoreKeys ? [] : Object.keys(obj).map((key) => key.length)),
-        ...Object.values(obj).map((x) => getMaxStringLength(x, cfg)),
-      );
-    default:
-      return 0;
+export function getMaxStringLength(
+  obj: JsonValue,
+  cfg?: Partial<Config>,
+): number {
+  if (isJsonArray(obj)) {
+    return Math.max(...obj.map((x) => getMaxStringLength(x, cfg)));
   }
+
+  if (isJsonObject(obj)) {
+    return Math.max(
+      ...(cfg?.ignoreKeys ? [] : Object.keys(obj).map((key) => key.length)),
+      ...Object.values(obj).map((x) => getMaxStringLength(x, cfg)),
+    );
+  }
+
+  if (isJsonString(obj)) {
+    if (cfg?.ignoreValues) return 0;
+    return obj.length;
+  }
+
+  return 0;
 }
 
-export function canLoop(input: any) {
-  function areSimilar(a: any, b: any) {
-    const ta = getValueType(a);
-    const tb = getValueType(b);
-    if (ta === "null" || tb === "null") return true;
-    if (ta !== tb) return false;
-    if (ta === "object") {
+export function canLoop(input: JsonValue): boolean {
+  function areSimilar(a: JsonValue, b: JsonValue): boolean {
+    if (a === null || b === null) return true;
+    if (isJsonObject(a) && isJsonObject(b)) {
       for (const k in a) {
         if (!(k in b)) return false;
       }
@@ -316,36 +313,34 @@ export function canLoop(input: any) {
         if (!areSimilar(a[k], b[k])) return false;
       }
     }
-    if (ta === "array") {
+    if (isJsonArray(a) && isJsonArray(b)) {
       if (a.length !== b.length) return false;
       for (let i = 0; i < a.length; i++) {
         if (!areSimilar(a[i], b[i])) return false;
       }
     }
-    return true;
+    return typeof a === typeof b;
   }
 
-  switch (getValueType(input)) {
-    case "array":
-      if (input.length < 2) return false;
-      return (input as any[]).every(
-        (value) =>
-          getValueType(value) === "object" && areSimilar(input[0], value),
-      );
-
-    case "object":
-      return canLoop(Object.values(input));
-
-    default:
-      return false;
+  if (isJsonArray(input)) {
+    if (input.length < 2) return false;
+    return input.every(
+      (value) => isJsonObject(value) && areSimilar(input[0], value),
+    );
   }
+
+  if (isJsonObject(input)) {
+    return canLoop(Object.values(input));
+  }
+
+  return false;
 }
 
-export function getCppTypeFor(value: any) {
+export function getCppTypeFor(value: JsonValue) {
   return getCommonCppTypeFor([value]);
 }
 
-function hasShortMantissa(value: number) {
+function hasShortMantissa(value: number): boolean {
   return value.toExponential().split("e")[0].length < 9;
 }
 
@@ -358,75 +353,84 @@ type CppType =
   | "float"
   | "double";
 
-export function getCommonCppTypeFor(values: any[]): CppType | undefined {
-  switch (getValueType(values[0])) {
-    case "boolean":
-      return "bool";
+export function getCommonCppTypeFor(values: JsonValue[]): CppType | undefined {
+  if (isJsonBoolean(values[0])) {
+    return "bool";
+  }
 
-    case "string":
-      return "const char*";
+  if (isJsonString(values[0])) {
+    return "const char*";
+  }
 
-    case "number": {
-      const containsFloat = values.some((x) => x % 1);
-      const max = Math.max(...values);
-      const min = Math.min(...values);
-      if (!containsFloat) {
-        if (max < 32000 && min > -32000) return "int";
-        if (max < 2000000000 && min > -2000000000) return "long";
-        if (max < 9e18 && min > -9e18) return "long long";
-      }
-      if (
-        max < 2e38 &&
-        min > -2e38 &&
-        values.every(hasShortMantissa) &&
-        (min == 0 || Math.abs(min) > 1e-45)
-      )
-        return "float";
-      return "double";
+  if (isJsonNumber(values[0])) {
+    const nums = values as number[];
+    const containsFloat = nums.some((x) => x % 1);
+    const max = Math.max(...nums);
+    const min = Math.min(...nums);
+    if (!containsFloat) {
+      if (max < 32000 && min > -32000) return "int";
+      if (max < 2000000000 && min > -2000000000) return "long";
+      if (max < 9e18 && min > -9e18) return "long long";
     }
+    if (
+      max < 2e38 &&
+      min > -2e38 &&
+      nums.every(hasShortMantissa) &&
+      (min == 0 || Math.abs(min) > 1e-45)
+    )
+      return "float";
+    return "double";
+  }
 
-    case "null":
-      return getCommonCppTypeFor(values.slice(1));
+  if (values[0] === null) {
+    return getCommonCppTypeFor(values.slice(1));
   }
 }
 
-function needsCppType(cpptype: CppType, value: any, siblings?: any[]): boolean {
-  switch (getValueType(value)) {
-    case "array":
-      if (canLoop(value)) return needsCppType(cpptype, value[0], value);
-      return (value as any[]).some((x) => needsCppType(cpptype, x));
-
-    case "object":
-      return Object.keys(value as { [key: string]: any }).some((key) =>
-        needsCppType(
-          cpptype,
-          value[key],
-          siblings?.filter((x) => !!x).map((x) => x[key]),
-        ),
-      );
-
-    default:
-      return getCommonCppTypeFor(siblings || [value]) == cpptype;
+function needsCppType(
+  cpptype: CppType,
+  value: JsonValue,
+  siblings?: JsonValue[],
+): boolean {
+  if (isJsonArray(value)) {
+    if (canLoop(value)) return needsCppType(cpptype, value[0], value);
+    return value.some((x) => needsCppType(cpptype, x));
   }
+
+  if (isJsonObject(value)) {
+    return Object.keys(value).some((key) =>
+      needsCppType(
+        cpptype,
+        value[key],
+        siblings?.filter((x) => isJsonObject(x)).map((x) => x[key]),
+      ),
+    );
+  }
+
+  return getCommonCppTypeFor(siblings || [value]) == cpptype;
 }
 
-export function hasJsonInJsonSyndrome(val: any): boolean {
-  switch (getValueType(val)) {
-    case "string":
-      if (val[0] != "[" && val[0] != "{") return false;
-      try {
-        JSON.parse(val);
-        return true;
-      } catch {
-        return false;
-      }
-    case "object":
-      return Object.values(val).some(hasJsonInJsonSyndrome);
-    case "array":
-      return val.some(hasJsonInJsonSyndrome);
+export function hasJsonInJsonSyndrome(val: JsonValue): boolean {
+  if (isJsonArray(val)) {
+    return val.some(hasJsonInJsonSyndrome);
   }
+
+  if (isJsonObject(val)) {
+    return Object.values(val).some(hasJsonInJsonSyndrome);
+  }
+
+  if (isJsonString(val)) {
+    if (val[0] != "[" && val[0] != "{") return false;
+    try {
+      JSON.parse(val);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   return false;
 }
 
-export const needsDouble = (val: any) => needsCppType("double", val);
-export const needsLongLong = (val: any) => needsCppType("long long", val);
+export const needsDouble = (val: JsonValue) => needsCppType("double", val);
+export const needsLongLong = (val: JsonValue) => needsCppType("long long", val);

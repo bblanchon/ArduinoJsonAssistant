@@ -1,9 +1,4 @@
-import {
-  getValueType,
-  canLoop,
-  getCommonCppTypeFor,
-  getCppTypeFor,
-} from "./analyzer";
+import { canLoop, getCommonCppTypeFor, getCppTypeFor } from "./analyzer";
 import {
   ProgramWriter,
   makeItemName,
@@ -22,12 +17,13 @@ import {
 } from "./tokens";
 import { writeCompositionCode } from "./serializingProgram";
 import { applyFilter } from "./filter";
+import { isJsonArray, isJsonObject, type JsonValue } from "./json";
 
 interface ValueDetails {
-  value: any;
+  value: JsonValue;
   parent: string;
   name?: string;
-  siblings?: any[];
+  siblings?: JsonValue[];
   progmem?: boolean;
 }
 
@@ -41,119 +37,112 @@ function extractValue(prg: ProgramWriter, cfg: ValueDetails) {
       ? functions.JsonDocument.as
       : functions.JsonVariant.as;
 
-  switch (getValueType(value)) {
-    case "array":
-      prg.addEmptyLine();
-      if (canLoop(value)) {
-        const item = tokens.variable(makeItemName(parent));
-        prg.addLine(
-          `${keywords.for} (${types.JsonObject} ${item} : ${parent}.${asFunction}&lt;${types.JsonArray}&gt;()) {`,
-        );
-        prg.indent();
+  if (isJsonArray(value)) {
+    prg.addEmptyLine();
+    if (canLoop(value)) {
+      const item = tokens.variable(makeItemName(parent));
+      prg.addLine(
+        `${keywords.for} (${types.JsonObject} ${item} : ${parent}.${asFunction}&lt;${types.JsonArray}&gt;()) {`,
+      );
+      prg.indent();
+      extractValue(prg, {
+        value: value[0],
+        parent: item,
+        siblings: value,
+        progmem: cfg.progmem,
+      });
+      prg.unindent();
+      prg.addLine("}");
+    } else {
+      let arrayName = parent;
+      if (value.length > 2 && parent.indexOf("[") >= 0) {
+        arrayName = tokens.variable(makeVariableName(variableName));
+        prg.addLine(`${types.JsonArray} ${arrayName} = ${parent};`);
+      }
+      for (let i = 0; i < value.length; i++) {
+        const elementExpression = `${arrayName}[${literals.number(i)}]`;
         extractValue(prg, {
-          value: value[0],
-          parent: item,
-          siblings: value,
+          value: value[i],
+          parent: elementExpression,
+          name: makeVariableName(elementExpression),
+          siblings: cfg.siblings?.map((x) => (isJsonArray(x) ? x[i] : null)),
           progmem: cfg.progmem,
         });
-        prg.unindent();
-        prg.addLine("}");
-      } else {
-        let arrayName = parent;
-        if (value.length > 2 && parent.indexOf("[") >= 0) {
-          arrayName = tokens.variable(makeVariableName(variableName));
-          prg.addLine(`${types.JsonArray} ${arrayName} = ${parent};`);
-        }
-        for (let i = 0; i < value.length; i++) {
-          const elementExpression = `${arrayName}[${literals.number(i)}]`;
-          extractValue(prg, {
-            value: value[i],
-            parent: elementExpression,
-            name: makeVariableName(elementExpression),
-            siblings: cfg.siblings?.map((x) => (x ? x[i] : null)),
-            progmem: cfg.progmem,
-          });
-        }
       }
-      prg.addEmptyLine();
-      break;
-
-    case "object":
-      prg.addEmptyLine();
-      if (canLoop(value)) {
-        const item = makeItemName(parent);
-        prg.addLine(
-          `${keywords.for} (${types.JsonPair} ${tokens.variable(item)} : ${parent}.${asFunction}&lt;${types.JsonObject}&gt;()) {`,
-        );
-        prg.indent();
+    }
+    prg.addEmptyLine();
+  } else if (isJsonObject(value)) {
+    prg.addEmptyLine();
+    if (canLoop(value)) {
+      const item = makeItemName(parent);
+      prg.addLine(
+        `${keywords.for} (${types.JsonPair} ${tokens.variable(item)} : ${parent}.${asFunction}&lt;${types.JsonObject}&gt;()) {`,
+      );
+      prg.indent();
+      extractValue(prg, {
+        value: Object.keys(value)[0],
+        name: tokens.variable(item + "_key"),
+        parent: tokens.variable(item) + ".key().c_str()",
+        siblings: Object.keys(value),
+        progmem: cfg.progmem,
+      });
+      extractValue(prg, {
+        value: Object.values(value)[0],
+        parent: tokens.variable(item) + ".value()",
+        siblings: Object.values(value),
+        progmem: cfg.progmem,
+      });
+      prg.unindent();
+      prg.addLine("}");
+    } else {
+      let objName = parent;
+      if (variableName && Object.keys(value).length > 2) {
+        objName = tokens.variable(makeVariableName(variableName));
+        prg.addLine(`${types.JsonObject} ${objName} = ${parent};`);
+      }
+      for (const key in value) {
+        const memberExpression = cfg.progmem
+          ? `${objName}[${macros.F}(${literals.string(key)})]`
+          : `${objName}[${literals.string(key)}]`;
         extractValue(prg, {
-          value: Object.keys(value)[0],
-          name: tokens.variable(item + "_key"),
-          parent: tokens.variable(item) + ".key().c_str()",
-          siblings: Object.keys(value),
+          value: value[key],
+          parent: memberExpression,
+          name: makeVariableName(memberExpression),
+          siblings: cfg.siblings?.map((x) => (isJsonObject(x) ? x[key] : null)),
           progmem: cfg.progmem,
         });
-        extractValue(prg, {
-          value: Object.values(value)[0],
-          parent: tokens.variable(item) + ".value()",
-          siblings: Object.values(value),
-          progmem: cfg.progmem,
-        });
-        prg.unindent();
-        prg.addLine("}");
-      } else {
-        let objName = parent;
-        if (variableName && Object.keys(value).length > 2) {
-          objName = tokens.variable(makeVariableName(variableName));
-          prg.addLine(`${types.JsonObject} ${objName} = ${parent};`);
-        }
-        for (const key in value) {
-          const memberExpression = cfg.progmem
-            ? `${objName}[${macros.F}(${literals.string(key)})]`
-            : `${objName}[${literals.string(key)}]`;
-          extractValue(prg, {
-            value: value[key],
-            parent: memberExpression,
-            name: makeVariableName(memberExpression),
-            siblings: cfg.siblings?.map((x) => (x ? x[key] : null)),
-            progmem: cfg.progmem,
-          });
+      }
+    }
+    prg.addEmptyLine();
+  } else {
+    const siblings = cfg.siblings || [value];
+    const type = getCommonCppTypeFor(siblings);
+    if (type) {
+      const statement = `${tokens.type(type)} ${tokens.variable(variableName)} = ${parent};`;
+      let comment: string | null = siblings
+        .map((value) => stringifyValue(type, value))
+        .join(", ");
+      const lineLength = stripHtml(statement).length;
+      if (lineLength + comment.length > 100) {
+        const spaceIndex = comment.lastIndexOf(" ", 100 - lineLength);
+        if (spaceIndex > 0) {
+          comment = comment.slice(0, spaceIndex + 1) + "...";
+        } else {
+          comment = null;
         }
       }
-      prg.addEmptyLine();
-      break;
-
-    default: {
-      const siblings = cfg.siblings || [value];
-      const type = getCommonCppTypeFor(siblings);
-      if (type) {
-        const statement = `${tokens.type(type)} ${tokens.variable(variableName)} = ${parent};`;
-        let comment: string | null = siblings
-          .map((value) => stringifyValue(type, value))
-          .join(", ");
-        const lineLength = stripHtml(statement).length;
-        if (lineLength + comment.length > 100) {
-          const spaceIndex = comment.lastIndexOf(" ", 100 - lineLength);
-          if (spaceIndex > 0) {
-            comment = comment.slice(0, spaceIndex + 1) + "...";
-          } else {
-            comment = null;
-          }
-        }
-        if (comment) prg.addLine(`${statement} ${tokens.comment(comment)}`);
-        else prg.addLine(statement);
-      } else {
-        prg.addLine(tokens.comment(`${parent} is null`));
-      }
-      break;
+      if (comment) prg.addLine(`${statement} ${tokens.comment(comment)}`);
+      else prg.addLine(statement);
+    } else {
+      prg.addLine(tokens.comment(`${parent} is null`));
     }
   }
 }
 
 export interface ParsingProgramConfig {
-  input?: any;
+  input?: JsonValue;
   inputType?: string;
-  filter?: any;
+  filter?: JsonValue;
   nestingLimit?: number;
   serial?: boolean;
   progmem?: boolean;
@@ -161,7 +150,7 @@ export interface ParsingProgramConfig {
 
 export function writeDecompositionCode(
   prg: ProgramWriter,
-  input: any,
+  input: JsonValue,
   cfg: ParsingProgramConfig = {},
 ) {
   switch (typeof input) {
@@ -286,6 +275,8 @@ export function generateParsingProgram(cfg: ParsingProgramConfig) {
   prg.addEmptyLine();
   writeErrorCheckingCode(prg, cfg);
   prg.addEmptyLine();
+
+  if (cfg.input === undefined) throw new Error("input is required");
 
   const filteredInput = cfg.filter
     ? applyFilter(cfg.input, cfg.filter)

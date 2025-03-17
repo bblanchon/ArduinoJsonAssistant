@@ -11,6 +11,7 @@ import {
   getEffectiveSlotSize,
   getMaxStringLength,
 } from "./analyzer";
+import type { JsonValue } from "./json";
 
 const sample_object = {
   sensor: "gps",
@@ -18,7 +19,7 @@ const sample_object = {
   data: [48.75608, 2.302038],
 };
 
-function countSlots(input: any) {
+function countSlots(input: JsonValue) {
   return analyze(input, { arch: "8-bit" }).slotCount;
 }
 
@@ -414,8 +415,8 @@ describe("analyze", function () {
 });
 
 describe("hasJsonInJsonSyndrome()", () => {
-  it("should return false for undefined", () => {
-    expect(hasJsonInJsonSyndrome(undefined)).toBe(false);
+  it("should return false for null", () => {
+    expect(hasJsonInJsonSyndrome(null)).toBe(false);
   });
 
   it("should return false for a random string", () => {

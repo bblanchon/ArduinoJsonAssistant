@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { applyFilter } from "@/assistant/filter";
+import type { JsonValue } from "@/assistant/json";
 
 const defaultInput = {
   sensor: "gps",
@@ -7,7 +8,7 @@ const defaultInput = {
   data: [48.75608, 2.302038],
 };
 
-function tryParse(input: any) {
+function tryParse(input: string) {
   try {
     return JSON.parse(input);
   } catch {
@@ -52,11 +53,11 @@ export const useSettingsStore = defineStore("settings", {
     };
   },
   actions: {
-    setFilterJson(val: any) {
+    setFilterJson(val: string) {
       this.filterJson = val;
       this.filter = tryParse(val);
     },
-    setInputJson(val: any) {
+    setInputJson(val: string) {
       this.inputJson = val;
       this.input = tryParse(val);
     },
@@ -68,7 +69,7 @@ export const useSettingsStore = defineStore("settings", {
     isDeserializing(): boolean {
       return this.mode === "deserialize";
     },
-    filteredInput(): any {
+    filteredInput(): JsonValue {
       if (this.isDeserializing && this.filterEnabled)
         return applyFilter(this.input, this.filter);
       return this.input;

@@ -5,9 +5,10 @@ import {
   generateSerializingProgram,
   writeCompositionCode,
 } from "./serializingProgram";
+import type { JsonValue } from "./json";
 
 describe("writeCompositionCode()", () => {
-  function getCompositionCode(output: any) {
+  function getCompositionCode(output: JsonValue) {
     const prg = new ProgramWriter();
     writeCompositionCode(prg, { value: output, name: "doc" });
     return prg.toString();

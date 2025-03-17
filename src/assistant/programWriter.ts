@@ -1,3 +1,5 @@
+import type { JsonValue } from "./json";
+
 export class ProgramWriter {
   lines: string[];
   depth: number;
@@ -156,7 +158,7 @@ export function makeItemName(expression: string) {
     .replace(/s_item$/, "");
 }
 
-export function stringifyValue(type: string, value: any) {
+export function stringifyValue(type: string, value: JsonValue) {
   const numberTypes = ["int", "long", "long long", "float", "double"];
   if (!value && numberTypes.includes(type)) return "0";
   if (!value && type.endsWith("*")) return "nullptr";

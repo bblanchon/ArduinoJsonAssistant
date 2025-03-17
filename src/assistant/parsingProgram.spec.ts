@@ -8,6 +8,7 @@ import {
   writeErrorCheckingCode,
   type ParsingProgramConfig,
 } from "./parsingProgram";
+import type { JsonValue } from "./json";
 
 describe("writeDeserializationCode()", () => {
   function getDeserializationCode(config: ParsingProgramConfig) {
@@ -117,7 +118,7 @@ describe("generateParsingProgram", function () {
 });
 
 describe("writeDecompositionCode", function () {
-  function getDecompositionCode(input: any, cfg?: ParsingProgramConfig) {
+  function getDecompositionCode(input: JsonValue, cfg?: ParsingProgramConfig) {
     const prg = new ProgramWriter();
     writeDecompositionCode(prg, input, cfg);
     return prg.toString();
