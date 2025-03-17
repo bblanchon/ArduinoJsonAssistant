@@ -141,7 +141,6 @@ class JsonDocument {
   private _ignoreValues: boolean;
   private _deduplicateKeys: boolean;
   private _deduplicateValues: boolean;
-  private _filteringEnabled: boolean;
   private _useLongLong: boolean;
   private _useDouble: boolean;
   private _stringOverhead: number;
@@ -153,7 +152,6 @@ class JsonDocument {
     this._ignoreValues = !!cfg.ignoreValues;
     this._deduplicateKeys = !!cfg.deduplicateKeys;
     this._deduplicateValues = !!cfg.deduplicateValues;
-    this._filteringEnabled = !!cfg.filter;
     this._useLongLong = !!cfg.useLongLong;
     this._useDouble = !!cfg.useDouble;
 
