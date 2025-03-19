@@ -19,14 +19,6 @@ export default [
   ...vueTsEslintConfig(),
 
   {
-    name: 'app/overrides',
-    rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
-    },
-  },
-
-
-  {
     ...pluginVitest.configs.recommended,
     files: ['src/**/*.spec.ts'],
   },

@@ -56,8 +56,9 @@ const error = computed<string | null>(() => {
   try {
     JSON.parse(text.value);
     return null;
-  } catch (e: any) {
-    return e.message;
+  } catch (e: unknown) {
+    if (e instanceof Error) return e.message;
+    return "Invalid JSON document";
   }
 });
 </script>
