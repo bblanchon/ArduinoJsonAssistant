@@ -225,26 +225,28 @@ class JsonDocument {
 }
 
 function fillDocument(doc: JsonDocument, value: JsonValue, filter: JsonFilter) {
-  if (isJsonArray(value) && filter.allowsArray) {
+  if (!filter.allows(value)) return;
+
+  if (isJsonArray(value)) {
     doc.addArray(value.length);
     for (let i = 0; i < value.length; i++)
       fillDocument(doc, value[i], filter.getElementFilter());
   }
 
-  if (isJsonObject(value) && filter.allowsObject) {
+  if (isJsonObject(value)) {
     for (const key in value) {
       const memberFilter = filter.getMemberFilter(key);
-      if (memberFilter.allowsSomething) doc.addObjectMember(key);
+      if (memberFilter.allows(value[key])) doc.addObjectMember(key);
       else doc.addIgnoredKey(key);
       fillDocument(doc, value[key], memberFilter);
     }
   }
 
-  if (isJsonString(value) && filter.allowsValue) {
+  if (isJsonString(value)) {
     doc.addString(value);
   }
 
-  if (isJsonNumber(value) && filter.allowsValue) {
+  if (isJsonNumber(value)) {
     doc.addNumber(value);
   }
 }

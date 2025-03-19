@@ -5,94 +5,68 @@ import {
   type JsonValue,
 } from "./json";
 
-type FilterMode = "array" | "object" | "accept" | "reject";
-
 export class JsonFilter {
   value: JsonValue;
-  mode: FilterMode;
-  allowsArray: boolean;
-  allowsObject: boolean;
-  allowsValue: boolean;
-  allowsSomething: boolean;
 
   constructor(value: JsonValue) {
     this.value = value;
-    this.mode =
-      value instanceof Array
-        ? "array"
-        : value instanceof Object
-          ? "object"
-          : value === true
-            ? "accept"
-            : "reject";
-    this.allowsArray = this.mode == "array" || this.mode == "accept";
-    this.allowsObject = this.mode == "object" || this.mode == "accept";
-    this.allowsValue = this.mode == "accept";
-    this.allowsSomething = this.mode !== "reject";
+  }
+
+  allows(value: JsonValue): boolean {
+    if (this.value === true) return true;
+    if (isJsonArray(this.value) && isJsonArray(value)) return true;
+    if (isJsonObject(this.value) && isJsonObject(value)) return true;
+    return false;
+  }
+
+  private getMember(key: string): JsonValue {
+    if (this.value === true) return true;
+    if (isJsonObject(this.value)) {
+      if (key in this.value) return this.value[key];
+      else return this.value["*"] ?? false;
+    }
+    return false;
   }
 
   getMemberFilter(key: string) {
-    switch (this.mode) {
-      case "accept":
-        return new JsonFilter(true);
-
-      case "object":
-        if (!isJsonObject(this.value)) throw new Error("Object expected");
-        return new JsonFilter(
-          key in this.value ? this.value[key] : this.value["*"],
-        );
-
-      default:
-        return new JsonFilter(false);
-    }
+    return new JsonFilter(this.getMember(key));
   }
 
-  getElementFilter() {
-    switch (this.mode) {
-      case "accept":
-        return new JsonFilter(true);
-      case "array":
-        if (!isJsonArray(this.value)) throw new Error("Array expected");
-        return new JsonFilter(this.value[0]);
-      default:
-        return new JsonFilter(false);
-    }
+  private getElement(): JsonValue {
+    if (this.value === true) return true;
+    if (isJsonArray(this.value)) return this.value[0] ?? false;
+    return false;
   }
 
-  filterDocument(input: JsonValue): JsonValue | undefined {
-    switch (this.mode) {
-      case "reject":
-        return undefined;
-      case "accept":
-        return input;
+  getElementFilter(): JsonFilter {
+    return new JsonFilter(this.getElement());
+  }
 
-      case "array": {
-        if (!Array.isArray(input)) return undefined;
-        const elementFilter = this.getElementFilter();
-        if (elementFilter.mode === "reject") return [];
-        return input.map((el) => elementFilter.filterDocument(el) ?? null);
-      }
+  apply(input: JsonValue): JsonValue | undefined {
+    if (this.value === true) return input;
 
-      case "object": {
-        const output: JsonObject = {};
-        if (!isJsonObject(input)) return undefined;
-        for (const k in input) {
-          if (k in input) {
-            const memberFilter = this.getMemberFilter(k);
-            const memberValue = memberFilter.filterDocument(input[k]);
-            if (memberValue !== undefined) output[k] = memberValue;
-          }
+    if (isJsonArray(this.value) && isJsonArray(input)) {
+      const elementFilter = this.getElementFilter();
+      if (!elementFilter.value) return [];
+      return input.map((el) => elementFilter.apply(el) ?? null);
+    }
+
+    if (isJsonObject(this.value) && isJsonObject(input)) {
+      const output: JsonObject = {};
+      for (const k in input) {
+        if (k in input) {
+          const memberFilter = this.getMemberFilter(k);
+          const memberValue = memberFilter.apply(input[k]);
+          if (memberValue !== undefined) output[k] = memberValue;
         }
-        return output;
       }
+      return output;
     }
-  }
-}
 
-export function makeJsonFilter(filter: JsonValue) {
-  return new JsonFilter(filter);
+    return undefined;
+  }
 }
 
 export function applyFilter(input: JsonValue, filter: JsonValue): JsonValue {
-  return new JsonFilter(filter).filterDocument(input) ?? null;
+  return new JsonFilter(filter).apply(input) ?? null;
 }
