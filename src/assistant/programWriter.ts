@@ -1,30 +1,27 @@
 import type { JsonValue } from "./json";
 
 export class ProgramWriter {
-  lines: string[];
-  depth: number;
+  private lines: string[] = [];
+  private indentation: string = "";
 
-  constructor() {
-    this.lines = [];
-    this.depth = 1;
-  }
-
-  addLine(...args: string[]) {
-    const line = args.join("");
-    this.lines.push(Array(this.depth).join("  ") + line);
-  }
-
-  addEmptyLine() {
-    if (this.lines.length > 0 && this.lines[this.lines.length - 1] != "")
+  addLine(line: string = "") {
+    if (line) {
+      this.lines.push(this.indentation + line);
+    } else if (
+      this.lines.length > 0 &&
+      this.lines[this.lines.length - 1] != ""
+    ) {
+      // Add an empty line if the last line is not empty
       this.lines.push("");
+    }
   }
 
   indent() {
-    this.depth++;
+    this.indentation += "  ";
   }
 
   unindent() {
-    this.depth--;
+    this.indentation = this.indentation.slice(0, -2);
   }
 
   toString() {

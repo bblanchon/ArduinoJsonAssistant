@@ -38,7 +38,7 @@ function extractValue(prg: ProgramWriter, cfg: ValueDetails) {
       : functions.JsonVariant.as;
 
   if (isJsonArray(value)) {
-    prg.addEmptyLine();
+    prg.addLine();
     if (canLoop(value)) {
       const item = tokens.variable(makeItemName(parent));
       prg.addLine(
@@ -70,9 +70,9 @@ function extractValue(prg: ProgramWriter, cfg: ValueDetails) {
         });
       }
     }
-    prg.addEmptyLine();
+    prg.addLine();
   } else if (isJsonObject(value)) {
-    prg.addEmptyLine();
+    prg.addLine();
     if (canLoop(value)) {
       const item = makeItemName(parent);
       prg.addLine(
@@ -113,7 +113,7 @@ function extractValue(prg: ProgramWriter, cfg: ValueDetails) {
         });
       }
     }
-    prg.addEmptyLine();
+    prg.addLine();
   } else {
     const siblings = cfg.siblings || [value];
     const type = getCommonCppTypeFor(siblings);
@@ -200,13 +200,13 @@ export function writeDeserializationCode(
       prg.addLine(tokens.comment("std::string input;"));
       break;
   }
-  prg.addEmptyLine();
+  prg.addLine();
 
   const filter = cfg.filter;
   if (filter) {
     prg.addLine(`${types.JsonDocument} ${tokens.variable("filter")};`);
     writeCompositionCode(prg, { value: filter, name: "filter" });
-    prg.addEmptyLine();
+    prg.addLine();
   }
 
   prg.addLine(`${types.JsonDocument} ${tokens.variable("doc")};`);
@@ -232,7 +232,7 @@ export function writeDeserializationCode(
       `${functions.DeserializationOption.NestingLimit}(${literals.number(cfg.nestingLimit)})`,
     );
 
-  prg.addEmptyLine();
+  prg.addLine();
   prg.addLine(
     `${types.DeserializationError} ${tokens.variable("error")} = ${functions.deserializeJson}(${args.join(", ")});`,
   );
@@ -272,9 +272,9 @@ export function generateParsingProgram(cfg: ParsingProgramConfig) {
   const prg = new ProgramWriter();
 
   writeDeserializationCode(prg, cfg);
-  prg.addEmptyLine();
+  prg.addLine();
   writeErrorCheckingCode(prg, cfg);
-  prg.addEmptyLine();
+  prg.addLine();
 
   if (cfg.input === undefined) throw new Error("input is required");
 

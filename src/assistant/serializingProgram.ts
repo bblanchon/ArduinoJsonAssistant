@@ -51,7 +51,7 @@ function addArray(
       value: value[0],
     });
   } else {
-    prg.addEmptyLine();
+    prg.addLine();
     if (typeof key === "string")
       prg.addLine(
         `${types.JsonArray} ${tokens.variable(name)} = ${parent}[${stringifyValue(
@@ -96,7 +96,7 @@ function addObject(
     if (key === undefined) throw new Error("key is required if parent is set");
     objectName = `${parent}[${stringifyValue(key)}]`;
   } else {
-    prg.addEmptyLine();
+    prg.addLine();
     if (typeof key === "string")
       prg.addLine(
         `${types.JsonObject} ${tokens.variable(name)} = ${parent}[${stringifyValue(
@@ -223,16 +223,16 @@ export function generateSerializingProgram(cfg: SerializingProgramConfig) {
       prg.addLine(tokens.comment("std::ostream& output;"));
       break;
   }
-  prg.addEmptyLine();
+  prg.addLine();
 
   prg.addLine(`${types.JsonDocument} ${tokens.variable("doc")};`);
 
-  prg.addEmptyLine();
+  prg.addLine();
   writeCompositionCode(prg, {
     value: cfg.output ?? null,
     name: "doc",
   });
-  prg.addEmptyLine();
+  prg.addLine();
 
   const args = [tokens.variable("doc")];
   switch (cfg.outputType) {
@@ -258,11 +258,11 @@ export function generateSerializingProgram(cfg: SerializingProgramConfig) {
   }
 
   if (cfg.output) {
-    prg.addEmptyLine();
+    prg.addLine();
     prg.addLine(
       `${tokens.variable("doc")}.${functions.JsonDocument.shrinkToFit}();  ${tokens.comment("optional")}`,
     );
-    prg.addEmptyLine();
+    prg.addLine();
   }
 
   prg.addLine(`${functions.serializeJson}(${args.join(", ")});`);
