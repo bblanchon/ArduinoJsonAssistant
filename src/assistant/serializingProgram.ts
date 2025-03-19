@@ -1,6 +1,8 @@
 import {
+  isJsonArray,
   isJsonBoolean,
   isJsonNumber,
+  isJsonObject,
   isJsonString,
   type JsonArray,
   type JsonObject,
@@ -17,37 +19,8 @@ function stringifyValue(value: JsonValue): string {
   return value.toString();
 }
 
-interface ArrayDetails {
+interface VariableContext {
   name: string;
-  value: JsonArray;
-  parent?: string;
-  key?: string | number;
-}
-
-interface ObjectDetails {
-  name: string;
-  value: JsonObject;
-  parent?: string;
-  key?: string | number;
-}
-
-interface ArrayElementDetails {
-  array: string;
-  name: string;
-  value: JsonValue;
-  key?: string | number;
-}
-
-interface ObjectMemberDetails {
-  object: string;
-  key: string;
-  value: JsonValue;
-  name: string;
-}
-
-interface VariantDetails {
-  name: string;
-  value: JsonValue;
   parent?: string;
   key?: string | number;
 }
@@ -63,7 +36,7 @@ class CompositionCodeBuilder {
     this.prg.addLine(line);
   }
 
-  addArray({ name, value, parent, key }: ArrayDetails) {
+  addArray(value: JsonArray, { name, parent, key }: VariableContext) {
     const childrenCount = value.length;
 
     if (parent === undefined) {
@@ -72,20 +45,18 @@ class CompositionCodeBuilder {
           `${tokens.variable(name)}.${name == "doc" ? functions.JsonDocument.to : functions.JsonVariant.to}&lt;${types.JsonArray}&gt;();`,
         );
       if (childrenCount == 1)
-        return this.addVariant({
+        return this.addVariant(value[0], {
           parent: tokens.variable(name),
           name: name + "_0",
           key: 0,
-          value: value[0],
         });
     } else if (childrenCount == 1) {
       if (key === undefined)
         throw new Error("key is required if parent is set");
-      return this.addVariant({
+      return this.addVariant(value[0], {
         parent: `${parent}[${stringifyValue(key)}]`,
         name: name + "_0",
         key: 0,
-        value: value[0],
       });
     } else {
       this.addLine();
@@ -101,16 +72,15 @@ class CompositionCodeBuilder {
         );
     }
     value.forEach((elem, index) => {
-      this.addArrayElement({
+      this.addArrayElement(elem, {
         key: index,
-        array: tokens.variable(name),
+        parent: tokens.variable(name),
         name: name + "_" + index,
-        value: elem,
       });
     });
   }
 
-  addObject({ parent, key, name, value }: ObjectDetails) {
+  addObject(value: JsonObject, { parent, key, name }: VariableContext) {
     const childrenCount = Object.keys(value).length;
     let objectName = tokens.variable(name);
 
@@ -138,45 +108,43 @@ class CompositionCodeBuilder {
     }
 
     for (const key in value) {
-      this.addObjectMember({
-        object: objectName,
+      this.addObjectMember(value[key], {
+        parent: objectName,
         name: makeVariableName(`${name}[${key}]`),
         key: key,
-        value: value[key],
       });
     }
   }
 
-  addArrayElement({ array, name, value, key }: ArrayElementDetails) {
-    if (value instanceof Array) {
-      this.addArray({ parent: array, name, value });
-    } else if (value instanceof Object) {
-      this.addObject({ parent: array, key, name, value });
-    } else {
-      this.addLine(
-        `${array}.${functions.JsonArray.add}(${stringifyValue(value)});`,
-      );
-    }
+  addArrayElement(value: JsonValue, ctx: VariableContext): void {
+    const { parent } = ctx;
+    if (parent === undefined) throw new Error("parent is required");
+
+    if (isJsonArray(value)) return this.addArray(value, ctx);
+    if (isJsonObject(value)) return this.addObject(value, ctx);
+    this.addLine(
+      `${parent}.${functions.JsonArray.add}(${stringifyValue(value)});`,
+    );
   }
 
-  addObjectMember({ key, object, value, name }: ObjectMemberDetails) {
-    if (value instanceof Array)
-      this.addArray({ parent: object, key, name, value });
-    else if (value instanceof Object)
-      this.addObject({ parent: object, key, name, value });
-    else {
-      this.addLine(
-        `${object}[${literals.string(key)}] = ${stringifyValue(value)};`,
-      );
-    }
+  addObjectMember(value: JsonValue, ctx: VariableContext) {
+    if (isJsonArray(value)) return this.addArray(value, ctx);
+    if (isJsonObject(value)) return this.addObject(value, ctx);
+
+    const { parent, key } = ctx;
+    if (typeof key !== "string") throw new Error("key must be a string");
+
+    this.addLine(
+      `${parent}[${literals.string(key)}] = ${stringifyValue(value)};`,
+    );
   }
 
-  addVariant({ value, name, parent, key }: VariantDetails) {
-    if (value instanceof Array) {
-      this.addArray({ value, name, parent, key });
-    } else if (value instanceof Object) {
-      this.addObject({ value, name, parent, key });
-    } else if (parent) {
+  addVariant(value: JsonValue, ctx: VariableContext): void {
+    if (isJsonArray(value)) return this.addArray(value, ctx);
+    if (isJsonObject(value)) return this.addObject(value, ctx);
+
+    const { parent, key, name } = ctx;
+    if (parent) {
       if (key === undefined)
         throw new Error("key is required if parent is set");
       this.addLine(
@@ -194,7 +162,7 @@ export function writeCompositionCode(
   prg: ProgramWriter,
   { value, name }: { value: JsonValue; name: string },
 ) {
-  new CompositionCodeBuilder(prg).addVariant({ name, value });
+  new CompositionCodeBuilder(prg).addVariant(value, { name });
 }
 
 interface SerializingProgramConfig {

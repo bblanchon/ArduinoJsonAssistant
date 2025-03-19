@@ -1,0 +1,14 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "type-check",
+			"problemMatcher": [
+				"$tsc"
+			],
+			"label": "npm: type-check",
+			"detail": "vue-tsc --build --force"
+		}
+	]
+}
