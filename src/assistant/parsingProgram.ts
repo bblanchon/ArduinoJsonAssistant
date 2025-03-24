@@ -1,4 +1,4 @@
-import { canLoop, getCommonCppTypeFor, getCppTypeFor } from "./analyzer";
+import { canLoop, getCommonCppTypeFor } from "./analyzer";
 import {
   ProgramWriter,
   makeItemName,
@@ -17,125 +17,169 @@ import {
 } from "./tokens";
 import { writeCompositionCode } from "./serializingProgram";
 import { applyFilter } from "./filter";
-import { isJsonArray, isJsonObject, type JsonValue } from "./json";
+import {
+  isJsonArray,
+  isJsonObject,
+  type JsonArray,
+  type JsonObject,
+  type JsonValue,
+} from "./json";
 
-interface ValueDetails {
-  value: JsonValue;
-  parent: string;
+interface VariableContext {
+  parent?: string;
   name?: string;
   siblings?: JsonValue[];
+}
+
+interface DecompositionCodeConfig {
   progmem?: boolean;
 }
 
-function extractValue(prg: ProgramWriter, cfg: ValueDetails) {
-  const value = cfg.value;
-  const parent = cfg.parent;
-  const variableName = cfg.name ?? "";
+class DecompositionCodeBuilder {
+  private prg: ProgramWriter;
+  private cfg: DecompositionCodeConfig;
 
-  const asFunction =
-    stripHtml(parent) == "doc"
-      ? functions.JsonDocument.as
-      : functions.JsonVariant.as;
+  constructor(prg: ProgramWriter, cfg: DecompositionCodeConfig) {
+    this.prg = prg;
+    this.cfg = cfg;
+  }
 
-  if (isJsonArray(value)) {
-    prg.addLine();
+  private addLine(line: string = "") {
+    this.prg.addLine(line);
+  }
+
+  private indent() {
+    this.prg.indent();
+  }
+
+  private unindent() {
+    this.prg.unindent();
+  }
+
+  extractValue(value: JsonValue, ctx: VariableContext = {}) {
+    if (isJsonArray(value)) {
+      this.extractArray(value, ctx);
+    } else if (isJsonObject(value)) {
+      this.extractObject(value, ctx);
+    } else {
+      this.extractSimpleValue(value, ctx);
+    }
+  }
+
+  private extractArray(value: JsonArray, ctx: VariableContext) {
+    const parent = ctx.parent ?? tokens.variable("doc");
+    const variableName = ctx.name ?? "";
+
+    const asFunction = ctx.parent
+      ? functions.JsonVariant.as
+      : functions.JsonDocument.as;
+
+    this.addLine();
     if (canLoop(value)) {
       const item = tokens.variable(makeItemName(parent));
-      prg.addLine(
+      this.addLine(
         `${keywords.for} (${types.JsonObject} ${item} : ${parent}.${asFunction}&lt;${types.JsonArray}&gt;()) {`,
       );
-      prg.indent();
-      extractValue(prg, {
-        value: value[0],
+      this.indent();
+      this.extractValue(value[0], {
         parent: item,
         siblings: value,
-        progmem: cfg.progmem,
       });
-      prg.unindent();
-      prg.addLine("}");
+      this.unindent();
+      this.addLine("}");
     } else {
       let arrayName = parent;
       if (value.length > 2 && parent.indexOf("[") >= 0) {
         arrayName = tokens.variable(makeVariableName(variableName));
-        prg.addLine(`${types.JsonArray} ${arrayName} = ${parent};`);
+        this.addLine(`${types.JsonArray} ${arrayName} = ${parent};`);
       }
       for (let i = 0; i < value.length; i++) {
         const elementExpression = `${arrayName}[${literals.number(i)}]`;
-        extractValue(prg, {
-          value: value[i],
+        this.extractValue(value[i], {
           parent: elementExpression,
           name: makeVariableName(elementExpression),
-          siblings: cfg.siblings?.map((x) => (isJsonArray(x) ? x[i] : null)),
-          progmem: cfg.progmem,
+          siblings: ctx.siblings?.map((x) => (isJsonArray(x) ? x[i] : null)),
         });
       }
     }
-    prg.addLine();
-  } else if (isJsonObject(value)) {
-    prg.addLine();
+    this.addLine();
+  }
+
+  private extractObject(value: JsonObject, ctx: VariableContext) {
+    const parent = ctx.parent ?? tokens.variable("doc");
+
+    const asFunction = ctx.parent
+      ? functions.JsonVariant.as
+      : functions.JsonDocument.as;
+
+    this.addLine();
     if (canLoop(value)) {
       const item = makeItemName(parent);
-      prg.addLine(
+      this.addLine(
         `${keywords.for} (${types.JsonPair} ${tokens.variable(item)} : ${parent}.${asFunction}&lt;${types.JsonObject}&gt;()) {`,
       );
-      prg.indent();
-      extractValue(prg, {
-        value: Object.keys(value)[0],
+      this.indent();
+      this.extractValue(Object.keys(value)[0], {
         name: tokens.variable(item + "_key"),
         parent: tokens.variable(item) + ".key().c_str()",
         siblings: Object.keys(value),
-        progmem: cfg.progmem,
       });
-      extractValue(prg, {
-        value: Object.values(value)[0],
+      this.extractValue(Object.values(value)[0], {
         parent: tokens.variable(item) + ".value()",
         siblings: Object.values(value),
-        progmem: cfg.progmem,
       });
-      prg.unindent();
-      prg.addLine("}");
+      this.unindent();
+      this.addLine("}");
     } else {
       let objName = parent;
-      if (variableName && Object.keys(value).length > 2) {
-        objName = tokens.variable(makeVariableName(variableName));
-        prg.addLine(`${types.JsonObject} ${objName} = ${parent};`);
+      if (ctx.name && Object.keys(value).length > 2) {
+        objName = tokens.variable(makeVariableName(ctx.name));
+        this.addLine(`${types.JsonObject} ${objName} = ${parent};`);
       }
       for (const key in value) {
-        const memberExpression = cfg.progmem
+        const memberExpression = this.cfg.progmem
           ? `${objName}[${macros.F}(${literals.string(key)})]`
           : `${objName}[${literals.string(key)}]`;
-        extractValue(prg, {
-          value: value[key],
+        this.extractValue(value[key], {
           parent: memberExpression,
           name: makeVariableName(memberExpression),
-          siblings: cfg.siblings?.map((x) => (isJsonObject(x) ? x[key] : null)),
-          progmem: cfg.progmem,
+          siblings: ctx.siblings?.map((x) => (isJsonObject(x) ? x[key] : null)),
         });
       }
     }
-    prg.addLine();
-  } else {
-    const siblings = cfg.siblings || [value];
+    this.addLine();
+  }
+
+  private extractSimpleValue(
+    value: string | number | boolean | null,
+    ctx: VariableContext,
+  ) {
+    const variableName = ctx.name ?? "root";
+    const siblings = ctx.siblings || [value];
     const type = getCommonCppTypeFor(siblings);
-    if (type) {
-      const statement = `${tokens.type(type)} ${tokens.variable(variableName)} = ${parent};`;
-      let comment: string | null = siblings
-        .map((value) => stringifyValue(type, value))
-        .join(", ");
-      const lineLength = stripHtml(statement).length;
-      if (lineLength + comment.length > 100) {
-        const spaceIndex = comment.lastIndexOf(" ", 100 - lineLength);
-        if (spaceIndex > 0) {
-          comment = comment.slice(0, spaceIndex + 1) + "...";
-        } else {
-          comment = null;
-        }
+
+    if (!type)
+      return this.addLine(tokens.comment(`${ctx.parent ?? "doc"} is null`));
+
+    const valueExpr =
+      ctx.parent ??
+      `${tokens.variable("doc")}.${functions.JsonDocument.as}&lt;${tokens.type(type)}&gt;()`;
+
+    const statement = `${tokens.type(type)} ${tokens.variable(variableName)} = ${valueExpr};`;
+    let comment: string | null = siblings
+      .map((value) => stringifyValue(type, value))
+      .join(", ");
+    const lineLength = stripHtml(statement).length;
+    if (lineLength + comment.length > 100) {
+      const spaceIndex = comment.lastIndexOf(" ", 100 - lineLength);
+      if (spaceIndex > 0) {
+        comment = comment.slice(0, spaceIndex + 1) + "...";
+      } else {
+        comment = null;
       }
-      if (comment) prg.addLine(`${statement} ${tokens.comment(comment)}`);
-      else prg.addLine(statement);
-    } else {
-      prg.addLine(tokens.comment(`${parent} is null`));
     }
+    if (comment) this.addLine(`${statement} ${tokens.comment(comment)}`);
+    else this.addLine(statement);
   }
 }
 
@@ -153,21 +197,7 @@ export function writeDecompositionCode(
   input: JsonValue,
   cfg: ParsingProgramConfig = {},
 ) {
-  switch (typeof input) {
-    case "object":
-      return extractValue(prg, {
-        ...cfg,
-        value: input,
-        parent: tokens.variable("doc"),
-      });
-    default: {
-      const t = getCppTypeFor(input) ?? "auto";
-      prg.addLine(
-        `${tokens.type(t)} ${tokens.variable("root")} = ${tokens.variable("doc")}.${functions.JsonDocument.as}&lt;${tokens.type(t)}&gt;(); ${tokens.comment(JSON.stringify(input))}`,
-      );
-      break;
-    }
-  }
+  return new DecompositionCodeBuilder(prg, cfg).extractValue(input);
 }
 
 export function writeDeserializationCode(
