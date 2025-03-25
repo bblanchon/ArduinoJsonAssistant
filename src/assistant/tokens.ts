@@ -34,7 +34,10 @@ export const keywords = {
 export const literals = {
   bool: (value: boolean) =>
     `<span class="hl-literal">${value ? "true" : "false"}</span>`,
-  string: (value: string) => `<span class="hl-string">"${value}"</span>`,
+  string(value: string, progmem?: boolean): string {
+    if (progmem) return `${macros.F}(${literals.string(value)})`;
+    return `<span class="hl-string">"${value}"</span>`;
+  },
   number: (value: number) => `<span class="hl-number">${value}</span>`,
 };
 

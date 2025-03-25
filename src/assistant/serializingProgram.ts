@@ -11,29 +11,35 @@ import {
 import { ProgramWriter, makeVariableName, stripHtml } from "./programWriter";
 import { literals, keywords, types, functions, tokens } from "./tokens";
 
-function stringifyValue(value: JsonValue): string {
-  if (isJsonString(value)) return literals.string(value);
-  if (isJsonNumber(value)) return literals.number(value);
-  if (isJsonBoolean(value)) return literals.bool(value);
-  if (value === null) return keywords.nullptr;
-  return value.toString();
-}
-
 interface VariableContext {
   name: string;
   parent?: string;
   key?: string | number;
 }
 
+interface CompositionCodeConfig {
+  progmem?: boolean;
+}
+
 class CompositionCodeBuilder {
   private prg: ProgramWriter;
+  private cfg: CompositionCodeConfig;
 
-  constructor(prg: ProgramWriter) {
+  constructor(prg: ProgramWriter, cfg: CompositionCodeConfig = {}) {
     this.prg = prg;
+    this.cfg = cfg;
   }
 
   private addLine(line: string = "") {
     this.prg.addLine(line);
+  }
+
+  stringify(value: JsonValue): string {
+    if (isJsonString(value)) return literals.string(value, this.cfg.progmem);
+    if (isJsonNumber(value)) return literals.number(value);
+    if (isJsonBoolean(value)) return literals.bool(value);
+    if (value === null) return keywords.nullptr;
+    return value.toString();
   }
 
   addArray(value: JsonArray, { name, parent, key }: VariableContext) {
@@ -54,7 +60,7 @@ class CompositionCodeBuilder {
       if (key === undefined)
         throw new Error("key is required if parent is set");
       return this.addVariant(value[0], {
-        parent: `${parent}[${stringifyValue(key)}]`,
+        parent: `${parent}[${this.stringify(key)}]`,
         name: name + "_0",
         key: 0,
       });
@@ -62,7 +68,7 @@ class CompositionCodeBuilder {
       this.addLine();
       if (typeof key === "string")
         this.addLine(
-          `${types.JsonArray} ${tokens.variable(name)} = ${parent}[${stringifyValue(
+          `${types.JsonArray} ${tokens.variable(name)} = ${parent}[${this.stringify(
             key,
           )}].${stripHtml(parent) == "doc" ? functions.JsonDocument.to : functions.JsonVariant.to}&lt;${types.JsonArray}&gt;();`,
         );
@@ -92,12 +98,12 @@ class CompositionCodeBuilder {
     } else if (childrenCount == 1) {
       if (key === undefined)
         throw new Error("key is required if parent is set");
-      objectName = `${parent}[${stringifyValue(key)}]`;
+      objectName = `${parent}[${this.stringify(key)}]`;
     } else {
       this.addLine();
       if (typeof key === "string")
         this.addLine(
-          `${types.JsonObject} ${tokens.variable(name)} = ${parent}[${stringifyValue(
+          `${types.JsonObject} ${tokens.variable(name)} = ${parent}[${this.stringify(
             key,
           )}].${stripHtml(parent) == "doc" ? functions.JsonDocument.to : functions.JsonVariant.to}&lt;${types.JsonObject}&gt;();`,
         );
@@ -123,7 +129,7 @@ class CompositionCodeBuilder {
     if (isJsonArray(value)) return this.addArray(value, ctx);
     if (isJsonObject(value)) return this.addObject(value, ctx);
     this.addLine(
-      `${parent}.${functions.JsonArray.add}(${stringifyValue(value)});`,
+      `${parent}.${functions.JsonArray.add}(${this.stringify(value)});`,
     );
   }
 
@@ -135,7 +141,7 @@ class CompositionCodeBuilder {
     if (typeof key !== "string") throw new Error("key must be a string");
 
     this.addLine(
-      `${parent}[${literals.string(key)}] = ${stringifyValue(value)};`,
+      `${parent}[${literals.string(key, this.cfg.progmem)}] = ${this.stringify(value)};`,
     );
   }
 
@@ -148,11 +154,11 @@ class CompositionCodeBuilder {
       if (key === undefined)
         throw new Error("key is required if parent is set");
       this.addLine(
-        `${parent}[${stringifyValue(key)}] = ${stringifyValue(value)};`,
+        `${parent}[${this.stringify(key)}] = ${this.stringify(value)};`,
       );
     } else if (value != null) {
       this.addLine(
-        `${tokens.variable(name)}.${name == "doc" ? functions.JsonDocument.set : functions.JsonVariant.set}(${stringifyValue(value)});`,
+        `${tokens.variable(name)}.${name == "doc" ? functions.JsonDocument.set : functions.JsonVariant.set}(${this.stringify(value)});`,
       );
     }
   }
@@ -161,8 +167,9 @@ class CompositionCodeBuilder {
 export function writeCompositionCode(
   prg: ProgramWriter,
   { value, name }: { value: JsonValue; name: string },
+  cfg: CompositionCodeConfig = {},
 ) {
-  new CompositionCodeBuilder(prg).addVariant(value, { name });
+  new CompositionCodeBuilder(prg, cfg).addVariant(value, { name });
 }
 
 interface SerializingProgramConfig {
@@ -174,6 +181,7 @@ interface SerializingProgramConfig {
     | "stdString"
     | "arduinoStream"
     | "stdStream";
+  progmem?: boolean;
 }
 
 export function generateSerializingProgram(cfg: SerializingProgramConfig) {
@@ -196,10 +204,14 @@ export function generateSerializingProgram(cfg: SerializingProgramConfig) {
   prg.addLine(`${types.JsonDocument} ${tokens.variable("doc")};`);
 
   prg.addLine();
-  writeCompositionCode(prg, {
-    value: cfg.output ?? null,
-    name: "doc",
-  });
+  writeCompositionCode(
+    prg,
+    {
+      value: cfg.output ?? null,
+      name: "doc",
+    },
+    cfg,
+  );
   prg.addLine();
 
   const args = [tokens.variable("doc")];

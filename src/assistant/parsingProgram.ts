@@ -12,7 +12,6 @@ import {
   literals,
   tokens,
   functions,
-  macros,
   globals,
 } from "./tokens";
 import { writeCompositionCode } from "./serializingProgram";
@@ -137,9 +136,7 @@ class DecompositionCodeBuilder {
         this.addLine(`${types.JsonObject} ${objName} = ${parent};`);
       }
       for (const key in value) {
-        const memberExpression = this.cfg.progmem
-          ? `${objName}[${macros.F}(${literals.string(key)})]`
-          : `${objName}[${literals.string(key)}]`;
+        const memberExpression = `${objName}[${literals.string(key, this.cfg.progmem)}]`;
         this.extractValue(value[key], {
           parent: memberExpression,
           name: makeVariableName(memberExpression),
@@ -235,7 +232,7 @@ export function writeDeserializationCode(
   const filter = cfg.filter;
   if (filter) {
     prg.addLine(`${types.JsonDocument} ${tokens.variable("filter")};`);
-    writeCompositionCode(prg, { value: filter, name: "filter" });
+    writeCompositionCode(prg, { value: filter, name: "filter" }, cfg);
     prg.addLine();
   }
 
@@ -274,20 +271,18 @@ export function writeErrorCheckingCode(
 ) {
   prg.addLine(`${keywords.if} (${tokens.variable("error")}) {`);
   prg.indent();
-  if (cfg.serial && cfg.progmem) {
+  if (cfg.serial) {
     prg.addLine(
-      `${functions.Serial.print}(${macros.F}(${literals.string("deserializeJson() failed: ")}));`,
+      `${functions.Serial.print}(${literals.string("deserializeJson() failed: ", cfg.progmem)});`,
     );
-    prg.addLine(
-      `${functions.Serial.println}(${tokens.variable("error")}.f_str());`,
-    );
-  } else if (cfg.serial) {
-    prg.addLine(
-      `${functions.Serial.print}(${literals.string("deserializeJson() failed: ")});`,
-    );
-    prg.addLine(
-      `${functions.Serial.println}(${tokens.variable("error")}.c_str());`,
-    );
+    if (cfg.progmem)
+      prg.addLine(
+        `${functions.Serial.println}(${tokens.variable("error")}.f_str());`,
+      );
+    else
+      prg.addLine(
+        `${functions.Serial.println}(${tokens.variable("error")}.c_str());`,
+      );
   } else {
     prg.addLine(
       `${globals.std.cerr} &lt;&lt; ${literals.string("deserializeJson() failed: ")} &lt;&lt; ${tokens.variable("error")}.c_str() &lt;&lt; ${globals.std.endl};`,

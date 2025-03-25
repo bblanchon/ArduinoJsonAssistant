@@ -39,6 +39,7 @@ export const useProgramStore = defineStore("program", () => {
         code = generateSerializingProgram({
           output: cfg.input,
           outputType: cfg.ioType,
+          progmem: progmem.value,
         });
         break;
     }
