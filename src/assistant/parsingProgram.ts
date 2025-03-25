@@ -6,7 +6,7 @@ import {
   stringifyValue,
   stripHtml,
 } from "./programWriter";
-import { keywords, type, literals, tokens, functions, globals } from "./tokens";
+import { keywords, literals, tokens, functions, globals } from "./tokens";
 import { writeCompositionCode } from "./serializingProgram";
 import { applyFilter } from "./filter";
 import {
@@ -24,6 +24,7 @@ interface VariableContext {
 }
 
 interface DecompositionCodeConfig {
+  auto?: boolean;
   progmem?: boolean;
 }
 
@@ -58,6 +59,20 @@ class DecompositionCodeBuilder {
     }
   }
 
+  private declaration(
+    type: string,
+    name: string,
+    expr: string,
+    ctx: VariableContext,
+  ) {
+    const dotAsType = !ctx.parent
+      ? `.${functions.JsonDocument.as}&lt;${tokens.type(type)}&gt;()`
+      : this.cfg.auto
+        ? `.${functions.JsonVariant.as}&lt;${tokens.type(type)}&gt;()`
+        : "";
+    return `${tokens.type(type, this.cfg.auto)} ${tokens.variable(name)} = ${expr}${dotAsType};`;
+  }
+
   private extractArray(value: JsonArray, ctx: VariableContext) {
     const parent = ctx.parent ?? tokens.variable("doc");
     const variableName = ctx.name ?? "";
@@ -70,7 +85,7 @@ class DecompositionCodeBuilder {
     if (canLoop(value)) {
       const item = tokens.variable(makeItemName(parent));
       this.addLine(
-        `${keywords.for} (${type("JsonObject")} ${item} : ${parent}.${asFunction}&lt;${type("JsonArray")}&gt;()) {`,
+        `${keywords.for} (${tokens.type("JsonObject")} ${item} : ${parent}.${asFunction}&lt;${tokens.type("JsonArray")}&gt;()) {`,
       );
       this.indent();
       this.extractValue(value[0], {
@@ -82,8 +97,9 @@ class DecompositionCodeBuilder {
     } else {
       let arrayName = parent;
       if (value.length > 2 && parent.indexOf("[") >= 0) {
-        arrayName = tokens.variable(makeVariableName(variableName));
-        this.addLine(`${type("JsonArray")} ${arrayName} = ${parent};`);
+        const varName = makeVariableName(variableName);
+        this.addLine(this.declaration("JsonArray", arrayName, parent, ctx));
+        arrayName = varName;
       }
       for (let i = 0; i < value.length; i++) {
         const elementExpression = `${arrayName}[${literals.number(i)}]`;
@@ -108,7 +124,7 @@ class DecompositionCodeBuilder {
     if (canLoop(value)) {
       const item = makeItemName(parent);
       this.addLine(
-        `${keywords.for} (${type("JsonPair")} ${tokens.variable(item)} : ${parent}.${asFunction}&lt;${type("JsonObject")}&gt;()) {`,
+        `${keywords.for} (${tokens.type("JsonPair")} ${tokens.variable(item)} : ${parent}.${asFunction}&lt;${tokens.type("JsonObject")}&gt;()) {`,
       );
       this.indent();
       this.extractValue(Object.keys(value)[0], {
@@ -125,8 +141,9 @@ class DecompositionCodeBuilder {
     } else {
       let objName = parent;
       if (ctx.name && Object.keys(value).length > 2) {
-        objName = tokens.variable(makeVariableName(ctx.name));
-        this.addLine(`${type("JsonObject")} ${objName} = ${parent};`);
+        const varName = makeVariableName(ctx.name);
+        this.addLine(this.declaration("JsonObject", varName, parent, ctx));
+        objName = tokens.variable(varName);
       }
       for (const key in value) {
         const memberExpression = `${objName}[${literals.string(key, this.cfg.progmem)}]`;
@@ -146,18 +163,19 @@ class DecompositionCodeBuilder {
   ) {
     const variableName = ctx.name ?? "root";
     const siblings = ctx.siblings || [value];
-    const type = getCommonCppTypeFor(siblings);
+    const variableType = getCommonCppTypeFor(siblings);
 
-    if (!type)
+    if (!variableType)
       return this.addLine(tokens.comment(`${ctx.parent ?? "doc"} is null`));
 
-    const valueExpr =
-      ctx.parent ??
-      `${tokens.variable("doc")}.${functions.JsonDocument.as}&lt;${tokens.type(type)}&gt;()`;
-
-    const statement = `${tokens.type(type)} ${tokens.variable(variableName)} = ${valueExpr};`;
+    const statement = this.declaration(
+      variableType,
+      variableName,
+      ctx.parent ?? tokens.variable("doc"),
+      ctx,
+    );
     let comment: string | null = siblings
-      .map((value) => stringifyValue(type, value))
+      .map((value) => stringifyValue(variableType, value))
       .join(", ");
     const lineLength = stripHtml(statement).length;
     if (lineLength + comment.length > 100) {
@@ -173,13 +191,12 @@ class DecompositionCodeBuilder {
   }
 }
 
-export interface ParsingProgramConfig {
+export interface ParsingProgramConfig extends DecompositionCodeConfig {
   input?: JsonValue;
   inputType?: string;
   filter?: JsonValue;
   nestingLimit?: number;
   serial?: boolean;
-  progmem?: boolean;
 }
 
 export function writeDecompositionCode(
@@ -224,12 +241,12 @@ export function writeDeserializationCode(
 
   const filter = cfg.filter;
   if (filter) {
-    prg.addLine(`${type("JsonDocument")} ${tokens.variable("filter")};`);
+    prg.addLine(`${tokens.type("JsonDocument")} ${tokens.variable("filter")};`);
     writeCompositionCode(prg, { value: filter, name: "filter" }, cfg);
     prg.addLine();
   }
 
-  prg.addLine(`${type("JsonDocument")} ${tokens.variable("doc")};`);
+  prg.addLine(`${tokens.type("JsonDocument")} ${tokens.variable("doc")};`);
 
   const args = [tokens.variable("doc"), tokens.variable("input")];
 
@@ -254,7 +271,7 @@ export function writeDeserializationCode(
 
   prg.addLine();
   prg.addLine(
-    `${type("DeserializationError")} ${tokens.variable("error")} = ${functions.deserializeJson}(${args.join(", ")});`,
+    `${tokens.type("DeserializationError", cfg.auto)} ${tokens.variable("error")} = ${functions.deserializeJson}(${args.join(", ")});`,
   );
 }
 

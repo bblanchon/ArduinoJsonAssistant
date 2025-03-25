@@ -138,10 +138,22 @@ describe("writeDecompositionCode", function () {
     );
   });
 
+  it("42 auto", async () => {
+    await expect(getDecompositionCode(42, { auto: true })).toMatchFileSnapshot(
+      "snapshots/decompose/int-auto.html",
+    );
+  });
+
   it("[42]", async () => {
     await expect(getDecompositionCode([42])).toMatchFileSnapshot(
       "snapshots/decompose/array-one-int.html",
     );
+  });
+
+  it("[42] auto", async () => {
+    await expect(
+      getDecompositionCode([42], { auto: true }),
+    ).toMatchFileSnapshot("snapshots/decompose/array-one-int-auto.html");
   });
 
   it("bool", async () => {
@@ -159,6 +171,12 @@ describe("writeDecompositionCode", function () {
     );
   });
 
+  it("[1,2,3] auto", async () => {
+    await expect(
+      getDecompositionCode([1, 2, 3], { auto: true }),
+    ).toMatchFileSnapshot("snapshots/decompose/array-three-int-auto.html");
+  });
+
   it('{"hello":true}', async () => {
     await expect(getDecompositionCode({ hello: true })).toMatchFileSnapshot(
       "snapshots/decompose/object-bool.html",
@@ -169,6 +187,12 @@ describe("writeDecompositionCode", function () {
     await expect(
       getDecompositionCode({ hello: true }, { progmem: true }),
     ).toMatchFileSnapshot("snapshots/decompose/object-bool-progmem.html");
+  });
+
+  it('{"hello":true} with auto', async () => {
+    await expect(
+      getDecompositionCode({ hello: true }, { auto: true }),
+    ).toMatchFileSnapshot("snapshots/decompose/object-bool-auto.html");
   });
 
   it('{"hello":null}', async () => {
@@ -193,6 +217,12 @@ describe("writeDecompositionCode", function () {
     await expect(
       getDecompositionCode([{ a: 1, b: 2, c: 3 }]),
     ).toMatchFileSnapshot("snapshots/decompose/object-three-int.html");
+  });
+
+  it('[{"a":1,"b":2,"c":3}] auto', async () => {
+    await expect(
+      getDecompositionCode([{ a: 1, b: 2, c: 3 }], { auto: true }),
+    ).toMatchFileSnapshot("snapshots/decompose/object-three-int-auto.html");
   });
 
   it("[[[[[[[[[[[42]]]]]]]]]]]", async () => {

@@ -9,7 +9,7 @@ import {
   type JsonValue,
 } from "./json";
 import { ProgramWriter, makeVariableName, stripHtml } from "./programWriter";
-import { literals, keywords, type, functions, tokens } from "./tokens";
+import { literals, keywords, functions, tokens } from "./tokens";
 
 interface VariableContext {
   name: string;
@@ -18,6 +18,7 @@ interface VariableContext {
 }
 
 interface CompositionCodeConfig {
+  auto?: boolean;
   progmem?: boolean;
 }
 
@@ -48,7 +49,7 @@ class CompositionCodeBuilder {
     if (parent === undefined) {
       if (childrenCount == 0)
         this.addLine(
-          `${tokens.variable(name)}.${name == "doc" ? functions.JsonDocument.to : functions.JsonVariant.to}&lt;${type("JsonArray")}&gt;();`,
+          `${tokens.variable(name)}.${name == "doc" ? functions.JsonDocument.to : functions.JsonVariant.to}&lt;${tokens.type("JsonArray")}&gt;();`,
         );
       if (childrenCount == 1)
         return this.addVariant(value[0], {
@@ -68,13 +69,13 @@ class CompositionCodeBuilder {
       this.addLine();
       if (typeof key === "string")
         this.addLine(
-          `${type("JsonArray")} ${tokens.variable(name)} = ${parent}[${this.stringify(
+          `${tokens.type("JsonArray", this.cfg.auto)} ${tokens.variable(name)} = ${parent}[${this.stringify(
             key,
-          )}].${stripHtml(parent) == "doc" ? functions.JsonDocument.to : functions.JsonVariant.to}&lt;${type("JsonArray")}&gt;();`,
+          )}].${stripHtml(parent) == "doc" ? functions.JsonDocument.to : functions.JsonVariant.to}&lt;${tokens.type("JsonArray")}&gt;();`,
         );
       else
         this.addLine(
-          `${type("JsonArray")} ${tokens.variable(name)} = ${parent}.${stripHtml(parent) == "doc" ? functions.JsonDocument.add : functions.JsonArray.add}&lt;${type("JsonArray")}&gt;();`,
+          `${tokens.type("JsonArray", this.cfg.auto)} ${tokens.variable(name)} = ${parent}.${stripHtml(parent) == "doc" ? functions.JsonDocument.add : functions.JsonArray.add}&lt;${tokens.type("JsonArray")}&gt;();`,
         );
     }
     value.forEach((elem, index) => {
@@ -93,7 +94,7 @@ class CompositionCodeBuilder {
     if (parent === undefined) {
       if (childrenCount == 0)
         return this.addLine(
-          `${tokens.variable(name)}.${name == "doc" ? functions.JsonDocument.to : functions.JsonVariant.to}&lt;${type("JsonObject")}&gt;();`,
+          `${tokens.variable(name)}.${name == "doc" ? functions.JsonDocument.to : functions.JsonVariant.to}&lt;${tokens.type("JsonObject")}&gt;();`,
         );
     } else if (childrenCount == 1) {
       if (key === undefined)
@@ -103,13 +104,13 @@ class CompositionCodeBuilder {
       this.addLine();
       if (typeof key === "string")
         this.addLine(
-          `${type("JsonObject")} ${tokens.variable(name)} = ${parent}[${this.stringify(
+          `${tokens.type("JsonObject", this.cfg.auto)} ${tokens.variable(name)} = ${parent}[${this.stringify(
             key,
-          )}].${stripHtml(parent) == "doc" ? functions.JsonDocument.to : functions.JsonVariant.to}&lt;${type("JsonObject")}&gt;();`,
+          )}].${stripHtml(parent) == "doc" ? functions.JsonDocument.to : functions.JsonVariant.to}&lt;${tokens.type("JsonObject")}&gt;();`,
         );
       else
         this.addLine(
-          `${type("JsonObject")} ${tokens.variable(name)} = ${parent}.${stripHtml(parent) == "doc" ? functions.JsonDocument.add : functions.JsonArray.add}&lt;${type("JsonObject")}&gt;();`,
+          `${tokens.type("JsonObject", this.cfg.auto)} ${tokens.variable(name)} = ${parent}.${stripHtml(parent) == "doc" ? functions.JsonDocument.add : functions.JsonArray.add}&lt;${tokens.type("JsonObject")}&gt;();`,
         );
     }
 
@@ -172,7 +173,7 @@ export function writeCompositionCode(
   new CompositionCodeBuilder(prg, cfg).addVariant(value, { name });
 }
 
-interface SerializingProgramConfig {
+interface SerializingProgramConfig extends CompositionCodeConfig {
   output?: JsonValue;
   outputType?:
     | "charPtr"
@@ -181,7 +182,6 @@ interface SerializingProgramConfig {
     | "stdString"
     | "arduinoStream"
     | "stdStream";
-  progmem?: boolean;
 }
 
 export function generateSerializingProgram(cfg: SerializingProgramConfig) {
@@ -201,7 +201,7 @@ export function generateSerializingProgram(cfg: SerializingProgramConfig) {
   }
   prg.addLine();
 
-  prg.addLine(`${type("JsonDocument")} ${tokens.variable("doc")};`);
+  prg.addLine(`${tokens.type("JsonDocument")} ${tokens.variable("doc")};`);
 
   prg.addLine();
   writeCompositionCode(
@@ -226,11 +226,13 @@ export function generateSerializingProgram(cfg: SerializingProgramConfig) {
       args.push(tokens.variable("output"));
       break;
     case "arduinoString":
-      prg.addLine(`${type("String")} ${tokens.variable("output")};`);
+      prg.addLine(`${tokens.type("String")} ${tokens.variable("output")};`);
       args.push(tokens.variable("output"));
       break;
     case "stdString":
-      prg.addLine(`${type("std::string")} ${tokens.variable("output")};`);
+      prg.addLine(
+        `${tokens.type("std::string")} ${tokens.variable("output")};`,
+      );
       args.push(tokens.variable("output"));
       break;
     default:

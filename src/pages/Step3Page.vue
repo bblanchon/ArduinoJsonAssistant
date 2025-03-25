@@ -5,7 +5,7 @@
     <div class="card-body">
       <CodeBlock :source="program.header" />
 
-      <div class="row align-items-center g-2 mb-3">
+      <div class="align-items-center g-2 mb-3 d-flex gap-3">
         <template v-if="settings.isDeserializing">
           <label for="io-library" class="visually-hidden">I/O</label>
           <div class="col-sm-3">
@@ -20,16 +20,26 @@
           </div>
         </template>
 
-        <div class="col-sm-3">
-          <div class="form-check flex-0">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              id="progmem"
-              v-model="program.progmem"
-            />
-            <label class="form-check-label" for="progmem">Flash strings</label>
-          </div>
+        <div class="form-check flex-0">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="progmem"
+            v-model="program.progmem"
+          />
+          <label class="form-check-label" for="progmem"
+            ><code>PROGMEM</code></label
+          >
+        </div>
+
+        <div class="form-check flex-0">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="auto"
+            v-model="program.auto"
+          />
+          <label class="form-check-label" for="auto"><code>auto</code></label>
         </div>
       </div>
 

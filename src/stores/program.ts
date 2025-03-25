@@ -16,6 +16,7 @@ export const useProgramStore = defineStore("program", () => {
   const body = ref("");
   const ioLibrary = ref("serial");
   const progmem = ref(false);
+  const auto = ref(false);
 
   async function generate() {
     let code = "";
@@ -31,6 +32,7 @@ export const useProgramStore = defineStore("program", () => {
               ? stats.nestingLevel
               : undefined,
           serial: ioLibrary.value == "serial",
+          auto: auto.value,
           progmem: progmem.value,
         });
         break;
@@ -40,6 +42,7 @@ export const useProgramStore = defineStore("program", () => {
           output: cfg.input,
           outputType: cfg.ioType,
           progmem: progmem.value,
+          auto: auto.value,
         });
         break;
     }
@@ -75,5 +78,6 @@ export const useProgramStore = defineStore("program", () => {
     generate,
     ioLibrary,
     progmem,
+    auto,
   };
 });

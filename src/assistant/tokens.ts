@@ -1,10 +1,18 @@
+const urls: Record<string, string> = {
+  String:
+    "https://www.arduino.cc/reference/en/language/variables/data-types/stringobject/",
+  JsonObject: "https://arduinojson.org/v7/api/jsonobject/",
+  DeserializationError:
+    "https://arduinojson.org/v7/api/misc/deserializationerror/",
+  JsonArray: "https://arduinojson.org/v7/api/jsonarray/",
+  JsonDocument: "https://arduinojson.org/v7/api/jsondocument/",
+  JsonPair: "https://arduinojson.org/v7/api/jsonobject/begin_end/#return-value",
+  "std::string": "https://en.cppreference.com/w/cpp/string/basic_string",
+};
+
 export const tokens = {
   comment(value: string) {
     return `<span class="hl-comment">// ${value}</span>`;
-  },
-  type(value: string, href?: string) {
-    if (href) return `<a href="${href}" class="hl-type">${value}</a>`;
-    else return `<span class="hl-type">${value}</span>`;
   },
   function(value: string, href?: string) {
     if (href) return `<a href="${href}" class="hl-function">${value}</a>`;
@@ -20,6 +28,15 @@ export const tokens = {
   },
   keyword: (value: string) => `<span class="hl-keyword">${value}</span>`,
   variable: (value: string) => `<span class="hl-variable">${value}</span>`,
+  type(value: string, auto?: boolean) {
+    if (auto)
+      return `<span class="hl-keyword" data-bs-toggle="tooltip" title="${value}">auto</span>`;
+
+    const url = urls[value];
+    if (url) return `<a href="${url}" class="hl-type">${value}</a>`;
+
+    return `<span class="hl-type">${value}</span>`;
+  },
 };
 
 export const keywords = {
@@ -40,22 +57,6 @@ export const literals = {
   },
   number: (value: number) => `<span class="hl-number">${value}</span>`,
 };
-
-const urls: Record<string, string> = {
-  String:
-    "https://www.arduino.cc/reference/en/language/variables/data-types/stringobject/",
-  JsonObject: "https://arduinojson.org/v7/api/jsonobject/",
-  DeserializationError:
-    "https://arduinojson.org/v7/api/misc/deserializationerror/",
-  JsonArray: "https://arduinojson.org/v7/api/jsonarray/",
-  JsonDocument: "https://arduinojson.org/v7/api/jsondocument/",
-  JsonPair: "https://arduinojson.org/v7/api/jsonobject/begin_end/#return-value",
-  "std::string": "https://en.cppreference.com/w/cpp/string/basic_string",
-};
-
-export function type(value: string) {
-  return tokens.type(value, urls[value]);
-}
 
 export const globals = {
   std: {
