@@ -41,38 +41,21 @@ export const literals = {
   number: (value: number) => `<span class="hl-number">${value}</span>`,
 };
 
-export const types = {
-  String: tokens.type(
-    "String",
+const urls: Record<string, string> = {
+  String:
     "https://www.arduino.cc/reference/en/language/variables/data-types/stringobject/",
-  ),
-  JsonObject: tokens.type(
-    "JsonObject",
-    "https://arduinojson.org/v7/api/jsonobject/",
-  ),
-  DeserializationError: tokens.type(
-    "DeserializationError",
+  JsonObject: "https://arduinojson.org/v7/api/jsonobject/",
+  DeserializationError:
     "https://arduinojson.org/v7/api/misc/deserializationerror/",
-  ),
-  JsonArray: tokens.type(
-    "JsonArray",
-    "https://arduinojson.org/v7/api/jsonarray/",
-  ),
-  JsonDocument: tokens.type(
-    "JsonDocument",
-    "https://arduinojson.org/v7/api/jsondocument/",
-  ),
-  JsonPair: tokens.type(
-    "JsonPair",
-    "https://arduinojson.org/v7/api/jsonobject/begin_end/#return-value",
-  ),
-  std: {
-    string: tokens.type(
-      "std::string",
-      "https://en.cppreference.com/w/cpp/string/basic_string",
-    ),
-  },
+  JsonArray: "https://arduinojson.org/v7/api/jsonarray/",
+  JsonDocument: "https://arduinojson.org/v7/api/jsondocument/",
+  JsonPair: "https://arduinojson.org/v7/api/jsonobject/begin_end/#return-value",
+  "std::string": "https://en.cppreference.com/w/cpp/string/basic_string",
 };
+
+export function type(value: string) {
+  return tokens.type(value, urls[value]);
+}
 
 export const globals = {
   std: {

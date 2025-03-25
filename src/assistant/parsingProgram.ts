@@ -6,14 +6,7 @@ import {
   stringifyValue,
   stripHtml,
 } from "./programWriter";
-import {
-  keywords,
-  types,
-  literals,
-  tokens,
-  functions,
-  globals,
-} from "./tokens";
+import { keywords, type, literals, tokens, functions, globals } from "./tokens";
 import { writeCompositionCode } from "./serializingProgram";
 import { applyFilter } from "./filter";
 import {
@@ -77,7 +70,7 @@ class DecompositionCodeBuilder {
     if (canLoop(value)) {
       const item = tokens.variable(makeItemName(parent));
       this.addLine(
-        `${keywords.for} (${types.JsonObject} ${item} : ${parent}.${asFunction}&lt;${types.JsonArray}&gt;()) {`,
+        `${keywords.for} (${type("JsonObject")} ${item} : ${parent}.${asFunction}&lt;${type("JsonArray")}&gt;()) {`,
       );
       this.indent();
       this.extractValue(value[0], {
@@ -90,7 +83,7 @@ class DecompositionCodeBuilder {
       let arrayName = parent;
       if (value.length > 2 && parent.indexOf("[") >= 0) {
         arrayName = tokens.variable(makeVariableName(variableName));
-        this.addLine(`${types.JsonArray} ${arrayName} = ${parent};`);
+        this.addLine(`${type("JsonArray")} ${arrayName} = ${parent};`);
       }
       for (let i = 0; i < value.length; i++) {
         const elementExpression = `${arrayName}[${literals.number(i)}]`;
@@ -115,7 +108,7 @@ class DecompositionCodeBuilder {
     if (canLoop(value)) {
       const item = makeItemName(parent);
       this.addLine(
-        `${keywords.for} (${types.JsonPair} ${tokens.variable(item)} : ${parent}.${asFunction}&lt;${types.JsonObject}&gt;()) {`,
+        `${keywords.for} (${type("JsonPair")} ${tokens.variable(item)} : ${parent}.${asFunction}&lt;${type("JsonObject")}&gt;()) {`,
       );
       this.indent();
       this.extractValue(Object.keys(value)[0], {
@@ -133,7 +126,7 @@ class DecompositionCodeBuilder {
       let objName = parent;
       if (ctx.name && Object.keys(value).length > 2) {
         objName = tokens.variable(makeVariableName(ctx.name));
-        this.addLine(`${types.JsonObject} ${objName} = ${parent};`);
+        this.addLine(`${type("JsonObject")} ${objName} = ${parent};`);
       }
       for (const key in value) {
         const memberExpression = `${objName}[${literals.string(key, this.cfg.progmem)}]`;
@@ -231,12 +224,12 @@ export function writeDeserializationCode(
 
   const filter = cfg.filter;
   if (filter) {
-    prg.addLine(`${types.JsonDocument} ${tokens.variable("filter")};`);
+    prg.addLine(`${type("JsonDocument")} ${tokens.variable("filter")};`);
     writeCompositionCode(prg, { value: filter, name: "filter" }, cfg);
     prg.addLine();
   }
 
-  prg.addLine(`${types.JsonDocument} ${tokens.variable("doc")};`);
+  prg.addLine(`${type("JsonDocument")} ${tokens.variable("doc")};`);
 
   const args = [tokens.variable("doc"), tokens.variable("input")];
 
@@ -261,7 +254,7 @@ export function writeDeserializationCode(
 
   prg.addLine();
   prg.addLine(
-    `${types.DeserializationError} ${tokens.variable("error")} = ${functions.deserializeJson}(${args.join(", ")});`,
+    `${type("DeserializationError")} ${tokens.variable("error")} = ${functions.deserializeJson}(${args.join(", ")});`,
   );
 }
 

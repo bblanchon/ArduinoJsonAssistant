@@ -9,7 +9,7 @@ import {
   type JsonValue,
 } from "./json";
 import { ProgramWriter, makeVariableName, stripHtml } from "./programWriter";
-import { literals, keywords, types, functions, tokens } from "./tokens";
+import { literals, keywords, type, functions, tokens } from "./tokens";
 
 interface VariableContext {
   name: string;
@@ -48,7 +48,7 @@ class CompositionCodeBuilder {
     if (parent === undefined) {
       if (childrenCount == 0)
         this.addLine(
-          `${tokens.variable(name)}.${name == "doc" ? functions.JsonDocument.to : functions.JsonVariant.to}&lt;${types.JsonArray}&gt;();`,
+          `${tokens.variable(name)}.${name == "doc" ? functions.JsonDocument.to : functions.JsonVariant.to}&lt;${type("JsonArray")}&gt;();`,
         );
       if (childrenCount == 1)
         return this.addVariant(value[0], {
@@ -68,13 +68,13 @@ class CompositionCodeBuilder {
       this.addLine();
       if (typeof key === "string")
         this.addLine(
-          `${types.JsonArray} ${tokens.variable(name)} = ${parent}[${this.stringify(
+          `${type("JsonArray")} ${tokens.variable(name)} = ${parent}[${this.stringify(
             key,
-          )}].${stripHtml(parent) == "doc" ? functions.JsonDocument.to : functions.JsonVariant.to}&lt;${types.JsonArray}&gt;();`,
+          )}].${stripHtml(parent) == "doc" ? functions.JsonDocument.to : functions.JsonVariant.to}&lt;${type("JsonArray")}&gt;();`,
         );
       else
         this.addLine(
-          `${types.JsonArray} ${tokens.variable(name)} = ${parent}.${stripHtml(parent) == "doc" ? functions.JsonDocument.add : functions.JsonArray.add}&lt;${types.JsonArray}&gt;();`,
+          `${type("JsonArray")} ${tokens.variable(name)} = ${parent}.${stripHtml(parent) == "doc" ? functions.JsonDocument.add : functions.JsonArray.add}&lt;${type("JsonArray")}&gt;();`,
         );
     }
     value.forEach((elem, index) => {
@@ -93,7 +93,7 @@ class CompositionCodeBuilder {
     if (parent === undefined) {
       if (childrenCount == 0)
         return this.addLine(
-          `${tokens.variable(name)}.${name == "doc" ? functions.JsonDocument.to : functions.JsonVariant.to}&lt;${types.JsonObject}&gt;();`,
+          `${tokens.variable(name)}.${name == "doc" ? functions.JsonDocument.to : functions.JsonVariant.to}&lt;${type("JsonObject")}&gt;();`,
         );
     } else if (childrenCount == 1) {
       if (key === undefined)
@@ -103,13 +103,13 @@ class CompositionCodeBuilder {
       this.addLine();
       if (typeof key === "string")
         this.addLine(
-          `${types.JsonObject} ${tokens.variable(name)} = ${parent}[${this.stringify(
+          `${type("JsonObject")} ${tokens.variable(name)} = ${parent}[${this.stringify(
             key,
-          )}].${stripHtml(parent) == "doc" ? functions.JsonDocument.to : functions.JsonVariant.to}&lt;${types.JsonObject}&gt;();`,
+          )}].${stripHtml(parent) == "doc" ? functions.JsonDocument.to : functions.JsonVariant.to}&lt;${type("JsonObject")}&gt;();`,
         );
       else
         this.addLine(
-          `${types.JsonObject} ${tokens.variable(name)} = ${parent}.${stripHtml(parent) == "doc" ? functions.JsonDocument.add : functions.JsonArray.add}&lt;${types.JsonObject}&gt;();`,
+          `${type("JsonObject")} ${tokens.variable(name)} = ${parent}.${stripHtml(parent) == "doc" ? functions.JsonDocument.add : functions.JsonArray.add}&lt;${type("JsonObject")}&gt;();`,
         );
     }
 
@@ -201,7 +201,7 @@ export function generateSerializingProgram(cfg: SerializingProgramConfig) {
   }
   prg.addLine();
 
-  prg.addLine(`${types.JsonDocument} ${tokens.variable("doc")};`);
+  prg.addLine(`${type("JsonDocument")} ${tokens.variable("doc")};`);
 
   prg.addLine();
   writeCompositionCode(
@@ -226,11 +226,11 @@ export function generateSerializingProgram(cfg: SerializingProgramConfig) {
       args.push(tokens.variable("output"));
       break;
     case "arduinoString":
-      prg.addLine(`${types.String} ${tokens.variable("output")};`);
+      prg.addLine(`${type("String")} ${tokens.variable("output")};`);
       args.push(tokens.variable("output"));
       break;
     case "stdString":
-      prg.addLine(`${types.std.string} ${tokens.variable("output")};`);
+      prg.addLine(`${type("std::string")} ${tokens.variable("output")};`);
       args.push(tokens.variable("output"));
       break;
     default:
