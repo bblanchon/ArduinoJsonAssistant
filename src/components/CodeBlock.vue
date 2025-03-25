@@ -1,13 +1,19 @@
 <template>
   <figure class="position-relative">
-    <button class="btn btn-sm position-absolute" :class="{
-      'btn-outline-primary': !programCopied,
-      'btn-success': programCopied,
-    }" :disabled="programCopied" style="top: 5px; right: 20px; width: 6em" @click="copyProgram">
+    <button
+      class="btn btn-sm position-absolute"
+      :class="{
+        'btn-outline-primary': !programCopied,
+        'btn-success': programCopied,
+      }"
+      :disabled="programCopied"
+      style="top: 5px; right: 20px; width: 6em"
+      @click="copyProgram"
+    >
       {{ programCopied ? "✓ Copied" : "Copy" }}
     </button>
     <div class="highlight p-3 program">
-      <pre><code class="hl" v-html="props.source" ref="codeElement" @mouseover="onMouseOver"></code></pre>
+      <pre><code class="hl" v-html="props.source" v-html-tooltips ref="codeElement" @mouseover="onMouseOver"></code></pre>
     </div>
   </figure>
 </template>
