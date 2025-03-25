@@ -57,6 +57,13 @@ function onMouseOver(event: MouseEvent) {
   max-height: 30em;
   overflow-y: auto;
 }
+:deep(a) {
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
 </style>
 
 <style>
