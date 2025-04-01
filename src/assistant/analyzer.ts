@@ -134,50 +134,44 @@ class SlotPoolList {
 }
 
 class JsonDocument {
-  private _memory: Memory;
-  private _poolList: SlotPoolList;
-  private _strings: Record<string, boolean>;
-  private _ignoreKeys: boolean;
-  private _ignoreValues: boolean;
-  private _deduplicateKeys: boolean;
-  private _deduplicateValues: boolean;
-  private _useLongLong: boolean;
-  private _useDouble: boolean;
-  private _stringOverhead: number;
-  private _overAllocateStrings: boolean;
+  private memory: Memory;
+  private cfg: Config;
+  private poolList: SlotPoolList;
+  private strings: Set<string>;
+  private stringOverhead: number;
 
   constructor(memory: Memory, cfg: Config) {
-    this._strings = {};
-    this._ignoreKeys = !!cfg.ignoreKeys;
-    this._ignoreValues = !!cfg.ignoreValues;
-    this._deduplicateKeys = !!cfg.deduplicateKeys;
-    this._deduplicateValues = !!cfg.deduplicateValues;
-    this._useLongLong = !!cfg.useLongLong;
-    this._useDouble = !!cfg.useDouble;
+    this.memory = memory;
+    this.cfg = cfg;
+    this.strings = new Set();
+    this.poolList = new SlotPoolList(cfg, memory);
 
     const arch = memoryModels[cfg.arch];
 
-    this._memory = memory;
-    this._poolList = new SlotPoolList(cfg, this._memory);
-    this._stringOverhead = arch.stringOverhead;
+    this.stringOverhead = arch.stringOverhead;
     if (cfg.stringLengthSize)
-      this._stringOverhead += cfg.stringLengthSize - arch.stringLengthSize;
-    this._overAllocateStrings = !!cfg.overAllocateStrings;
+      this.stringOverhead += cfg.stringLengthSize - arch.stringLengthSize;
 
-    this._memory.alloc(arch.documentSize);
+    this.memory.alloc(arch.documentSize);
+  }
+
+  getStringSize(s: string, { overAllocate } = { overAllocate: false }) {
+    let length = s.length;
+    if (overAllocate) length = getOverallocatedStringSize(length);
+    return length + this.stringOverhead;
   }
 
   allocSlots(n: number) {
-    for (let i = 0; i < n; i++) this._poolList.allocSlot();
+    for (let i = 0; i < n; i++) this.poolList.allocSlot();
   }
 
   allocString(s: string) {
-    if (this._overAllocateStrings) {
-      const size = getOverallocatedStringSize(s.length) + this._stringOverhead;
-      this._memory.alloc(size);
-      this._memory.free(size);
+    if (this.cfg.overAllocateStrings) {
+      const size = this.getStringSize(s, { overAllocate: true });
+      this.memory.alloc(size);
+      this.memory.free(size);
     }
-    this._memory.alloc(s.length + this._stringOverhead);
+    this.memory.alloc(this.getStringSize(s));
   }
 
   addArray(n: number) {
@@ -186,41 +180,41 @@ class JsonDocument {
 
   addObjectMember(key: string) {
     this.allocSlots(2);
-    if (this._ignoreKeys) return;
-    if (this._deduplicateKeys && this._strings[key]) return;
+    if (this.cfg.ignoreKeys) return;
+    if (this.cfg.deduplicateKeys && this.strings.has(key)) return;
     this.allocString(key);
-    this._strings[key] = true;
+    this.strings.add(key);
   }
 
   addString(s: string) {
-    if (this._ignoreValues) return;
-    if (this._deduplicateValues && this._strings[s]) return;
+    if (this.cfg.ignoreValues) return;
+    if (this.cfg.deduplicateValues && this.strings.has(s)) return;
     this.allocString(s);
-    this._strings[s] = true;
+    this.strings.add(s);
   }
 
   addNumber(value: number) {
     switch (getCppTypeFor(value)) {
       case "long long":
-        if (this._useLongLong) this.allocSlots(1);
+        if (this.cfg.useLongLong) this.allocSlots(1);
         break;
       case "double":
-        if (this._useDouble) this.allocSlots(1);
+        if (this.cfg.useDouble) this.allocSlots(1);
         break;
     }
   }
 
   addIgnoredKey(s: string) {
     this.allocString(s);
-    this._memory.free(s.length + this._stringOverhead);
+    this.memory.free(this.getStringSize(s));
   }
 
   shrinkToFit() {
-    this._poolList.shrinkToFit();
+    this.poolList.shrinkToFit();
   }
 
   get slotCount() {
-    return this._poolList.totalSlots;
+    return this.poolList.totalSlots;
   }
 }
 
