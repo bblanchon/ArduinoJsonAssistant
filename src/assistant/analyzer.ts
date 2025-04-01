@@ -8,6 +8,7 @@ import {
   isJsonString,
   type JsonValue,
 } from "./json";
+import { canLoop } from "./loops";
 
 export function getOverallocatedStringSize(s: number) {
   // [0-31] -> 31
@@ -278,41 +279,6 @@ export function measureNesting(obj: JsonValue): number {
     innerNesting = Math.max(innerNesting, measureNesting(value));
   });
   return 1 + innerNesting;
-}
-
-export function canLoop(input: JsonValue): boolean {
-  function areSimilar(a: JsonValue, b: JsonValue): boolean {
-    if (a === null || b === null) return true;
-    if (isJsonObject(a) && isJsonObject(b)) {
-      for (const k in a) {
-        if (!(k in b)) return false;
-      }
-      for (const k in b) {
-        if (!(k in a)) return false;
-        if (!areSimilar(a[k], b[k])) return false;
-      }
-    }
-    if (isJsonArray(a) && isJsonArray(b)) {
-      if (a.length !== b.length) return false;
-      for (let i = 0; i < a.length; i++) {
-        if (!areSimilar(a[i], b[i])) return false;
-      }
-    }
-    return typeof a === typeof b;
-  }
-
-  if (isJsonArray(input)) {
-    if (input.length < 2) return false;
-    return input.every(
-      (value) => isJsonObject(value) && areSimilar(input[0], value),
-    );
-  }
-
-  if (isJsonObject(input)) {
-    return canLoop(Object.values(input));
-  }
-
-  return false;
 }
 
 export function getCppTypeFor(value: JsonValue) {

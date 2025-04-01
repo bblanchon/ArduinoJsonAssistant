@@ -1,4 +1,5 @@
-import { canLoop, getCommonCppTypeFor } from "./analyzer";
+import { getCommonCppTypeFor } from "./analyzer";
+import { canLoop } from "./loops";
 import {
   ProgramWriter,
   makeItemName,
