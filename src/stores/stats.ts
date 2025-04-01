@@ -5,10 +5,9 @@ import {
   analyze,
   hasJsonInJsonSyndrome,
   measureNesting,
-  needsDouble,
-  needsLongLong,
 } from "@/assistant/analyzer";
 import { getMaxStringLength } from "@/assistant/strings";
+import { needsDouble, needsLongLong } from "@/assistant/cpptypes";
 
 import { useSettingsStore } from "./settings";
 import { useBoardStore } from "./board";

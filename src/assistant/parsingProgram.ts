@@ -1,14 +1,4 @@
-import { getCommonCppTypeFor } from "./analyzer";
-import { canLoop } from "./loops";
-import {
-  ProgramWriter,
-  makeItemName,
-  makeVariableName,
-  stringifyValue,
-  stripHtml,
-} from "./programWriter";
-import { keywords, literals, tokens, functions, globals } from "./tokens";
-import { writeCompositionCode } from "./serializingProgram";
+import { getCommonCppTypeFor } from "./cpptypes";
 import { applyFilter } from "./filter";
 import {
   isJsonArray,
@@ -17,6 +7,16 @@ import {
   type JsonObject,
   type JsonValue,
 } from "./json";
+import { canLoop } from "./loops";
+import {
+  ProgramWriter,
+  makeItemName,
+  makeVariableName,
+  stringifyValue,
+  stripHtml,
+} from "./programWriter";
+import { writeCompositionCode } from "./serializingProgram";
+import { functions, globals, keywords, literals, tokens } from "./tokens";
 
 interface VariableContext {
   parent?: string;
