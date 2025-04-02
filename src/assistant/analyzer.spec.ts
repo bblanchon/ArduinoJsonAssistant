@@ -8,12 +8,6 @@ import {
 } from "./analyzer";
 import type { JsonValue } from "./json";
 
-const sample_object = {
-  sensor: "gps",
-  time: 1351824120,
-  data: [48.75608, 2.302038],
-};
-
 function countSlots(input: JsonValue) {
   return analyze(input, { arch: "8-bit" }).slotCount;
 }
@@ -118,78 +112,93 @@ describe("analyze", function () {
   });
 
   it('should return 0+6 for "hello"', () => {
-    const result = analyze("hello", { arch: "8-bit" });
-    expect(result).toMatchObject({
+    expect(analyze("hello", { arch: "8-bit" })).toMatchObject({
       memoryUsage: 24,
       peakMemoryUsage: 24,
     });
   });
 
   it("sample object on 8-bit processor", () => {
-    const result = analyze(sample_object, {
-      arch: "8-bit",
-    });
-    expect(result).toMatchObject({
+    expect(
+      analyze(
+        {
+          sensor: "gps",
+          time: 1351824120,
+          data: [48.75608, 2.302038],
+        },
+        {
+          arch: "8-bit",
+        },
+      ),
+    ).toMatchObject({
       memoryUsage: 99,
       peakMemoryUsage: 147,
     });
   });
 
   it("sample object on 32-bit processor", () => {
-    const result = analyze(sample_object, {
-      arch: "32-bit",
-      useLongLong: true,
-      useDouble: true,
-    });
-    expect(result).toMatchObject({
+    expect(
+      analyze(
+        {
+          sensor: "gps",
+          time: 1351824120,
+          data: [48.75608, 2.302038],
+        },
+        {
+          arch: "32-bit",
+          useLongLong: true,
+          useDouble: true,
+        },
+      ),
+    ).toMatchObject({
       memoryUsage: 157,
       peakMemoryUsage: 1117,
     });
   });
 
   it("should not deduplicate keys if deduplicateKeys is false", () => {
-    const input = [{ example: 1 }, { example: 2 }];
-    const result = analyze(input, {
-      deduplicateKeys: false,
-      arch: "8-bit",
-    });
-    expect(result).toMatchObject({
+    expect(
+      analyze([{ example: 1 }, { example: 2 }], {
+        deduplicateKeys: false,
+        arch: "8-bit",
+      }),
+    ).toMatchObject({
       memoryUsage: 74,
       peakMemoryUsage: 134,
     });
   });
 
   it("should not deduplicate keys if deduplicateKeys is true", () => {
-    const input = [{ example: 1 }, { example: 2 }];
-    const result = analyze(input, {
-      deduplicateKeys: true,
-      arch: "8-bit",
-    });
-    expect(result).toMatchObject({
+    expect(
+      analyze([{ example: 1 }, { example: 2 }], {
+        deduplicateKeys: true,
+        arch: "8-bit",
+      }),
+    ).toMatchObject({
       memoryUsage: 62,
       peakMemoryUsage: 122,
     });
   });
 
   it("should not deduplicate values if deduplicateValues is false", () => {
-    const input = ["example", "example"];
-    const result = analyze(input, {
-      deduplicateValues: false,
-      arch: "8-bit",
-    });
-    expect(result).toMatchObject({
+    expect(
+      analyze(["example", "example"], {
+        deduplicateValues: false,
+        arch: "8-bit",
+      }),
+    ).toMatchObject({
       memoryUsage: 50,
       peakMemoryUsage: 134,
     });
   });
 
   it("should not deduplicate keys if deduplicateValues is true", () => {
-    const input = ["example", "example"];
-    const result = analyze(input, {
-      deduplicateValues: true,
-      arch: "8-bit",
-    });
-    expect(result).toMatchObject({
+    expect(
+      analyze(["example", "example"], {
+        deduplicateValues: true,
+        arch: "8-bit",
+      }),
+    ).toMatchObject({
       memoryUsage: 38,
       peakMemoryUsage: 122,
     });
