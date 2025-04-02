@@ -19,6 +19,10 @@ export function getOverallocatedStringSize(s: number) {
   return n;
 }
 
+function isTinyString(s: string) {
+  return s.length <= 3 && !s.includes("\u0000");
+}
+
 type Arch = "8-bit" | "16-bit" | "32-bit" | "64-bit";
 
 type SlotFlags =
@@ -155,7 +159,7 @@ class JsonDocument {
     this.memory.alloc(arch.documentSize);
   }
 
-  getStringSize(s: string, { overAllocate } = { overAllocate: false }) {
+  getStringSize(s: string, { overAllocate }: { overAllocate?: boolean } = {}) {
     let length = s.length;
     if (overAllocate) length = getOverallocatedStringSize(length);
     return length + this.stringOverhead;
@@ -165,13 +169,33 @@ class JsonDocument {
     for (let i = 0; i < n; i++) this.poolList.allocSlot();
   }
 
-  allocString(s: string) {
-    if (this.cfg.overAllocateStrings) {
-      const size = this.getStringSize(s, { overAllocate: true });
-      this.memory.alloc(size);
-      this.memory.free(size);
-    }
+  allocTempString(s: string) {
+    const size = this.getStringSize(s, {
+      overAllocate: this.cfg.overAllocateStrings,
+    });
+    this.memory.alloc(size);
+    this.memory.free(size);
+  }
+
+  allocString(
+    s: string,
+    opt: { overAllocate?: boolean; dontStore?: boolean; deduplicate?: boolean },
+  ) {
+    // when deserializing, we store the string in a buffer, before deciding if we keep it
+    if (opt.overAllocate) this.allocTempString(s);
+
+    // if the string is small enough, we can store it in the slot
+    if (isTinyString(s)) return;
+
+    // when serializing, we can store strings as pointers
+    if (opt.dontStore) return;
+
+    // check if the string is already stored
+    if (opt.deduplicate && this.strings.has(s)) return;
+
+    // all checks passed, we can store the string
     this.memory.alloc(this.getStringSize(s));
+    this.strings.add(s);
   }
 
   addArray(n: number) {
@@ -180,17 +204,19 @@ class JsonDocument {
 
   addObjectMember(key: string) {
     this.allocSlots(2);
-    if (this.cfg.ignoreKeys) return;
-    if (this.cfg.deduplicateKeys && this.strings.has(key)) return;
-    this.allocString(key);
-    this.strings.add(key);
+    this.allocString(key, {
+      overAllocate: this.cfg.overAllocateStrings,
+      dontStore: this.cfg.ignoreKeys,
+      deduplicate: this.cfg.deduplicateKeys,
+    });
   }
 
   addString(s: string) {
-    if (this.cfg.ignoreValues) return;
-    if (this.cfg.deduplicateValues && this.strings.has(s)) return;
-    this.allocString(s);
-    this.strings.add(s);
+    this.allocString(s, {
+      overAllocate: this.cfg.overAllocateStrings,
+      dontStore: this.cfg.ignoreValues,
+      deduplicate: this.cfg.deduplicateValues,
+    });
   }
 
   addNumber(value: number) {
@@ -202,11 +228,6 @@ class JsonDocument {
         if (this.cfg.useDouble) this.allocSlots(1);
         break;
     }
-  }
-
-  addIgnoredKey(s: string) {
-    this.allocString(s);
-    this.memory.free(this.getStringSize(s));
   }
 
   shrinkToFit() {
@@ -231,7 +252,7 @@ function fillDocument(doc: JsonDocument, value: JsonValue, filter: JsonFilter) {
     for (const key in value) {
       const memberFilter = filter.getMemberFilter(key);
       if (memberFilter.allows(value[key])) doc.addObjectMember(key);
-      else doc.addIgnoredKey(key);
+      else doc.allocTempString(key);
       fillDocument(doc, value[key], memberFilter);
     }
   }

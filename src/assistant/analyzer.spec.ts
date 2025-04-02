@@ -131,8 +131,8 @@ describe("analyze", function () {
         },
       ),
     ).toMatchObject({
-      memoryUsage: 99,
-      peakMemoryUsage: 147,
+      memoryUsage: 91,
+      peakMemoryUsage: 139,
     });
   });
 
@@ -151,8 +151,8 @@ describe("analyze", function () {
         },
       ),
     ).toMatchObject({
-      memoryUsage: 157,
-      peakMemoryUsage: 1117,
+      memoryUsage: 145,
+      peakMemoryUsage: 1105,
     });
   });
 
@@ -414,6 +414,24 @@ describe("analyze", function () {
       }),
     ).toMatchObject({
       slotCount: 1,
+    });
+  });
+
+  it("should not allocate space for of 3-characters string", () => {
+    expect(
+      analyze("abc", { arch: "8-bit", overAllocateStrings: true }),
+    ).toMatchObject({
+      memoryUsage: 14,
+      peakMemoryUsage: 50,
+    });
+  });
+
+  it("should use tiny string optimization of 3-characters key", () => {
+    expect(
+      analyze({ abc: 1 }, { arch: "8-bit", overAllocateStrings: true }),
+    ).toMatchObject({
+      memoryUsage: 26,
+      peakMemoryUsage: 146,
     });
   });
 });
