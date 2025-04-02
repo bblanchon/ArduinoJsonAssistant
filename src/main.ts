@@ -11,7 +11,7 @@ createApp(App)
   .use(router)
   .use(createPinia())
   .use(tooltip)
-  .provide("version", "7.3")
+  .provide("version", "7.4")
   .mount(el);
 
 persistStore();
