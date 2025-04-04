@@ -59,12 +59,9 @@ function createGauge() {
 
 onMounted(createGauge);
 
-watch(
-  () => props.value,
-  () => {
-    gauge.value?.refresh(props.value, props.max);
-  },
-);
+watch([() => props.value, () => props.valueText], () => {
+  gauge.value?.refresh(props.value, props.max);
+});
 
 watch(
   [() => props.max, () => props.warning, () => props.danger, () => props.label],
