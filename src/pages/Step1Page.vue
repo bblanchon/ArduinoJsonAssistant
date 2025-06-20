@@ -71,19 +71,6 @@
             </div>
           </div>
         </form>
-        <div class="d-none d-lg-block col-4 mb-2" id="assistant-sponsors">
-          <div class="bg-light p-2 h-100">
-            <div class="text-center text-body-secondary">Our sponsors</div>
-            <div class="m-4" v-for="sponsor in sponsors" :key="sponsor">
-              <a :href="sponsor.url" rel="sponsored" target="_blank"
-                ><img
-                  class="img img-fluid"
-                  :src="sponsor.image.url"
-                  :alt="sponsor.name"
-              /></a>
-            </div>
-          </div>
-        </div>
       </div>
       <p class="short-tip">
         This is the Assistant for ArduinoJson {{ version }}. Make sure the same
@@ -110,7 +97,7 @@ import { useStore } from "@/store";
 
 export default {
   components: { RouterLink },
-  inject: ["version", "baseUrl", "sponsors"],
+  inject: ["version", "baseUrl"],
   data() {
     return {
       cpuInfos,
