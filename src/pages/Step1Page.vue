@@ -78,19 +78,6 @@
             </div>
           </div>
         </form>
-        <div class="d-none d-lg-block col-4 mb-2" id="assistant-sponsors">
-          <div class="bg-light p-2 h-100">
-            <div class="text-center text-muted">Our sponsors</div>
-            <div class="m-4" v-for="(sponsor, idx) in sponsors" :key="idx">
-              <a :href="sponsor.url" rel="sponsored" target="_blank"
-                ><img
-                  class="img img-fluid"
-                  :src="sponsor.image.url"
-                  :alt="sponsor.name"
-              /></a>
-            </div>
-          </div>
-        </div>
       </div>
       <p class="text-muted">
         This is the Assistant for ArduinoJson {{ version }}. Make sure the same
@@ -113,7 +100,6 @@
 import { inject, computed } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
-import { useSponsors } from "@/composables/sponsors";
 import { useBoardStore } from "@/stores/board";
 import { useSettingsStore } from "@/stores/settings";
 
@@ -122,7 +108,6 @@ import BoardSelector from "@/components/BoardSelector.vue";
 const settings = useSettingsStore();
 const board = useBoardStore();
 const version = inject("version");
-const sponsors = useSponsors();
 
 onBeforeRouteLeave((to) => {
   if (to.name == "step2") {
