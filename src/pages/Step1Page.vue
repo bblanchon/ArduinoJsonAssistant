@@ -4,7 +4,7 @@
 
     <div class="card-body">
       <div class="row">
-        <form class="col-lg-8 mb-4">
+        <form class="col-lg-6 mb-4">
           <div class="row">
             <label for="cpu-selector" class="col-sm-3 col-form-label"
               >Board</label
@@ -78,11 +78,28 @@
             </div>
           </div>
         </form>
+        <div class="col-lg-6 d-none d-lg-block">
+          <div class="alert alert-info">
+            <p>Welcome to the <b>ArduinoJson Assistant</b>! Here, you can:</p>
+            <ol>
+              <li>
+                Ensure your board has enough RAM to store the JSON document
+              </li>
+              <li>Design filters to reduce the memory consumption</li>
+              <li>Generate the code to parse or generate the JSON document</li>
+              <li>
+                See the impact of library configuration on memory consumption
+              </li>
+            </ol>
+            <p>
+              This version is designed for
+              <strong>ArduinoJson {{ version }}</strong
+              >.<br />
+              Make sure the same version is installed on your computer.
+            </p>
+          </div>
+        </div>
       </div>
-      <p class="text-muted">
-        This is the Assistant for ArduinoJson {{ version }}. Make sure the same
-        version is installed on your computer.
-      </p>
     </div>
 
     <div class="card-footer">
