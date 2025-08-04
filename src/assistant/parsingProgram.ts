@@ -99,7 +99,7 @@ class DecompositionCodeBuilder {
       let arrayName = parent;
       if (value.length > 2 && parent.indexOf("[") >= 0) {
         const varName = makeVariableName(variableName);
-        this.addLine(this.declaration("JsonArray", arrayName, parent, ctx));
+        this.addLine(this.declaration("JsonArray", varName, parent, ctx));
         arrayName = varName;
       }
       for (let i = 0; i < value.length; i++) {

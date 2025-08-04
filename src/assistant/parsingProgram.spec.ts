@@ -243,6 +243,13 @@ describe("writeDecompositionCode", function () {
     );
   });
 
+  // Issue #7
+  it("{x:[1,2,3]}", async () => {
+    await expect(getDecompositionCode({ x: [1, 2, 3] })).toMatchFileSnapshot(
+      "snapshots/decompose/object-array-three-ints.html",
+    );
+  });
+
   it("loop on root", async () => {
     await expect(
       getDecompositionCode([
