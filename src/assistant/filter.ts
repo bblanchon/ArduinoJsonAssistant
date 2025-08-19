@@ -22,7 +22,7 @@ export class JsonFilter {
   private getMember(key: string): JsonValue {
     if (this.value === true) return true;
     if (isJsonObject(this.value)) {
-      if (key in this.value) return this.value[key];
+      if (key in this.value) return this.value[key]!;
       else return this.value["*"] ?? false;
     }
     return false;
@@ -53,13 +53,11 @@ export class JsonFilter {
 
     if (isJsonObject(this.value) && isJsonObject(input)) {
       const output: JsonObject = {};
-      for (const k in input) {
-        if (k in input) {
-          const memberFilter = this.getMemberFilter(k);
-          const memberValue = memberFilter.apply(input[k]);
-          if (memberValue !== undefined) output[k] = memberValue;
-        }
-      }
+      Object.entries(input).forEach(([key, val]) => {
+        const memberFilter = this.getMemberFilter(key);
+        const memberValue = memberFilter.apply(val);
+        if (memberValue !== undefined) output[key] = memberValue;
+      });
       return output;
     }
 

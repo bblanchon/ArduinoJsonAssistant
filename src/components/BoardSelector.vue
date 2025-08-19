@@ -57,7 +57,7 @@ const boardId = defineModel<string>({ required: true });
 const search = ref("");
 
 const selectedBoard = computed<BoardData>(
-  () => (boards as BoardDatabase)[boardId.value],
+  () => (boards as BoardDatabase)[boardId.value]!,
 );
 
 const filteredBoards = computed<BoardDatabase>(() => {

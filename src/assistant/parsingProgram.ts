@@ -21,7 +21,7 @@ import { functions, globals, keywords, literals, tokens } from "./tokens";
 interface VariableContext {
   parent?: string;
   name?: string;
-  siblings?: JsonValue[];
+  siblings?: JsonValue[] | undefined;
 }
 
 interface DecompositionCodeConfig {
@@ -89,7 +89,7 @@ class DecompositionCodeBuilder {
         `${keywords.for} (${tokens.type("JsonObject")} ${item} : ${parent}.${asFunction}&lt;${tokens.type("JsonArray")}&gt;()) {`,
       );
       this.indent();
-      this.extractValue(value[0], {
+      this.extractValue(value[0]!, {
         parent: item,
         siblings: value,
       });
@@ -104,10 +104,10 @@ class DecompositionCodeBuilder {
       }
       for (let i = 0; i < value.length; i++) {
         const elementExpression = `${arrayName}[${literals.number(i)}]`;
-        this.extractValue(value[i], {
+        this.extractValue(value[i]!, {
           parent: elementExpression,
           name: makeVariableName(elementExpression),
-          siblings: ctx.siblings?.map((x) => (isJsonArray(x) ? x[i] : null)),
+          siblings: ctx.siblings?.map((x) => (isJsonArray(x) ? x[i]! : null)),
         });
       }
     }
@@ -128,12 +128,12 @@ class DecompositionCodeBuilder {
         `${keywords.for} (${tokens.type("JsonPair")} ${tokens.variable(item)} : ${parent}.${asFunction}&lt;${tokens.type("JsonObject")}&gt;()) {`,
       );
       this.indent();
-      this.extractValue(Object.keys(value)[0], {
+      this.extractValue(Object.keys(value)[0]!, {
         name: tokens.variable(item + "_key"),
         parent: tokens.variable(item) + ".key().c_str()",
         siblings: Object.keys(value),
       });
-      this.extractValue(Object.values(value)[0], {
+      this.extractValue(Object.values(value)[0]!, {
         parent: tokens.variable(item) + ".value()",
         siblings: Object.values(value),
       });
@@ -148,10 +148,12 @@ class DecompositionCodeBuilder {
       }
       for (const key in value) {
         const memberExpression = `${objName}[${literals.string(key, this.cfg.progmem)}]`;
-        this.extractValue(value[key], {
+        this.extractValue(value[key]!, {
           parent: memberExpression,
           name: makeVariableName(memberExpression),
-          siblings: ctx.siblings?.map((x) => (isJsonObject(x) ? x[key] : null)),
+          siblings: ctx.siblings?.map((x) =>
+            isJsonObject(x) ? x[key]! : null,
+          ),
         });
       }
     }
@@ -195,9 +197,9 @@ class DecompositionCodeBuilder {
 export interface ParsingProgramConfig extends DecompositionCodeConfig {
   input?: JsonValue;
   inputType?: string;
-  filter?: JsonValue;
-  nestingLimit?: number;
-  serial?: boolean;
+  filter?: JsonValue | undefined;
+  nestingLimit?: number | undefined;
+  serial?: boolean | undefined;
 }
 
 export function writeDecompositionCode(

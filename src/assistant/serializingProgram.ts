@@ -52,7 +52,7 @@ class CompositionCodeBuilder {
           `${tokens.variable(name)}.${name == "doc" ? functions.JsonDocument.to : functions.JsonVariant.to}&lt;${tokens.type("JsonArray")}&gt;();`,
         );
       if (childrenCount == 1)
-        return this.addVariant(value[0], {
+        return this.addVariant(value[0]!, {
           parent: tokens.variable(name),
           name: name + "_0",
           key: 0,
@@ -60,7 +60,7 @@ class CompositionCodeBuilder {
     } else if (childrenCount == 1) {
       if (key === undefined)
         throw new Error("key is required if parent is set");
-      return this.addVariant(value[0], {
+      return this.addVariant(value[0]!, {
         parent: `${parent}[${this.stringify(key)}]`,
         name: name + "_0",
         key: 0,
@@ -114,13 +114,13 @@ class CompositionCodeBuilder {
         );
     }
 
-    for (const key in value) {
-      this.addObjectMember(value[key], {
+    Object.entries(value).forEach(([key, val]) => {
+      this.addObjectMember(val, {
         parent: objectName,
         name: makeVariableName(`${name}[${key}]`),
         key: key,
       });
-    }
+    });
   }
 
   addArrayElement(value: JsonValue, ctx: VariableContext): void {

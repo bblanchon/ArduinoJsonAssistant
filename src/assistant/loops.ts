@@ -9,14 +9,14 @@ function areSimilar(a: JsonValue, b: JsonValue): boolean {
     }
     for (const k in b) {
       if (!(k in a)) return false;
-      if (!areSimilar(a[k], b[k])) return false;
+      if (!areSimilar(a[k]!, b[k]!)) return false;
     }
   }
 
   if (isJsonArray(a) && isJsonArray(b)) {
     if (a.length !== b.length) return false;
     for (let i = 0; i < a.length; i++) {
-      if (!areSimilar(a[i], b[i])) return false;
+      if (!areSimilar(a[i]!, b[i]!)) return false;
     }
   }
 
@@ -27,7 +27,7 @@ export function canLoop(input: JsonValue): boolean {
   if (isJsonArray(input)) {
     if (input.length < 2) return false;
     return input.every(
-      (value) => isJsonObject(value) && areSimilar(input[0], value),
+      (value) => isJsonObject(value) && areSimilar(input[0]!, value),
     );
   }
 

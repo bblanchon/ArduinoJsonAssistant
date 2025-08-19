@@ -22,7 +22,7 @@ type CppType =
   | "double";
 
 function hasShortMantissa(value: number): boolean {
-  return value.toExponential().split("e")[0].length < 9;
+  return value.toExponential().split("e")[0]!.length < 9;
 }
 
 export function getCommonCppTypeFor(values: JsonValue[]): CppType | undefined {
@@ -62,19 +62,19 @@ export function getCommonCppTypeFor(values: JsonValue[]): CppType | undefined {
 function needsCppType(
   cpptype: CppType,
   value: JsonValue,
-  siblings?: JsonValue[],
+  siblings?: JsonValue[] | undefined,
 ): boolean {
   if (isJsonArray(value)) {
-    if (canLoop(value)) return needsCppType(cpptype, value[0], value);
+    if (canLoop(value)) return needsCppType(cpptype, value[0]!, value);
     return value.some((x) => needsCppType(cpptype, x));
   }
 
   if (isJsonObject(value)) {
-    return Object.keys(value).some((key) =>
+    return Object.entries(value).some(([key, val]) =>
       needsCppType(
         cpptype,
-        value[key],
-        siblings?.filter((x) => isJsonObject(x)).map((x) => x[key]),
+        val,
+        siblings?.filter((x) => isJsonObject(x)).map((x) => x[key] ?? null),
       ),
     );
   }

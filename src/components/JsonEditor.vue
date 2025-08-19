@@ -31,7 +31,7 @@ import { computed } from "vue";
 
 const text = defineModel<string>({ default: "" });
 
-defineProps<{
+const { readonly = false } = defineProps<{
   readonly?: boolean;
 }>();
 

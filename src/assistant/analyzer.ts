@@ -48,7 +48,7 @@ interface Config {
   ignoreValues?: boolean;
   deduplicateKeys?: boolean;
   deduplicateValues?: boolean;
-  filter?: JsonValue;
+  filter?: JsonValue | undefined;
   stringLengthSize?: number;
   overAllocateStrings?: boolean;
 }
@@ -159,7 +159,10 @@ class JsonDocument {
     this.memory.alloc(arch.documentSize);
   }
 
-  getStringSize(s: string, { overAllocate }: { overAllocate?: boolean } = {}) {
+  getStringSize(
+    s: string,
+    { overAllocate }: { overAllocate?: boolean | undefined } = {},
+  ) {
     let length = s.length;
     if (overAllocate) length = getOverallocatedStringSize(length);
     return length + this.stringOverhead;
@@ -179,7 +182,11 @@ class JsonDocument {
 
   allocString(
     s: string,
-    opt: { overAllocate?: boolean; dontStore?: boolean; deduplicate?: boolean },
+    opt: {
+      overAllocate?: boolean | undefined;
+      dontStore?: boolean | undefined;
+      deduplicate?: boolean | undefined;
+    },
   ) {
     // when deserializing, we store the string in a buffer, before deciding if we keep it
     if (opt.overAllocate) this.allocTempString(s);
@@ -244,17 +251,18 @@ function fillDocument(doc: JsonDocument, value: JsonValue, filter: JsonFilter) {
 
   if (isJsonArray(value)) {
     doc.addArray(value.length);
-    for (let i = 0; i < value.length; i++)
-      fillDocument(doc, value[i], filter.getElementFilter());
+    value.forEach((item) => {
+      fillDocument(doc, item, filter.getElementFilter());
+    });
   }
 
   if (isJsonObject(value)) {
-    for (const key in value) {
+    Object.entries(value).forEach(([key, val]) => {
       const memberFilter = filter.getMemberFilter(key);
-      if (memberFilter.allows(value[key])) doc.addObjectMember(key);
+      if (memberFilter.allows(val)) doc.addObjectMember(key);
       else doc.allocTempString(key);
-      fillDocument(doc, value[key], memberFilter);
-    }
+      fillDocument(doc, val, memberFilter);
+    });
   }
 
   if (isJsonString(value)) {

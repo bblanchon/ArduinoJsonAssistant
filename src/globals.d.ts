@@ -12,7 +12,7 @@ declare namespace bootstrap {
 function plausible(
   eventName: string,
   options?: {
-    props?: { [propName: string]: string | number | boolean };
+    props?: { [propName: string]: string | number | boolean | undefined };
   },
 ): void;
 
