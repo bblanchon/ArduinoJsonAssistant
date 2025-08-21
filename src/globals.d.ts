@@ -7,6 +7,12 @@ declare namespace bootstrap {
     public hide(): void;
     public dispose(): void;
   }
+
+  class Dropdown {
+    public static getOrCreateInstance(el: HTMLElement): Dropdown;
+
+    public hide(): void;
+  }
 }
 
 function plausible(

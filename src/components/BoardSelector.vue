@@ -1,5 +1,9 @@
 <template>
-  <div class="dropdown" v-on="{ 'shown.bs.dropdown': focusSearchInput }">
+  <div
+    class="dropdown"
+    v-on="{ 'shown.bs.dropdown': focusSearchInput }"
+    ref="dropdown"
+  >
     <button
       class="btn dropdown-toggle border w-100 d-flex align-items-center justify-content-between"
       type="button"
@@ -24,6 +28,7 @@
           :placeholder="`Search among ${Object.values(boards).length} boards`"
           v-model="search"
           spellcheck="false"
+          @keydown.enter.prevent.stop="selectFirstBoard"
         />
         <small class="form-text text-muted" v-if="search.trim()">
           {{ Object.values(filteredBoards).length }} boards found
@@ -73,10 +78,23 @@ const filteredBoards = computed<BoardDatabase>(() => {
 });
 
 const inputRef = useTemplateRef("input");
+const dropdown = useTemplateRef("dropdown");
 
 function focusSearchInput() {
   search.value = "";
   inputRef.value!.focus();
+}
+
+function hideDropdown() {
+  bootstrap.Dropdown.getOrCreateInstance(dropdown.value!).hide();
+}
+
+function selectFirstBoard() {
+  const firstBoardKey = Object.keys(filteredBoards.value)[0];
+  if (firstBoardKey) {
+    boardId.value = firstBoardKey;
+    hideDropdown();
+  }
 }
 </script>
 
