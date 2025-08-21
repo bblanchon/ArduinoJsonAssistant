@@ -4,7 +4,7 @@
 
     <div class="card-body">
       <div class="row">
-        <form class="col-lg-6 mb-4">
+        <form class="col-lg-6 mb-4" @submit.prevent>
           <div class="row">
             <label for="cpu-selector" class="col-sm-3 col-form-label"
               >Board</label
@@ -41,6 +41,9 @@
                 <label class="form-check-label" for="deserialize-radio">
                   Deserialize
                 </label>
+                <span class="form-text text-body-secondary ms-2"
+                  >JSON &rightarrow; C++
+                </span>
               </div>
               <div class="form-check">
                 <input
@@ -54,6 +57,9 @@
                 <label class="form-check-label" for="serialize-radio">
                   Serialize
                 </label>
+                <span class="form-text text-body-secondary ms-2"
+                  >C++ &rightarrow; JSON
+                </span>
               </div>
             </div>
           </div>
