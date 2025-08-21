@@ -29,38 +29,36 @@
           </div>
           <div class="row mb-2">
             <span class="col-sm-3 col-form-label">Mode</span>
-            <div class="col-sm-9">
-              <div class="form-check">
+            <div class="col-sm-3 col-6">
+              <label
+                class="bg-primary-subtle border rounded d-flex align-items-center flex-column py-2 gap-1"
+              >
                 <input
-                  class="form-check-input"
+                  class="form-check-input m-0"
                   type="radio"
                   v-model="selectedMode"
                   value="deserialize"
-                  id="deserialize-radio"
                 />
-                <label class="form-check-label" for="deserialize-radio">
-                  Deserialize
-                </label>
-                <span class="form-text text-body-secondary ms-2"
+                <span> Deserialize </span>
+                <small class="text-body-secondary"
                   >JSON &rightarrow; C++
-                </span>
-              </div>
-              <div class="form-check">
+                </small>
+              </label>
+            </div>
+            <div class="col-6 col-sm-3">
+              <label
+                class="bg-primary-subtle border rounded d-flex align-items-center flex-column py-2 gap-1"
+              >
                 <input
-                  class="form-check-input"
+                  class="form-check-input m-0"
                   type="radio"
                   v-model="selectedMode"
                   name="mode"
                   value="serialize"
-                  id="serialize-radio"
                 />
-                <label class="form-check-label" for="serialize-radio">
-                  Serialize
-                </label>
-                <span class="form-text text-body-secondary ms-2"
-                  >C++ &rightarrow; JSON
-                </span>
-              </div>
+                <span>Serialize</span>
+                <small class="text-body-secondary">C++ &rightarrow; JSON</small>
+              </label>
             </div>
           </div>
           <div class="row">
