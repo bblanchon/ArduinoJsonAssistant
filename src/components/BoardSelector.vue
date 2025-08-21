@@ -13,6 +13,7 @@
       <BoardSelectorItem
         v-if="selectedBoard"
         class="flex-fill"
+        style="max-width: calc(100% - 2ch)"
         :board="selectedBoard"
       />
       <span v-else class="flex-fill text-start text-truncate text-muted">
