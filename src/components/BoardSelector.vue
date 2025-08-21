@@ -29,6 +29,8 @@
           v-model="search"
           spellcheck="false"
           @keydown.enter.prevent.stop="selectFirstBoard"
+          @keydown.down.prevent.stop="focusFirstBoard"
+          @keydown.up.prevent.stop="focusLastBoard"
         />
         <small class="form-text text-muted" v-if="search.trim()">
           {{ Object.values(filteredBoards).length }} boards found
@@ -83,6 +85,20 @@ const dropdown = useTemplateRef("dropdown");
 function focusSearchInput() {
   search.value = "";
   inputRef.value!.focus();
+}
+
+function focusFirstBoard() {
+  const btn = dropdown.value!.querySelector(
+    ".dropdown-item",
+  ) as HTMLButtonElement | null;
+  btn?.focus();
+}
+
+function focusLastBoard() {
+  const btn = dropdown.value!.querySelector(
+    ".dropdown-item:last-child",
+  ) as HTMLButtonElement | null;
+  btn?.focus();
 }
 
 function hideDropdown() {
