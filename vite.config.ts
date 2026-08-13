@@ -16,7 +16,7 @@ export default defineConfig({
   build: {
     sourcemap: true,
     lib: {
-      entry: path.resolve(__dirname, "src/main.js"),
+      entry: path.resolve(import.meta.dirname, "src/main.js"),
       formats: ["iife"],
       name: "ArduinoJsonAssistant",
       fileName: () => "assistant.js",
